@@ -9,6 +9,11 @@ class Vec3 {
     this._z = z;
   }
 
+  get length () {
+
+    return 3;
+  }
+
   get x () {
 
     return this._x;
@@ -47,12 +52,12 @@ class Vec3 {
   [Symbol.iterator] () {
 
     let index = 0;
-    const data = this.toArray();
-    const len = data.length;
-
     return {
-      next: function () {
-        return { value: data[index++], done: index > len };
+      next: () => {
+        return {
+          value: this.get(index++),
+          done: index > this.length
+        };
       }
     };
   }

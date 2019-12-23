@@ -12,6 +12,11 @@ class Transform3 {
     this._scale = scale;
   }
 
+  get length () {
+
+    return 10;
+  }
+
   get location () {
 
     return this._location;
@@ -45,6 +50,108 @@ class Transform3 {
   set scale (v) {
 
     this._scale = v;
+  }
+
+  [Symbol.iterator] () {
+
+    let index = 0;
+    return {
+      next: () => {
+        return {
+          value: this.get(index++),
+          done: index > this.length
+        };
+      }
+    };
+  }
+
+  [Symbol.toPrimitive] (hint) {
+
+    switch (hint) {
+      case 'string':
+      default:
+        return this.toString();
+    }
+  }
+
+  get (i = -1) {
+
+    switch (i) {
+      case 0: case -10:
+        return this._location.x;
+      case 1: case -9:
+        return this._location.y;
+      case 2: case -8:
+        return this._location.z;
+
+      case 3: case -7:
+        return this._rotation.real;
+      case 4: case -6:
+        return this._rotation.imag.x;
+      case 5: case -5:
+        return this._rotation.imag.y;
+      case 6: case -4:
+        return this._rotation.imag.z;
+
+      case 7: case -3:
+        return this._scale.x;
+      case 8: case -2:
+        return this._scale.y;
+      case 9: case -1:
+        return this._scale.z;
+
+      default:
+        return 0.0;
+    }
+  }
+
+  reset () {
+
+    Vec3.zero(this._location);
+    Vec3.one(this._scale);
+    Quaternion.identity(this._rotation);
+
+    return this;
+  }
+
+  set (i = -1, v = 0.0) {
+
+    switch (i) {
+      case 0: case -10:
+        this._location.x = v;
+        break;
+      case 1: case -9:
+        this._location.y = v;
+        break;
+      case 2: case -8:
+        this._location.z = v;
+        break;
+
+      case 3: case -7:
+        this._rotation.real = v;
+        break;
+      case 4: case -6:
+        this._rotation.imag.x = v;
+        break;
+      case 5: case -5:
+        this._rotation.imag.y = v;
+        break;
+      case 6: case -4:
+        this._rotation.imag.z = v;
+        break;
+
+      case 7: case -3:
+        this._scale.x = v;
+        break;
+      case 8: case -2:
+        this._scale.y = v;
+        break;
+      case 9: case -1:
+        this._scale.z = v;
+        break;
+    }
+
+    return this;
   }
 
   setComponents (
@@ -148,13 +255,16 @@ class Transform3 {
       transform.rotation,
       source,
       target);
+
     Vec3.mul(
       transform.scale,
       target,
       target);
+
     Vec3.add(transform.location,
       target,
       target);
+
     return target;
   }
 
@@ -167,10 +277,12 @@ class Transform3 {
       transform.rotation,
       source,
       target);
+
     Vec3.mul(
       transform.scale,
       target,
       target);
+
     return target;
   }
 }

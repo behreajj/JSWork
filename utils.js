@@ -3,11 +3,13 @@
 class Utils {
 
   /**
-   * A quick approximation test. Tests to see if the absolute of the difference between two values is less than a tolerance. Does not handle edge cases.
-   * 
+   * A quick approximation test. Tests to see if the absolute of the difference
+   * between two values is less than a tolerance. Does not handle edge cases.
+   *
    * @param {number} a the left operand
    * @param {number} b the right operand
    * @param {number} tolerance the tolerance
+   * @returns the evaluation
    */
   static approx (
     a = 0.0,
@@ -19,7 +21,7 @@ class Utils {
 
   /**
    * A clamped version of arc-cosine.
-   * 
+   *
    * @param {number} v the input value
    * @returns the radians
    */
@@ -32,7 +34,7 @@ class Utils {
 
   /**
    * A clamped version of arc-sine.
-   * 
+   *
    * @param {number} v the input value
    * @returns the radians
    */
@@ -44,10 +46,11 @@ class Utils {
 
   /**
    * Clamps a value between a lower and an upper bound.
-   * 
+   *
    * @param {number} v the value
    * @param {number} lb the lower bound
    * @param {number} ub the upper bound
+   * @returns the clamped value
    */
   static clamp (v = 0.0, lb = 0.0, ub = 1.0) {
 
@@ -55,8 +58,9 @@ class Utils {
   }
 
   /**
-   * Multiplies a magnitude, the left operand, by the sign of the right operand, such that the magnitude of a matches the sign of b.
-   * 
+   * Multiplies a magnitude, the left operand, by the sign of the right operand,
+   * such that the magnitude of a matches the sign of b.
+   *
    * @param {number} a left operand
    * @param {number} b right operand
    * @returns the signed magnitude
@@ -68,7 +72,7 @@ class Utils {
 
   /**
    * Converts an angle in radians to an angle in degrees.
-   * 
+   *
    * @param {number} radians the angle in radians
    * @returns the angle in degrees
    */
@@ -79,7 +83,7 @@ class Utils {
 
   /**
    * Finds the absolute value of the left operand minus the right.
-   * 
+   *
    * @param {number} a left operand
    * @param {number} b right operand
    * @returns the difference
@@ -90,8 +94,10 @@ class Utils {
   }
 
   /**
-   * Divides the left operand by the right, but returns zero when the denominator is zero. This is to simulate the convention of shading languages like GLSL and OSL.
-   * 
+   * Divides the left operand by the right, but returns zero when the
+   * denominator is zero. This is to simulate the convention of shading
+   * languages like GLSL and OSL.
+   *
    * @param {number} a the numerator
    * @param {number} b the denominator
    * @returns the quotient
@@ -102,12 +108,15 @@ class Utils {
   }
 
   /**
-   * Applies the modulo operator (%) to the operands, which implicitly uses the formula fmod ( a, b ) := a - b trunc ( a / b ) .
+   * Applies the modulo operator (%) to the operands, which implicitly uses the
+   * formula fmod ( a, b ) := a - b trunc ( a / b ) .
    *
-   * When the left operand is negative and the right operand is positive, the result will be negative. For periodic values, such as an angle, where the direction of change could be either clockwise or counterclockwise, use mod.
+   * When the left operand is negative and the right operand is positive, the
+   * result will be negative. For periodic values, such as an angle, where the
+   * direction of change could be either clockwise or counterclockwise, use mod.
    *
    * If the right operand is one, use fract(a) or a - trunc(a) instead.
-   * 
+   *
    * @param {number} a the left operand
    * @param {number} b the right operand
    * @returns the result
@@ -118,10 +127,11 @@ class Utils {
   }
 
   /**
-   * Finds the fractional portion of the input value by subtracting the value's truncation from the value, i.e., fract ( a ) := a - trunc ( a ) .
+   * Finds the fractional portion of the input value by subtracting the value's
+   * truncation from the value, i.e., fract ( a ) := a - trunc ( a ) .
    *
    * Use this instead of fmod ( a, 1.0 ) or a % 1.0.
-   * 
+   *
    * @param {number} a the input value
    * @returns the fractional portion
    */
@@ -131,8 +141,10 @@ class Utils {
   }
 
   /**
-   * Linear interpolation from the origin to the destination value by a step. If the step is less than zero, returns the origin. If the step is greater than one, returns the destination.
-   * 
+   * Linear interpolation from the origin to the destination value by a step. If
+   * the step is less than zero, returns the origin. If the step is greater than
+   * one, returns the destination.
+   *
    * @param {number} a the origin value
    * @param {number} b the destination value
    * @param {number} t the step
@@ -146,8 +158,9 @@ class Utils {
   }
 
   /**
-   * Linear interpolation from the origin to the destination value by a step. Does not check to see if the step is beyond the range [0.0, 1.0] .
-   * 
+   * Linear interpolation from the origin to the destination value by a step.
+   * Does not check to see if the step is beyond the range [0.0, 1.0] .
+   *
    * @param {number} a the origin value
    * @param {number} b the destination value
    * @param {number} t the step
@@ -159,8 +172,10 @@ class Utils {
   }
 
   /**
-   * Maps an input value from an original range to a target range. If the upper and lower bound of the original range are equal, will return the lower bound of the destination range.
-   * 
+   * Maps an input value from an original range to a target range. If the upper
+   * and lower bound of the original range are equal, will return the lower
+   * bound of the destination range.
+   *
    * @param {number} value the input value
    * @param {number} lbOrigin lower bound of original range
    * @param {number} ubOrigin upper bound of original range
@@ -181,10 +196,11 @@ class Utils {
   }
 
   /**
-   * Applies floorMod to the operands, and therefore uses the formula mod ( a, b ) := a - b * floor ( a / b ) .
-   * 
+   * Applies floorMod to the operands, and therefore uses the formula mod ( a,
+   * b) := a - b * floor ( a / b ) .
+   *
    * If the right operand is one, use mod1(a) or a - floor(a) instead.
-   * 
+   *
    * @param {number} a the left operand
    * @param {number} b the right operand
    * @returns the result
@@ -196,9 +212,9 @@ class Utils {
 
   /**
    * Subtracts the floor of the input value from the value.
-   * 
+   *
    * Use this instead of mod(a, 1.0).
-   * 
+   *
    * @param {number} a the input value
    * @returns the result
    */
@@ -208,8 +224,9 @@ class Utils {
   }
 
   /**
-   * A specialized version of mod which shifts an angle in degrees to the range [0, 360].
-   * 
+   * A specialized version of mod which shifts an angle in degrees to the range
+   * [0, 360].
+   *
    * @param {number} degrees the angle in degrees
    * @returns the unsigned degrees
    */
@@ -219,8 +236,9 @@ class Utils {
   }
 
   /**
-   * A specialized version of mod which shifts an angle in radians to the range [0, TAU] .
-   * 
+   * A specialized version of mod which shifts an angle in radians to the range
+   * [0, TAU] .
+   *
    * @param {number} radians the angle in radians
    * @returns the unsigned radians
    */
@@ -231,7 +249,7 @@ class Utils {
 
   /**
    * Converts an angle in degrees to an angle in radians.
-   * 
+   *
    * @param {number} degrees the angle in degrees
    * @returns the angle in radians
    */
@@ -242,7 +260,7 @@ class Utils {
 
   /**
    * Eases between an origin and destination by a step in [0.0, 1.0] .
-   * 
+   *
    * @param {number} a the origin
    * @param {number} b the destination
    * @param {number} t the step
@@ -258,7 +276,7 @@ class Utils {
 
   /**
    * Returns a random value between the lower and upper bounds.
-   * 
+   *
    * @param {number} a the lower bound
    * @param {number} b the upper bound
    * @returns the random value
@@ -269,7 +287,8 @@ class Utils {
   }
 
   /**
-   * An angle in degrees is multiplied by this constant to convert it to radians. PI / 180.0 , approximately 0.017453292 .
+   * An angle in degrees is multiplied by this constant to convert it to
+   * radians. PI / 180.0 , approximately 0.017453292 .
    */
   static get DEG_TO_RAD () {
 
@@ -277,7 +296,8 @@ class Utils {
   }
 
   /**
-   * Smallest signficant differentiation between two floating point values. Approximately 0.000001 . Alternatively, see Number.EPSILON .
+   * Smallest signficant differentiation between two floating point values.
+   * Approximately 0.000001 . Alternatively, see Number.EPSILON .
    */
   static get EPSILON () {
 
@@ -293,7 +313,9 @@ class Utils {
   }
 
   /**
-   * One-255th, 1.0 / 255.0 . Useful when converting a color with channels in the range [0, 255] to a color in the range [0.0, 1.0] . Approximately 0.003921569 .
+   * One-255th, 1.0 / 255.0 . Useful when converting a color with channels in
+   * the range [0, 255] to a color in the range [0.0, 1.0] . Approximately
+   * 0.003921569 .
    */
   static get ONE_255 () {
 
@@ -301,7 +323,8 @@ class Utils {
   }
 
   /**
-   * One divided by 360 degrees, 1.0 / 360 ; approximately 0.0027777778 . Useful for converting an index in a for-loop to an angle in degrees.
+   * One divided by 360 degrees, 1.0 / 360 ; approximately 0.0027777778 . Useful
+   * for converting an index in a for-loop to an angle in degrees.
    */
   static get ONE_360 () {
 
@@ -309,7 +332,8 @@ class Utils {
   }
 
   /**
-   * One divided by TAU. Approximately 0.15915494 . Useful for converting an index in a for-loop to an angle and for applying mod to an angle.
+   * One divided by TAU. Approximately 0.15915494 . Useful for converting an
+   * index in a for-loop to an angle and for applying mod to an angle.
    */
   static get ONE_TAU () {
 
@@ -333,7 +357,8 @@ class Utils {
   }
 
   /**
-   * An angle in radians is multiplied by this constant to convert it to degrees. 180.0 / PI, approximately 57.29578 .
+   * An angle in radians is multiplied by this constant to convert it to
+   * degrees. 180.0 / PI, approximately 57.29578 .
    */
   static get RAD_TO_DEG () {
 
@@ -357,7 +382,8 @@ class Utils {
   }
 
   /**                                   
-   * An approximation of PI / 3.0 , 1.0471976 . Useful for describing the field of view in a perspective camera.
+   * An approximation of PI / 3.0 , 1.0471976 . Useful for describing the field
+   * of view in a perspective camera.
    */
   static get THIRD_PI () {
 

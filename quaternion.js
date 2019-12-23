@@ -13,24 +13,33 @@ class Quaternion {
     return this._imag;
   }
 
+  get length () {
+    
+    return 4;
+  }
+
   get real () {
 
     return this._real;
   }
 
   get w () {
+
     return this._real;
   }
 
   get x () {
+
     return this._imag.x;
   }
 
   get y () {
+
     return this._imag.y;
   }
 
   get z () {
+
     return this._imag.z;
   }
 
@@ -50,30 +59,34 @@ class Quaternion {
   }
 
   set w (v) {
+
     this._real = v;
   }
 
   set x (v) {
+
     this._imag.x = v;
   }
 
   set y (v) {
+
     this._imag.y = v;
   }
 
   set z (v) {
+
     this._imag.z = v;
   }
 
   [Symbol.iterator] () {
 
     let index = 0;
-    const data = this.toArray();
-    const len = data.length;
-
     return {
-      next: function () {
-        return { value: data[index++], done: index > len };
+      next: () => {
+        return {
+          value: this.get(index++),
+          done: index > this.length
+        };
       }
     };
   }
@@ -244,8 +257,6 @@ class Quaternion {
 
     if (a.real > b.real) { return 1; }
     if (a.real < b.real) { return -1; }
-
-    // return Vec3.compareZyx(a.imag, b.imag);
 
     const ai = a.imag;
     const bi = b.imag;
@@ -420,6 +431,11 @@ class Quaternion {
   static isPure (q = new Quaternion()) {
 
     return q.real === 0.0;
+  }
+
+  static isUnit (q = new Quaternion()) {
+
+    return Quaternion.approxMag(q, 1.0);
   }
 
   static isZero (q = new Quaternion()) {
@@ -742,7 +758,9 @@ class Quaternion {
     };
   }
 
-  toAxisAngle (q = new Quaternion(), axis = new Vec3()) {
+  static toAxisAngle (
+    q = new Quaternion(),
+    axis = new Vec3()) {
 
     const mSq = Quaternion.magSq(q);
 

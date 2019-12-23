@@ -51,8 +51,8 @@ class Color extends Vec4 {
 
     switch (hint) {
       case 'string':
-        // return Color.toHexString(this);
-        return this.toString();
+        return Color.toHexString(this);
+        // return this.toString();
       case 'number':
       default:
         return Color.toHexInt(this);
@@ -106,8 +106,9 @@ class Color extends Vec4 {
   }
 
   /**
-   * Converts two colors to integers, performs the bitwise AND operation on them, then converts the result to a color.
-   * 
+   * Converts two colors to integers, performs the bitwise AND operation on
+   * them, then converts the result to a color.
+   *
    * @param {Color} a the left operand
    * @param {Color} b the right operand
    * @param {Color} target the output color
@@ -124,8 +125,9 @@ class Color extends Vec4 {
   }
 
   /**
-   * Converts a color to an integer, performs the bitwise NOT operation on it, then converts the result to a color.
-   * 
+   * Converts a color to an integer, performs the bitwise NOT operation on it,
+   * then converts the result to a color.
+   *
    * @param {Color} c the input color
    * @param {Color} target the output color
    * @returns the negation
@@ -140,8 +142,9 @@ class Color extends Vec4 {
   }
 
   /**
-   * Converts two colors to integers, performs the bitwise OR operation (inclusive or) on them, then converts the result to a color.
-   * 
+   * Converts two colors to integers, performs the bitwise OR operation
+   * (inclusive or) on them, then converts the result to a color.
+   *
    * @param {Color} a the left operand
    * @param {Color} b the right operand
    * @param {Color} target the output color
@@ -189,7 +192,7 @@ class Color extends Vec4 {
 
   /**
    * Returns the color black, ( 0.0, 0.0, 0.0, 1.0 ) .
-   * 
+   *
    * @param {Color} target the output color
    * @returns black
    */
@@ -200,7 +203,7 @@ class Color extends Vec4 {
 
   /**
    * Returns the color blue, ( 0.0, 0.0, 1.0, 1.0 ) .
-   * 
+   *
    * @param {Color} target the output color
    * @returns blue
    */
@@ -235,7 +238,7 @@ class Color extends Vec4 {
 
   /**
    * Returns the color clear black, ( 0.0, 0.0, 0.0, 0.0 ) .
-   * 
+   *
    * @param {Color} target the output color
    * @returns clear black
    */
@@ -246,7 +249,7 @@ class Color extends Vec4 {
 
   /**
    * Returns the color clear white, ( 1.0, 1.0, 1.0, 0.0 ) .
-   * 
+   *
    * @param {Color} target the output color
    * @returns clear white
    */
@@ -270,7 +273,7 @@ class Color extends Vec4 {
 
   /**
    * Returns the color cyan, ( 0.0, 1.0, 1.0, 1.0 ) .
-   * 
+   *
    * @param {Color} target the output color
    * @returns cyan
    */
@@ -280,8 +283,9 @@ class Color extends Vec4 {
   }
 
   /**
-   * Convert a hexadecimal representation of a color stored as AARRGGBB into a color.
-   * 
+   * Convert a hexadecimal representation of a color stored as AARRGGBB into a
+   * color.
+   *
    * @param {number} c the color in hexadecimal
    * @param {Color} target the output color
    * @returns the color
@@ -341,7 +345,7 @@ class Color extends Vec4 {
 
   /**
    * Returns the color green, ( 0.0, 1.0, 0.0, 1.0 ) .
-   * 
+   *
    * @param {Color} target the output color
    * @returns green
    */
@@ -398,8 +402,9 @@ class Color extends Vec4 {
   }
 
   /**
-   * Returns the relative luminance of the color, based on https://en.wikipedia.org/wiki/Relative_luminance .
-   * 
+   * Returns the relative luminance of the color, based on
+   * https://en.wikipedia.org/wiki/Relative_luminance .
+   *
    * @param {Color} c the input color
    * @returns the luminance 
    */
@@ -410,7 +415,7 @@ class Color extends Vec4 {
 
   /**
    * Returns the color magenta, ( 1.0, 0.0, 1.0, 1.0 ) .
-   * 
+   *
    * @param {Color} target the output color
    * @returns magenta
    */
@@ -420,8 +425,9 @@ class Color extends Vec4 {
   }
 
   /**
-   * Returns an array of 16 values which approximate the Magma color palette used in data vizualization.
-   * 
+   * Returns an array of 16 values which approximate the Magma color palette
+   * used in data vizualization.
+   *
    * @returns the array
    */
   static paletteMagma () {
@@ -449,8 +455,9 @@ class Color extends Vec4 {
   }
 
   /**
-   * Returns an array of 16 values which approximate the Viridis color palette used in data vizualization.
-   * 
+   * Returns an array of 16 values which approximate the Viridis color palette
+   * used in data vizualization.
+   *
    * @returns the array
    */
   static paletteViridis () {
@@ -478,8 +485,9 @@ class Color extends Vec4 {
   }
 
   /**
-   * Multiplies the red, green and blue color channels of a color by the alpha channel.
-   * 
+   * Multiplies the red, green and blue color channels of a color by the alpha
+   * channel.
+   *
    * @param {Color} c the input color
    * @param {Color} target the output color
    * @returns the multiplied color
@@ -542,7 +550,7 @@ class Color extends Vec4 {
 
   /**
    * Returns the color red, ( 1.0, 0.0, 0.0, 1.0 ) .
-   * 
+   *
    * @param {Color} target the output color
    * @returns red
    */
@@ -553,7 +561,7 @@ class Color extends Vec4 {
 
   /**
    * Convert a color to grayscale based on its perceived luminance.
-   * 
+   *
    * @param {Color} c the input color
    * @param {Color} target the output color
    */
@@ -566,8 +574,9 @@ class Color extends Vec4 {
   }
 
   /**
-   * Converts RGBA channels to a vector which holds hue, saturation, brightness and alpha.
-   * 
+   * Converts RGBA channels to a vector which holds hue, saturation, brightness
+   * and alpha.
+   *
    * @param {Color} c the color
    * @param {Vec4} target the output vector
    * @returns the HSBA values
@@ -601,8 +610,11 @@ class Color extends Vec4 {
   }
 
   /**
-   * Converts a color from RGB to CIE XYZ. References Pharr Jakob, and Humphreys' Physically Based Rendering , http://www.pbr-book.org/3ed-2018/Color_and_Radiometry/The_SampledSpectrum_Class.html#fragment-SpectrumUtilityDeclarations-2 .
-   * 
+   * Converts a color from RGB to CIE XYZ. References Pharr Jakob, and
+   * Humphreys' Physically Based Rendering ,
+   * http://www.pbr-book.org/3ed-2018/Color_and_Radiometry/The_SampledSpectrum_Class.html#fragment-SpectrumUtilityDeclarations-2
+   * .
+   *
    * @param {Vec4} c the color in RGB
    * @param {Color} target the output color
    * @returns the color in XYZ
@@ -617,8 +629,9 @@ class Color extends Vec4 {
   }
 
   /**
-   * Converts a color to an integer where hexadecimal represents the ARGB color channels: 0xAARRGGB .
-   * 
+   * Converts a color to an integer where hexadecimal represents the ARGB color
+   * channels: 0xAARRGGB .
+   *
    * @param {Color} c the color
    * @returns the color in hexadecimal
    */
@@ -631,8 +644,9 @@ class Color extends Vec4 {
   }
 
   /**
-   * Returns a representation of the color as a hexadecimal code, preceded by a '0x', in the format AARRGGBB.
-   * 
+   * Returns a representation of the color as a hexadecimal code, preceded by a
+   * '0x', in the format AARRGGBB.
+   *
    * @param {Color} c the color
    * @returns the string
    */
@@ -651,8 +665,9 @@ class Color extends Vec4 {
   }
 
   /**
-   * Returns a web-friendly representation of the color as a hexadecimal code, preceded by a hashtag, '#', with no alpha.
-   * 
+   * Returns a web-friendly representation of the color as a hexadecimal code,
+   * preceded by a hashtag, '#', with no alpha.
+   *
    * @param {Color} c the color
    * @returns the string
    */
@@ -665,12 +680,12 @@ class Color extends Vec4 {
     let b = Math.trunc(c.b * 0xff + 0.5).toString(16);
     if (b.length < 2) { b = '0' + b; };
 
-    return ['#', r, g, b].join('');
+    return ['#', r, g, b].join('').toUpperCase();
   }
 
   /**
    * Returns the color yellow, ( 1.0, 1.0, 1.0, 1.0 ) .
-   * 
+   *
    * @param {Color} target the output color
    * @returns white
    */
@@ -680,8 +695,11 @@ class Color extends Vec4 {
   }
 
   /**
-   * Converts a color from CIE XYZ to RGB. References Pharr Jakob, and Humphreys' Physically Based Rendering , http://www.pbr-book.org/3ed-2018/Color_and_Radiometry/The_SampledSpectrum_Class.html#fragment-SpectrumUtilityDeclarations-1 .
-   * 
+   * Converts a color from CIE XYZ to RGB. References Pharr Jakob, and
+   * Humphreys' Physically Based Rendering ,
+   * http://www.pbr-book.org/3ed-2018/Color_and_Radiometry/The_SampledSpectrum_Class.html#fragment-SpectrumUtilityDeclarations-1
+   * .
+   *
    * @param {Vec4} v the color in XYZ
    * @param {Color} target the output color
    * @returns the color in RGB
@@ -697,7 +715,7 @@ class Color extends Vec4 {
 
   /**
    * Returns the color yellow, ( 1.0, 1.0, 0.0, 1.0 ) .
-   * 
+   *
    * @param {Color} target the output color
    * @returns yellow
    */

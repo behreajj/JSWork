@@ -10,6 +10,11 @@ class Vec4 {
     this._w = w;
   }
 
+  get length () {
+
+    return 4;
+  }
+
   get x () {
 
     return this._x;
@@ -58,12 +63,12 @@ class Vec4 {
   [Symbol.iterator] () {
 
     let index = 0;
-    const data = this.toArray();
-    const len = data.length;
-
     return {
-      next: function () {
-        return { value: data[index++], done: index > len };
+      next: () => {
+        return {
+          value: this.get(index++),
+          done: index > this.length
+        };
       }
     };
   }
@@ -121,6 +126,7 @@ class Vec4 {
         this._w = v;
         break;
     }
+
     return this;
   }
 
@@ -755,7 +761,8 @@ class Vec4 {
       return Vec3.fromSource(dest, target);
     }
 
-    return Vec4.lerpUnclamped(origin, dest, step * step * (3.0 - (step + step)));
+    return Vec4.lerpUnclamped(origin, dest,
+      step * step * (3.0 - (step + step)));
   }
 
   static sub (
@@ -780,7 +787,10 @@ class Vec4 {
     const dz = a.z - b.z;
     const dw = a.w - b.w;
 
-    const mSq = dx * dx + dy * dy + dz * dz + dw * dw;
+    const mSq = dx * dx +
+      dy * dy +
+      dz * dz +
+      dw * dw;
     if (mSq === 0.0) {
       return target.reset();
     }

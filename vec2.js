@@ -3,8 +3,14 @@
 class Vec2 {
 
   constructor (x = 0.0, y = 0.0) {
+    
     this._x = x;
     this._y = y;
+  }
+
+  get length () {
+
+    return 2;
   }
 
   get x () {
@@ -32,19 +38,6 @@ class Vec2 {
     this._y = v;
   }
 
-  // [Symbol.iterator] () {
-
-  //   let index = 0;
-  //   const data = this.toArray();
-  //   const len = data.length;
-
-  //   return {
-  //     next: function () {
-  //       return { value: data[index++], done: index > len };
-  //     }
-  //   };
-  // }
-
   [Symbol.iterator] () {
 
     let index = 0;
@@ -52,7 +45,7 @@ class Vec2 {
       next: () => {
         return {
           value: this.get(index++),
-          done: index > 2
+          done: index > this.length
         };
       }
     };
@@ -68,6 +61,16 @@ class Vec2 {
         return Vec2.mag(this);
     }
   }
+
+  // equals (obj) {
+  //   if (!obj) {
+  //     return false;
+  //   }
+  //   if (obj.constructor.name !== this.constructor.name) {
+  //     return false;
+  //   }
+  //   return Vec2.approx(this, obj);
+  // }
 
   get (i = -1) {
 
@@ -99,6 +102,7 @@ class Vec2 {
         this._y = v;
         break;
     }
+
     return this;
   }
 
@@ -750,21 +754,7 @@ class Vec2 {
 
   static randomPolar (target = new Vec2()) {
 
-    // const rx = 2.0 * Math.random() - 1.0;
-    // const ry = 2.0 * Math.random() - 1.0;
-
-    // const mSq = rx * rx + ry * ry;
-    // if (mSq === 0.0) {
-    //   return target.reset();
-    // }
-
-    // const mInv = 1.0 / Math.sqrt(mSq);
-    // return target.setComponents(
-    //   rx * mInv,
-    //   ry * mInv);
-
     const tFac = Math.random();
-
     return Vec2.fromPolar(
       (1.0 - tFac) * -Math.PI + tFac * Math.PI,
       1.0,
@@ -772,8 +762,9 @@ class Vec2 {
   }
 
   /**
-   * Normalizes a vector, then multiplies it by a scalar, in effect setting its magnitude to that scalar.
-   * 
+   * Normalizes a vector, then multiplies it by a scalar, in effect setting its
+   * magnitude to that scalar.
+   *
    * @param {Vec2} v the input vector 
    * @param {number} scalar the new scale
    * @param {Vec2} target the output vector 
@@ -796,7 +787,7 @@ class Vec2 {
 
   /**
    * Returns to a vector with a positive value on the x axis, (1.0, 0.0) .
-   * 
+   *
    * @param {Vec2} target the output vector
    * @returns right
    */
@@ -807,7 +798,7 @@ class Vec2 {
 
   /**
    * Rotates a vector around the z axis by an angle in radians.
-   * 
+   *
    * @param {Vec2} v the input vector
    * @param {number} radians the angle in radians
    * @param {Vec2} target the output vector
@@ -826,8 +817,10 @@ class Vec2 {
   }
 
   /**
-   * Rotates a vector around the z axis. Accepts pre-calculated sine and cosine of an angle, so that collections of vectors can be efficiently rotated without repeatedly calling cos and sin.
-   * 
+   * Rotates a vector around the z axis. Accepts pre-calculated sine and cosine
+   * of an angle, so that collections of vectors can be efficiently rotated
+   * without repeatedly calling cos and sin.
+   *
    * @param {Vec2} v the vector
    * @param {number} cosa the cosine of the angle
    * @param {number} sina the sine of the angle
@@ -847,7 +840,7 @@ class Vec2 {
 
   /**
    * Rounds each component of the vector to the nearest whole number.
-   * 
+   *
    * @param {Vec2} v the input vector
    * @param {Vec2} target the output vector
    * @returns the rounded vector
@@ -863,7 +856,7 @@ class Vec2 {
 
   /**
    * Multiplies a vector, the left operand, by a scalar, the right operand.
-   * 
+   *
    * @param {Vec2} a the vector
    * @param {number} b the scalar
    * @param {Vec2} target the output vector
@@ -880,8 +873,10 @@ class Vec2 {
   }
 
   /**
-   * Eases from the origin to the destination vector by a step, using the formula t\u00b2 ( 3.0 - 2.0 t ) . When the step is less than zero, returns the origin. When the step is greater than one, returns the destination.
-   * 
+   * Eases from the origin to the destination vector by a step, using the
+   * formula t\u00b2 ( 3.0 - 2.0 t ) . When the step is less than zero, returns
+   * the origin. When the step is greater than one, returns the destination.
+   *
    * @param {Vec2} origin the origin vector
    * @param {Vec2} dest the destination vector
    * @param {number} step the step in [0.0, 1.0]
@@ -908,7 +903,7 @@ class Vec2 {
 
   /**
    * Subtracts the right vector from the left vector.
-   * 
+   *
    * @param {Vec2} a the left operand
    * @param {Vec2} b the right operand
    * @param {Vec2} target the output vector
@@ -925,8 +920,9 @@ class Vec2 {
   }
 
   /**
-   * Subtracts the right from the left vector and then normalizes the difference.
-   * 
+   * Subtracts the right from the left vector and then normalizes the
+   * difference.
+   *
    * @param {Vec2} a the left operand
    * @param {Vec2} b the right operand
    * @param {Vec2} target the output vector
@@ -953,7 +949,7 @@ class Vec2 {
 
   /**
    * Returns an object with the vector's magnitude (rho) and heading (theta).
-   * 
+   *
    * @param {Vec2} v the input vector
    * @returns the polar coordinates
    */
@@ -967,7 +963,7 @@ class Vec2 {
 
   /**
    * Truncates each component of the vector.
-   * 
+   *
    * @param {Vec2} v the input vector
    * @param {Vec2} target the output vector
    * @returns the truncation
@@ -982,18 +978,20 @@ class Vec2 {
   }
 
   /**
-   * Returns a vector representing the center of the UV coordinate system, (0.5, 0.5) .
-   * 
+   * Returns a vector representing the center of the UV coordinate system, (0.5,
+   * 0.5) .
+   *
    * @param {Vec2} target the output vector
    * @returns the uv center
    */
   static uvCenter (target = new Vec2()) {
+
     return target.setComponents(0.5, 0.5);
   }
 
   /**
    * Returns a vector with all components set to zero.
-   * 
+   *
    * @param {Vec2} target the output vector
    * @returns the zero vector
    */

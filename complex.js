@@ -13,6 +13,11 @@ class Complex {
     return this._imag;
   }
 
+  get length() {
+
+    return 2;
+  }
+
   get real () {
 
     return this._real;
@@ -36,12 +41,12 @@ class Complex {
   [Symbol.iterator] () {
 
     let index = 0;
-    const data = this.toArray();
-    const len = data.length;
-
     return {
-      next: function () {
-        return { value: data[index++], done: index > len };
+      next: () => {
+        return {
+          value: this.get(index++),
+          done: index > this.length
+        };
       }
     };
   }

@@ -12,6 +12,11 @@ class Transform2 {
     this._scale = scale;
   }
 
+  get length () {
+    
+    return 5;
+  }
+
   get location () {
 
     return this._location;
@@ -54,7 +59,7 @@ class Transform2 {
       next: () => {
         return {
           value: this.get(index++),
-          done: index > 5
+          done: index > this.length
         };
       }
     };
