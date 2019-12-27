@@ -105,11 +105,96 @@ class Transform3 {
     }
   }
 
+  moveBy (direc = new Vec3()) {
+
+    Vec3.add(this._location, direc, this._location);
+
+    return this;
+  }
+
+  moveTo (
+    location = new Vec3(),
+    step = 1.0,
+    easingFunc = Vec3.lerp) {
+
+    easingFunc(
+      this._location,
+      location,
+      step,
+      this._location);
+
+    return this;
+  }
+
   reset () {
 
     Vec3.zero(this._location);
     Vec3.one(this._scale);
     Quaternion.identity(this._rotation);
+
+    return this;
+  }
+
+  rotate (
+    radians = 0.0,
+    axis = new Vec3(0.0, 0.0, 1.0)) {
+
+    Quaternion.rotate(
+      this._rotation,
+      radians,
+      axis,
+      this._rotation);
+
+    return this;
+  }
+
+  rotateX (radians = 0.0) {
+
+    Quaternion.rotateX(
+      this._rotation,
+      radians,
+      this._rotation);
+
+    return this;
+  }
+
+  rotateY (radians = 0.0) {
+
+    Quaternion.rotateY(
+      this._rotation,
+      radians,
+      this._rotation);
+
+    return this;
+  }
+
+  rotateZ (radians = 0.0) {
+
+    Quaternion.rotateZ(
+      this._rotation,
+      radians,
+      this._rotation);
+
+    return this;
+  }
+
+  scaleBy (scalar = new Vec3()) {
+
+    Vec3.add(this._scale, scalar, this._scale);
+
+    return this;
+  }
+
+  scaleTo (
+    scale = new Vec3(1.0, 1.0, 1.0),
+    step = 1.0,
+    easingFunc = Vec3.smoothStep) {
+
+    easingFunc(
+      this._scale,
+      scale,
+      step,
+      this._scale);
 
     return this;
   }
@@ -162,6 +247,7 @@ class Transform3 {
     this._location.setComponents(x, y, z);
     this._rotation.setComponents(real, xi, yj, zk);
     this._scale.setComponents(w, h, d);
+
     return this;
   }
 
@@ -178,6 +264,19 @@ class Transform3 {
       scl.x, scl.y, scl.z];
   }
 
+  toJsonString (precision = 6) {
+
+    return [
+      '{\"location\":',
+      this._location.toJsonString(precision),
+      ',\"rotation\":',
+      this._rotation.toJsonString(precision),
+      ',\"scale\":',
+      this._scale.toJsonString(precision),
+      '}'
+    ].join('');
+  }
+
   toObject () {
 
     return {
@@ -187,15 +286,15 @@ class Transform3 {
     };
   }
 
-  toString () {
+  toString (precision = 4) {
 
     return [
       '{ location: ',
-      this._location.toString(),
+      this._location.toString(precision),
       ', rotation: ',
-      this._rotation.toString(),
+      this._rotation.toString(precision),
       ', scale: ',
-      this._scale.toString(),
+      this._scale.toString(precision),
       ' }'
     ].join('');
   }
@@ -261,7 +360,8 @@ class Transform3 {
       target,
       target);
 
-    Vec3.add(transform.location,
+    Vec3.add(
+      transform.location,
       target,
       target);
 

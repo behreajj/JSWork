@@ -13,7 +13,7 @@ class Transform2 {
   }
 
   get length () {
-    
+
     return 5;
   }
 
@@ -95,6 +95,7 @@ class Transform2 {
   moveBy (direc = new Vec2()) {
 
     Vec2.add(this._location, direc, this._location);
+
     return this;
   }
 
@@ -108,6 +109,7 @@ class Transform2 {
       location,
       step,
       this._location);
+
     return this;
   }
 
@@ -170,18 +172,21 @@ class Transform2 {
     let rNew = Utils.lerpUnclamped(a, b, step);
     if (modResult) { rNew = Utils.modRadians(rNew); }
     this._rotation = rNew;
+
     return this;
   }
 
   rotateZ (radians = 0.0) {
 
     this._rotation += radians;
+
     return this;
   }
 
   scaleBy (scalar = new Vec2()) {
 
     Vec2.add(this._scale, scalar, this._scale);
+
     return this;
   }
 
@@ -195,6 +200,7 @@ class Transform2 {
       scale,
       step,
       this._scale);
+
     return this;
   }
 
@@ -222,6 +228,19 @@ class Transform2 {
       this._scale.y];
   }
 
+  toJsonString (precision = 6) {
+
+    return [
+      '{\"location\":',
+      this._location.toJsonString(precision),
+      ',\"rotation\": ',
+      this._rotation.toFixed(precision),
+      ',\"scale:\"',
+      this._scale.toJsonString(precision),
+      '}'
+    ].join('');
+  }
+
   toObject () {
 
     return {
@@ -231,16 +250,15 @@ class Transform2 {
     };
   }
 
-  toString () {
+  toString (precision = 4) {
 
-    const precision = 4;
     return [
       '{ location: ',
-      this._location.toString(),
+      this._location.toString(precision),
       ', rotation: ',
       this._rotation.toFixed(precision),
       ', scale: ',
-      this._scale.toString(),
+      this._scale.toString(precision),
       ' }'
     ].join('');
   }
@@ -278,7 +296,10 @@ class Transform2 {
     source = new Vec2(1.0, 0.0),
     target = new Vec2()) {
 
-    return Vec2.rotateZ(source, transform.rotation, target);
+    return Vec2.rotateZ(
+      source,
+      transform.rotation,
+      target);
   }
 
   static mulPoint (
@@ -286,9 +307,21 @@ class Transform2 {
     source = new Vec2(),
     target = new Vec2()) {
 
-    Vec2.rotateZ(source, transform.rotation, target);
-    Vec2.mul(transform.scale, target, target);
-    Vec2.add(transform.location, target, target);
+    Vec2.rotateZ(
+      source,
+      transform.rotation,
+      target);
+
+    Vec2.mul(
+      transform.scale,
+      target,
+      target);
+
+    Vec2.add(
+      transform.location,
+      target,
+      target);
+
     return target;
   }
 
@@ -297,8 +330,16 @@ class Transform2 {
     source = new Vec2(1.0, 0.0),
     target = new Vec2()) {
 
-    Vec2.rotateZ(source, transform.rotation, target);
-    Vec2.mul(transform.scale, target, target);
+    Vec2.rotateZ(
+      source,
+      transform.rotation,
+      target);
+
+    Vec2.mul(
+      transform.scale,
+      target,
+      target);
+
     return target;
   }
 

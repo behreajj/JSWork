@@ -1,7 +1,20 @@
 'use strict';
 
+/**
+ * A mutable, extensible class influenced by GLSL, OSL and p5*js's p5.Vector .
+ * This is intended for storing points and directions in three-dimensional
+ * graphics programs. Instance methods are limited, while most static methods
+ * require an explicit output variable to be provided.
+ */
 class Vec3 {
 
+  /**
+   * Constructs a vector from numbers.
+   *
+   * @param {number} x the x coordinate
+   * @param {number} y the y coordinate
+   * @param {number} z the z coordinate
+   */
   constructor (x = 0.0, y = 0.0, z = 0.0) {
 
     this._x = x;
@@ -73,6 +86,12 @@ class Vec3 {
     }
   }
 
+  /**
+   * Gets a component of this vector by index.
+   *
+   * @param {number} i the index
+   * @returns the value
+   */
   get (i = -1) {
 
     switch (i) {
@@ -87,6 +106,11 @@ class Vec3 {
     }
   }
 
+  /**
+   * Resets this vector to an initial state, ( 0.0, 0.0, 0.0 ) .
+   *
+   * @returns this vector
+   */
   reset () {
 
     this._x = 0.0;
@@ -96,6 +120,13 @@ class Vec3 {
     return this;
   }
 
+  /**
+   * Sets a component of this vector by index.
+   *
+   * @param {number} i the index
+   * @param {number} v the value
+   * @returns this vector
+   */
   set (i = -1, v = 0.0) {
 
     switch (i) {
@@ -112,6 +143,14 @@ class Vec3 {
     return this;
   }
 
+  /**
+   * Sets the components of this vector.
+   *
+   * @param {number} x the x coordinate
+   * @param {number} y the y coordinate
+   * @param {number} z the z coordinate
+   * @returns this vector
+   */
   setComponents (x = 0.0, y = 0.0, z = 0.0) {
 
     this._x = x;
@@ -121,19 +160,53 @@ class Vec3 {
     return this;
   }
 
+  /**
+   * Returns an array of length 2 containing this vector's components.
+   *
+   * @returns the array
+   */
   toArray () {
 
     return [this._x, this._y, this._z];
   }
 
+  /**
+   * Returns a JSON formatted string.
+   * 
+   * @param {number} precision number of decimal places
+   * @returns the string
+   */
+  toJsonString (precision = 6) {
+
+    return [
+      '{\"x\":',
+      this._x.toFixed(precision),
+      ',\"y\":',
+      this._y.toFixed(precision),
+      ',\"z\":',
+      this._z.toFixed(precision),
+      '}'
+    ].join('');
+  }
+
+  /**
+   * Returns an object literal with this vector's components.
+   *
+   * @returns the object
+   */
   toObject () {
 
     return { x: this._x, y: this._y, z: this._z };
   }
 
-  toString () {
+  /**
+   * Returns a string representation of this vector.
+   *
+   * @param {number} precision number of decimal places
+   * @returns the string
+   */
+  toString (precision = 4) {
 
-    const precision = 4;
     return [
       '{ x: ',
       this._x.toFixed(precision),
@@ -145,6 +218,13 @@ class Vec3 {
     ].join('');
   }
 
+  /**
+   * Finds the absolute value of each vector component.
+   *
+   * @param {Vec3} v the input vector
+   * @param {Vec3} target the output vector
+   * @returns the absolute vector
+   */
   static abs (
     v = new Vec3(),
     target = new Vec3()) {
@@ -155,6 +235,14 @@ class Vec3 {
       Math.abs(v.z));
   }
 
+  /**
+   * Adds two vectors together.
+   *
+   * @param {Vec3} a the left operand
+   * @param {Vec3} b the right operand
+   * @param {Vec3} target the output vector
+   * @returns the sum
+   */
   static add (
     a = new Vec3(),
     b = new Vec3(),
@@ -166,6 +254,14 @@ class Vec3 {
       a.z + b.z);
   }
 
+  /**
+   * Adds and then normalizes two vectors.
+   *
+   * @param {Vec3} a the left operand
+   * @param {Vec3} b the right operand
+   * @param {Vec3} target the output vector
+   * @returns the normalized sum
+   */
   static addNorm (
     a = new Vec3(),
     b = new Vec3(),
@@ -187,6 +283,13 @@ class Vec3 {
       dz * mInv);
   }
 
+  /**
+   * Finds the angle between two vectors.
+   *
+   * @param {Vec3} a the left operand
+   * @param {Vec3} b the right operand
+   * @returns the angle
+   */
   static angleBetween (
     a = new Vec3(),
     b = new Vec3()) {
@@ -198,6 +301,14 @@ class Vec3 {
     return Math.acos(Vec3.dot(a, b) / (Vec3.mag(a) * Vec3.mag(b)));
   }
 
+  /**
+   * Tests to see if two vectors approximate each other.
+   *
+   * @param {Vec3} a the left operand
+   * @param {Vec3} b the right operand 
+   * @param {number} tolerance the tolerance
+   * @returns the evaluation
+   */
   static approx (
     a = new Vec3(),
     b = new Vec3(),
@@ -208,6 +319,14 @@ class Vec3 {
       Math.abs(b.x - a.x) < tolerance;
   }
 
+  /**
+   * Tests to see if two vectors approximate each other.
+   *
+   * @param {Vec3} a the input vector
+   * @param {number} b the magnitude
+   * @param {number} tolerance the tolerance
+   * @returns the evaluation
+   */
   static approxMag (
     a = new Vec3(),
     b = 1.0,
@@ -216,6 +335,13 @@ class Vec3 {
     return Math.abs((b * b) - Vec3.magSq(a)) < tolerance;
   }
 
+  /**
+   * Tests to see if two vectors are parallel.
+   *
+   * @param {Vec3} a left comparisand
+   * @param {Vec3} b right comparisand
+   * @returns the evaluation
+   */
   static areParallel (
     a = new Vec3(),
     b = new Vec3()) {
@@ -236,11 +362,32 @@ class Vec3 {
     return angle - 6.283185307179586 * Math.floor(angle * 0.15915494309189535);
   }
 
+  /**
+   * Returns to a vector with a negative value on the y axis, (0.0, -1.0, 0.0) .
+   *
+   * @param {Vec3} target the output vector
+   * @returns back
+   */
   static back (target = new Vec3()) {
 
     return target.setComponents(0.0, -1.0, 0.0);
   }
 
+  /**
+   * Returns a point on a Bezier curve described by two anchor points and two
+   * control points according to a step in [0.0, 1.0].
+   *
+   * When the step is less than one, returns the first anchor point. When the
+   * step is greater than one, returns the second anchor point.
+   *
+   * @param {Vec3} ap0 the first anchor point
+   * @param {Vec3} cp0 the first control point
+   * @param {Vec3} cp1 the second control point
+   * @param {Vec3} ap1 the second anchor point
+   * @param {number} step the step
+   * @param {Vec3} target the output vector
+   * @returns the point along the curve
+   */
   static bezierPoint (
     ap0 = new Vec3(),
     cp0 = new Vec3(),
@@ -282,6 +429,22 @@ class Vec3 {
       ap1.z * tcb);
   }
 
+  /**
+   * Returns a tangent on a Bezier curve described by two anchor points and two
+   * control points according to a step in [0.0, 1.0].
+   *
+   * When the step is less than one, returns the first anchor point subtracted
+   * from the first control point. When the step is greater than one, returns
+   * the second anchor point subtracted from the second control point.
+   *
+   * @param {Vec3} ap0 the first anchor point
+   * @param {Vec3} cp0 the first control point
+   * @param {Vec3} cp1 the second control point
+   * @param {Vec3} ap1 the second anchor point
+   * @param {number} step the step
+   * @param {Vec3} target the output vector
+   * @returns the tangent along the curve
+   */
   static bezierTangent (
     ap0 = new Vec3(),
     cp0 = new Vec3(),
@@ -318,6 +481,13 @@ class Vec3 {
       (ap1.z - cp1.z) * tsq3);
   }
 
+  /**
+   * Raises each component of the vector to the nearest greater integer.
+   *
+   * @param {Vec3} v the input vector
+   * @param {Vec3} target the output vector
+   * @returns the result
+   */
   static ceil (
     v = new Vec3(),
     target = new Vec3()) {
@@ -328,6 +498,15 @@ class Vec3 {
       Math.ceil(v.z));
   }
 
+  /**
+   * Clamps a vector to a range within the lower and upper bound.
+   *
+   * @param {Vec3} v the input vector
+   * @param {Vec3} lb the range lower bound
+   * @param {Vec3} ub the range upper bound
+   * @param {Vec#} target the output vector
+   * @returns the clamped vector
+   */
   static clamp (
     v = new Vec3(),
     lb = new Vec3(0.0, 0.0, 0.0),
@@ -340,6 +519,14 @@ class Vec3 {
       Math.min(Math.max(v.z, lb.z), ub.z));
   }
 
+  /**
+   * Clamps the vector to a range in [0.0, 1.0]. Useful for working with uv
+   * coordinates.
+   *
+   * @param {Vec3} v the input vector
+   * @param {Vec3} target the output vector
+   * @returns the clamped vector
+   */
   static clamp01 (
     v = new Vec3(),
     target = new Vec3()) {
@@ -350,9 +537,16 @@ class Vec3 {
       Math.min(Math.max(v.z, 0.0), 1.0));
   }
 
+  /**
+   * Compares two vectors by magnitude. To be provided to array sort functions.
+   *
+   * @param {Vec3} a left comparisand
+   * @param {Vec3} b right comparisand
+   * @returns the comparison
+   */
   static compareMag (
-    a = new Vec2(),
-    b = new Vec2()) {
+    a = new Vec3(),
+    b = new Vec3()) {
 
     const aMag = Vec3.magSq(a);
     const bMag = Vec3.magSq(b);
@@ -363,6 +557,14 @@ class Vec3 {
     return 0;
   }
 
+  /**
+   * Compares two vectors by its y component, then its x component. To be
+   * provided to array sort functions.
+   *
+   * @param {Vec3} a left comparisand
+   * @param {Vec3} b right comparisand
+   * @returns the comparison
+   */
   static compareZyx (
     a = new Vec3(),
     b = new Vec3()) {
@@ -377,6 +579,15 @@ class Vec3 {
     return 0;
   }
 
+  /**
+   * Multiplies a magnitude, the left operand, by the sign of the right operand,
+   * such that the magnitude of a matches the sign of b.
+   *
+   * @param {Vec3} a left operand
+   * @param {Vec3} b right operand
+   * @param {Vec3} target the output vector
+   * @returns the signed magnitude
+   */
   static copySign (
     a = new Vec3(),
     b = new Vec3(),
@@ -388,6 +599,35 @@ class Vec3 {
       a.z * Math.sign(b.z));
   }
 
+  /**
+   * The cross product returns a vector perpendicular to both a and b, and
+   * therefore normal to the plane on which a and b rest.
+   *
+   * cross ( a, b ) := ( ay bz - az by, az bx - ax bz, ax by - ay bx )
+   *
+   * The cross product is anti-commutative, meaning cross (a , b ) = -cross ( b,
+   * a ) . A unit vector does not necessarily result from the cross of two unit
+   * vectors. Crossed orthonormal vectors are as follows:
+   *
+   * cross ( right, forward ) = up,
+   *
+   * cross ( ( 1.0, 0.0, 0.0 ), ( 0.0, 1.0, 0.0 ) ) = ( 0.0, 0.0, 1.0 );
+   *
+   * cross ( forward, up ) = right,
+   *
+   * cross ( ( 0.0, 1.0, 0.0 ), ( 0.0, 0.0, 1.0 ) ) = ( 1.0, 0.0, 0.0 );
+   *
+   * cross ( up , right ) = forward,
+   *
+   * cross ( ( 0.0, 0.0, 1.0 ), ( 1.0, 0.0, 0.0 ) ) = ( 0.0, 1.0, 0.0 )
+   *
+   * The 3D equivalent to the 2D vector's perpendicular.
+   *
+   * @param {Vec3} a left operand
+   * @param {Vec3} b right operand
+   * @param {Vec3} target the output vector
+   * @returns the cross product
+   */
   static cross (
     a = new Vec3(),
     b = new Vec3(),
@@ -399,6 +639,15 @@ class Vec3 {
       a.x * b.y - a.y * b.x);
   }
 
+  /**
+   * A specialized form of the cross product which normalizes the result. This
+   * is to facilitate the creation of lookAt matrices.
+   *
+   * @param {Vec3} a left operand
+   * @param {Vec3} b right operand
+   * @param {Vec3} target the output vector
+   * @param the normalized cross product
+   */
   static crossNorm (
     a = new Vec3(),
     b = new Vec3(),
@@ -417,6 +666,14 @@ class Vec3 {
       cz * mInv);
   }
 
+  /**
+   * Finds the absolute value of the difference between two vectors.
+   *
+   * @param {Vec3} a left operand
+   * @param {Vec3} b right operand
+   * @param {Vec3} target the output vector
+   * @returns the absolute difference
+   */
   static diff (
     a = new Vec3(),
     b = new Vec3(),
@@ -428,6 +685,14 @@ class Vec3 {
       Math.abs(b.z - a.z));
   }
 
+  /**
+   * Finds the Chebyshev distance between two vectors. Forms a square pattern
+   * when plotted.
+   *
+   * @param {Vec3} a left operand
+   * @param {Vec3} b right operand
+   * @returns the distance
+   */
   static distChebyshev (
     a = new Vec3(),
     b = new Vec3()) {
@@ -438,6 +703,14 @@ class Vec3 {
       Math.abs(b.z - a.z));
   }
 
+  /**
+   * Finds the Euclidean distance between two vectors. Where possible, use
+   * distance squared to avoid the computational cost of the square-root.
+   *
+   * @param {Vec3} a left operand
+   * @param {Vec3} b right operand
+   * @returns the distance
+   */
   static distEuclidean (
     a = new Vec3(),
     b = new Vec3()) {
@@ -448,6 +721,14 @@ class Vec3 {
       b.z - a.z);
   }
 
+  /**
+   * Finds the Manhattan distance between two vectors. Forms a diamond pattern
+   * when plotted.
+   *
+   * @param {Vec3} a left operand
+   * @param {Vec3} b right operand
+   * @returns the distance
+   */
   static distManhattan (
     a = new Vec3(),
     b = new Vec3()) {
@@ -457,6 +738,17 @@ class Vec3 {
       Math.abs(b.z - a.z);
   }
 
+  /**
+   * Finds the Minkowski distance between two vectors. This is a generalization
+   * of other distance formulae. When the exponent value, c, is 1.0, the
+   * Minkowski distance equals the Manhattan distance; when it is 2.0, Minkowski
+   * equals the Euclidean distance.
+   *
+   * @param {Vec3} a left operand
+   * @param {Vec3} b right operand
+   * @param {number} c the exponent
+   * @returns the distance
+   */
   static distMinkowski (
     a = new Vec3(),
     b = new Vec3(),
@@ -473,6 +765,15 @@ class Vec3 {
       1.0 / c);
   }
 
+  /**
+   * Finds the Euclidean distance squared between two vectors. Equivalent to
+   * subtracting one vector from the other, then finding the dot product of the
+   * difference with itself.
+   *
+   * @param {Vec3} a left operand
+   * @param {Vec3} b right operand
+   * @returns the distance
+   */
   static distSq (
     a = new Vec3(),
     b = new Vec3()) {
@@ -483,6 +784,16 @@ class Vec3 {
     return xd * xd + yd * yd + zd * zd;
   }
 
+  /**
+   * Divides the left operand by the right, component-wise. This is
+   * mathematically incorrect, but serves as a shortcut for transforming a
+   * vector by the inverse of a scalar matrix.
+   *
+   * @param {Vec3} a numerator
+   * @param {Vec3} b denominator
+   * @param {Vec3} target the output vector
+   * @returns the quotient
+   */
   static div (
     a = new Vec3(1.0, 1.0, 1.0),
     b = new Vec3(1.0, 1.0, 1.0),
@@ -494,6 +805,14 @@ class Vec3 {
       b.z !== 0.0 ? a.z / b.z : 0.0);
   }
 
+  /**
+   * Finds the dot product of two vectors by summing the products of their
+   * corresponding components. dot ( a, b ) := ax bx + ay by + az bz .
+   *
+   * @param {Vec3} a left operand
+   * @param {Vec3} b right operand
+   * @returns the dot product
+   */
   static dot (
     a = new Vec3(),
     b = new Vec3()) {
@@ -503,11 +822,24 @@ class Vec3 {
       a.z * b.z;
   }
 
+  /**
+   * Returns to a vector with a negative value on the z axis, (0.0, 0.0, -1.0) .
+   *
+   * @param {Vec3} target the output vector
+   * @returns down
+   */
   static down (target = new Vec3()) {
 
     return target.setComponents(0.0, 0.0, -1.0);
   }
 
+  /**
+   * Returns a vector with all components set to a small, positive non-zero
+   * value, 0.000001 .
+   *
+   * @param {Vec3} target the output vector
+   * @returns epsilon
+   */
   static epsilon (target = new Vec3()) {
 
     return target.setComponents(
@@ -516,6 +848,13 @@ class Vec3 {
       0.000001);
   }
 
+  /**
+   * Floors each component of the vector.
+   *
+   * @param {Vec3} v the input vector
+   * @param {Vec3} target the output vector
+   * @returns the floor
+   */
   static floor (
     v = new Vec3(),
     target = new Vec3()) {
@@ -526,6 +865,15 @@ class Vec3 {
       Math.floor(v.z));
   }
 
+  /**
+   * Applies the % operator (truncation-based modulo) to each component of the
+   * left operand.
+   *
+   * @param {Vec3} a left operand
+   * @param {Vec3} b right operand
+   * @param {Vec3} target the output vector
+   * @returns the result 
+   */
   static fmod (
     a = new Vec3(),
     b = new Vec3(),
@@ -537,11 +885,24 @@ class Vec3 {
       b.z !== 0.0 ? a.z % b.z : a.z);
   }
 
+  /**
+   * Returns to a vector with a positive value on the y axis, (0.0, 1.0, 0.0) .
+   *
+   * @param {Vec3} target the output vector
+   * @returns forward
+   */
   static forward (target = new Vec3()) {
 
     return target.setComponents(0.0, 1.0, 0.0);
   }
 
+  /**
+   * Returns the fractional portion of the vector's components.
+   *
+   * @param {Vec3} v the input vector
+   * @param {Vec3} target the output vector
+   * @returns the fractional portion
+   */
   static fract (
     v = new Vec3(),
     target = new Vec3()) {
@@ -552,6 +913,13 @@ class Vec3 {
       v.z - Math.trunc(v.z));
   }
 
+  /**
+   * Creates a vector from the array.
+   *
+   * @param {Array} arr the array
+   * @param {Vec3} target the output vector
+   * @returns the vector
+   */
   static fromArray (
     arr = [0.0, 0.0, 0.0],
     target = new Vec3()) {
@@ -562,6 +930,14 @@ class Vec3 {
       arr[2]);
   }
 
+  /**
+   * Creates a vector from polar coordinates.
+   *
+   * @param {number} azimuth the azimuth in radians
+   * @param {number} radius the radius
+   * @param {Vec3} target the output vector
+   * @returns the vector
+   */
   static fromPolar (
     azimuth = 0.0,
     radius = 1.0,
@@ -573,6 +949,13 @@ class Vec3 {
       0.0);
   }
 
+  /**
+   * Creates a vector from a scalar.
+   *
+   * @param {number} scalar the scalar
+   * @param {Vec3} target the output vector
+   * @returns the vector
+   */
   static fromScalar (
     scalar = 1.0,
     target = new Vec3()) {
@@ -583,6 +966,13 @@ class Vec3 {
       scalar);
   }
 
+  /**
+   * Copies a vector's coordinates from a source.
+   *
+   * @param {Vec3} source the source vector
+   * @param {Vec3} target the output vector
+   * @returns the vector
+   */
   static fromSource (
     source = new Vec3(),
     target = new Vec3()) {
@@ -593,6 +983,20 @@ class Vec3 {
       source.z);
   }
 
+  /**
+   * Creates a vector from spherical coordinates: (1) theta, the azimuth or
+   * longitude; (2) phi, the inclination or latitude; (3) rho, the radius or
+   * magnitude.
+   *
+   * The poles will be upright in a z-up coordinate system; sideways in a y-up
+   * coordinate system.
+   *
+   * @param {number} azimuth the angle theta in radians
+   * @param {number} inclination the angle phi in radians
+   * @param {number} radius rho, the vector's magnitude
+   * @param {Vec3} target the output vector
+   * @returns the vector
+   */
   static fromSpherical (
     azimuth = 0.0,
     inclination = 0.0,
@@ -606,6 +1010,16 @@ class Vec3 {
       radius * -Math.sin(inclination));
   }
 
+  /**
+   * Generates a 3D array of vectors.
+   *
+   * @param {number} rows number of rows
+   * @param {number} cols number of columns
+   * @param {number} layers number of layers
+   * @param {Vec3} lowerBound the lower bound
+   * @param {Vec3} upperBound the upper bound
+   * @return the array
+   */
   static grid (
     rows = 3,
     cols = 3,
@@ -657,6 +1071,14 @@ class Vec3 {
     return result;
   }
 
+  /**
+   * Finds the vector's inclination in the range [-PI / 2.0, PI / 2.0]. It is
+   * necessary to calculate the vector's magnitude in order to find its
+   * inclination.
+   *
+   * @param {Vec3} v the input vector
+   * @returns the inclination
+   */
   static inclinationSigned (v = new Vec3(1.0, 0.0, 0.0)) {
 
     const mSq = Vec3.magSq(v);
@@ -667,12 +1089,25 @@ class Vec3 {
         Math.asin(radians);
   }
 
+  /**
+   * Finds the vector's unsigned inclination.
+   *
+   * @param {Vec3} v the input vector
+   * @returns the inclination
+   */
   static inclinationUnsigned (v = new Vec3(1.0, 0.0, 0.0)) {
 
     const angle = Vec3.inclinationSigned(v);
     return angle - 6.283185307179586 * Math.floor(angle * 0.15915494309189535);
   }
 
+  /**
+   * Tests to see if all the vector's components are non-zero. Useful when
+   * testing valid dimensions (width, depth and height) stored in vectors.
+   *
+   * @param {Vec3} v the input vector
+   * @returns the evaluation
+   */
   static isNonZero (v = new Vec3()) {
 
     return (v.z !== 0.0) &&
@@ -680,11 +1115,25 @@ class Vec3 {
       (v.x !== 0.0);
   }
 
+  /**
+   * Tests to see if the vector is on the unit sphere, i.e., has a magnitude of
+   * approximately 1.0.
+   *
+   * @param {Vec3} v the input vector
+   * @returns the evaluation
+   */
   static isUnit (v = new Vec3()) {
 
     return Vec3.approxMag(v, 1.0);
   }
 
+  /**
+   * Tests to see if all the vector's components are zero. Useful when
+   * safeguarding against invalid directions.
+   *
+   * @param {Vec3} v the input vector
+   * @returns the evaluation
+   */
   static isZero (v = new Vec3()) {
 
     return (v.z === 0.0) &&
@@ -692,11 +1141,26 @@ class Vec3 {
       (v.x === 0.0);
   }
 
+  /**
+   * Returns to a vector with a negative value on the x axis, (-1.0, 0.0, 0.0) .
+   *
+   * @param {Vec2} target the output vector
+   * @returns left
+   */
   static left (target = new Vec3()) {
 
     return target.setComponents(-1.0, 0.0, 0.0);
   }
 
+  /**
+   * A clamped linear interpolation from an origin to a destination by a step.
+   *
+   * @param {Vec3} origin the original vector
+   * @param {Vec3} dest the destination vector
+   * @param {number} step the step
+   * @param {Vec3} target the output vector
+   * @returns the interpolation
+   */
   static lerp (
     origin = new Vec3(0.0, 0.0, 0.0),
     dest = new Vec3(1.0, 1.0, 1.0),
@@ -714,6 +1178,16 @@ class Vec3 {
     return Vec3.lerpUnclamped(origin, dest, step);
   }
 
+   /**
+    * An unclamped linear interpolation from an origin to a destination by a
+    * step.
+    *
+    * @param {Vec3} origin the original vector
+    * @param {Vec3} dest the destination vector
+    * @param {number} step the step
+    * @param {Vec3} target the output vector
+    * @returns the interpolation
+    */
   static lerpUnclamped (
     origin = new Vec3(0.0, 0.0, 0.0),
     dest = new Vec3(1.0, 1.0, 1.0),
@@ -727,11 +1201,47 @@ class Vec3 {
       u * origin.z + step * dest.z);
   }
 
+  /**
+   * Limits a vector's magnitude to a scalar. Does nothing if the vector is
+   * beneath the limit.
+   *
+   * @param {Vec3} v the input vector
+   * @param {number} limit the limit
+   * @param {Vec3} target the output vector
+   * @returns the limited vector
+   */
+  static limit (
+    v = new Vec3(),
+    limit = Number.MAX_VALUE,
+    target = new Vec3()) {
+
+    if (Vec3.magSq(v) > limit * limit) {
+      return Vec3.rescale(v, limit, target);
+    }
+    return Vec3.fromSource(v, target);
+  }
+
+  /**
+   * Finds the length, or magnitude, of a vector. Also referred to as the radius
+   * when using polar coordinates. Where possible, use magSq or dot to avoid the
+   * computational cost of the square-root.
+   *
+   * @param {Vec3} v the input vector
+   * @returns the magnitude
+   */
   static mag (v = new Vec3()) {
 
     return Math.hypot(v.x, v.y, v.z);
   }
 
+  /**
+   * Finds the length-, or magnitude-, squared of a vector. Returns the same
+   * result as dot ( a , a ) . Useful when calculating the lengths of many
+   * vectors, so as to avoid the computational cost of the square-root.
+   *
+   * @param {Vec3} v the input vector
+   * @returns the magnitude squared
+   */
   static magSq (v = new Vec3()) {
 
     return v.x * v.x +
@@ -739,6 +1249,52 @@ class Vec3 {
       v.z * v.z;
   }
 
+  /**
+   * Maps an input vector from an original range to a target range.
+   *
+   * @param {Vec3} v the input vector
+   * @param {Vec3} lbOrigin the lower bound original range
+   * @param {Vec3} ubOrigin the upper bound original range
+   * @param {Vec3} lbDest the lower bound destination range
+   * @param {Vec3} ubDest the upper bound destination range
+   * @param {Vec3} target the output vector
+   * @returns the output vector
+   */
+  static map (
+    v = new Vec2(),
+    lbOrigin = new Vec2(-1.0, -1.0, -1.0),
+    ubOrigin = new Vec2(1.0, 1.0, 1.0),
+    lbDest = new Vec2(0.0, 0.0, 0.0),
+    ubDest = new Vec2(1.0, 1.0, 1.0),
+    target = new Vec2()) {
+
+    const xDenom = ubOrigin.x - lbOrigin.x;
+    const yDenom = ubOrigin.y - lbOrigin.y;
+    const zDenom = ubOrigin.z - lbOrigin.z;
+
+    return target.setComponents(
+      (xDenom === 0.0) ? lbDest.x :
+        lbDest.x + (ubDest.x - lbDest.x) *
+        ((v.x - lbOrigin.x) / xDenom),
+
+      (yDenom === 0.0) ? lbDest.y :
+        lbDest.y + (ubDest.y - lbDest.y) *
+        ((v.y - lbOrigin.y) / yDenom),
+
+      (zDenom === 0.0) ? lbDest.z :
+        lbDest.z + (ubDest.z - lbDest.z) *
+        ((v.z - lbOrigin.z) / zDenom));
+  }
+
+  /**
+   * Sets the target vector to the maximum components of the input vector and a
+   * upper bound.
+   *
+   * @param {Vec3} a the input vector
+   * @param {Vec3} b the upper bound
+   * @param {Vec3} target the output vector
+   * @returns the maximal values
+   */
   static max (
     a = new Vec3(),
     b = new Vec3(),
@@ -750,6 +1306,15 @@ class Vec3 {
       Math.max(a.z, b.z));
   }
 
+  /**
+   * Sets the target vector to the minimum components of the input vector and a
+   * lower bound.
+   *
+   * @param {Vec3} a the input vector
+   * @param {Vec3} b the lower bound
+   * @param {Vec3} target the output vector
+   * @returns the minimal values
+   */
   static min (
     a = new Vec3(),
     b = new Vec3(),
@@ -761,6 +1326,17 @@ class Vec3 {
       Math.min(a.z, b.z));
   }
 
+  /**
+   * Mixes two vectors together by a step in [0.0, 1.0] with the help of an
+   * easing function.
+   *
+   * @param {Vec3} origin the origin vector
+   * @param {Vec3} dest the destination vector
+   * @param {number} step the step
+   * @param {function} easingFunc  the easing function
+   * @param {Vec3} target the output vector
+   * @returns the mix
+   */
   static mix (
     origin = new Vec3(0.0, 0.0, 0.0),
     dest = new Vec3(1.0, 1.0, 1.0),
@@ -771,6 +1347,14 @@ class Vec3 {
     return easingFunc(origin, dest, step, target);
   }
 
+  /**
+   * Mods each component of the left vector by those of the right.
+   *
+   * @param {Vec3} a the left operand
+   * @param {Vec3} b the right operand
+   * @param {Vec3} target the output vector
+   * @returns the result
+   */
   static mod (
     a = new Vec3(),
     b = new Vec3(),
@@ -782,6 +1366,14 @@ class Vec3 {
       b.z !== 0.0 ? a.z - b.z * Math.floor(a.z / b.z) : a.z);
   }
 
+  /**
+   * A specialized form of mod which subtracts the floor of the vector from the
+   * vector.
+   *
+   * @param {Vec3} v the input vector
+   * @param {Vec3} target the output vector
+   * @returns the result
+   */
   static mod1 (
     v = new Vec3(),
     target = new Vec3()) {
@@ -792,6 +1384,16 @@ class Vec3 {
       v.z - Math.floor(v.z));
   }
 
+  /**
+   * Multiplies two vectors, component-wise. Such multiplication is
+   * mathematically incorrect, but serves as a shortcut for transforming a
+   * vector by a scalar matrix.
+   *
+   * @param {Vec3} a the left operand
+   * @param {Vec3} b the right operand
+   * @param {Vec3} target the output vector
+   * @returns the product
+   */
   static mul (
     a = new Vec3(1.0, 1.0, 1.0),
     b = new Vec3(1.0, 1.0, 1.0),
@@ -803,6 +1405,13 @@ class Vec3 {
       a.z * b.z);
   }
 
+  /**
+   * Negates the input vector.
+   *
+   * @param {Vec3} v the input vector
+   * @param {Vec3} target the output vector
+   * @returns the negation
+   */
   static negate (
     v = new Vec3(),
     target = new Vec3()) {
@@ -810,11 +1419,25 @@ class Vec3 {
     return target.setComponents(-v.x, -v.y, -v.z);
   }
 
+  /**
+   * Returns a vector with all components set to negative one.
+   *
+   * @param {Vec3} target the output vector
+   * @returns negative one
+   */
   static negOne (target = new Vec3()) {
 
     return target.setComponents(-1.0, -1.0, -1.0);
   }
 
+  /**
+   * Divides a vector by its magnitude, such that the new magnitude is 1.0. The
+   * result is a unit vector, as it lies on the circumference of a unit sphere.
+   *
+   * @param {Vec3} v the input vector
+   * @param {Vec3} target the output vector
+   * @returns the normalized vector
+   */
   static normalize (
     v = new Vec3(),
     target = new Vec3()) {
@@ -831,11 +1454,25 @@ class Vec3 {
       v.z * mInv);
   }
 
+  /**
+   * Returns a vector with both components set to one.
+   *
+   * @param {Vec3} target the output vector
+   * @returns one
+   */
   static one (target = new Vec3()) {
 
     return target.setComponents(1.0, 1.0, 1.0);
   }
 
+  /**
+   * Raises a vector to the power of another vector.
+   *
+   * @param {Vec3} a the left operand
+   * @param {Vec3} b the right operand
+   * @param {Vec3} target the output vector
+   * @returns the result
+   */
   static pow (
     a = new Vec3(),
     b = new Vec3(),
@@ -847,6 +1484,13 @@ class Vec3 {
       Math.pow(a.z, b.z));
   }
 
+  /**
+   * Returns the scalar projection of a onto b .
+   *
+   * @param {Vec3} a the left operand
+   * @param {Vec3} b the right operand
+   * @returns the scalar projection
+   */
   static projectScalar (
     a = new Vec3(),
     b = new Vec3()) {
@@ -858,6 +1502,16 @@ class Vec3 {
     return 0.0;
   }
 
+  /**
+   * Projects one vector onto another. Defined as
+   *
+   * proj ( a, b ) := b ( dot ( a, b ) / dot ( b, b ) )
+   *
+   * @param {Vec2} a the left operand
+   * @param {Vec2} b the right operand
+   * @param {Vec2} target the output vector
+   * @returns the projection
+   */
   static projectVector (
     a = new Vec3(),
     b = new Vec3(),
@@ -866,6 +1520,15 @@ class Vec3 {
     return Vec3.scale(b, Vec3.projectScalar(a, b), target);
   }
 
+  /**
+   * Creates a random point in the Cartesian coordinate system given a lower and
+   * an upper bound.
+   *
+   * @param {Vec3} lb the lower bound
+   * @param {Vec3} ub the upper bound
+   * @param {Vec3} target the output vector
+   * @returns the random vector
+   */
   static randomCartesian (
     lb = new Vec3(-1.0, -1.0, -1.0),
     ub = new Vec3(1.0, 1.0, 1.0),
@@ -881,33 +1544,106 @@ class Vec3 {
       (1.0 - zFac) * lb.z + zFac * ub.z);
   }
 
+  /**
+   *  Creates a vector with a magnitude of 1.0 at a random heading, such that it
+   *  lies on the unit circle.
+   *
+   *  @param {Vec3} target  the output vector
+   *  @returns the random vector
+   */
+  static randomPolar (target = new Vec3()) {
+
+    const tFac = Math.random();
+    return Vec3.fromPolar(
+      (1.0 - tFac) * -3.141592653589793 + tFac * 3.141592653589793,
+      1.0,
+      target);
+  }
+
+  /**
+   *  Creates a vector with a magnitude of 1.0 at a random azimuth and
+   *  inclination, such that it lies on the unit sphere.
+   *
+   *  @param {Vec3} target  the output vector
+   *  @returns the random vector
+   */
   static randomSpherical (target = new Vec3()) {
-
-    // const rx = 2.0 * Math.random() - 1.0;
-    // const ry = 2.0 * Math.random() - 1.0;
-    // const rz = 2.0 * Math.random() - 1.0;
-
-    // const mSq = rx * rx + ry * ry + rz * rz;
-    // if (mSq === 0.0) {
-    //   return target.reset();
-    // }
-
-    // const mInv = 1.0 / Math.sqrt(mSq);
-    // return target.setComponents(
-    //   rx * mInv,
-    //   ry * mInv,
-    //   rz * mInv);
 
     const tFac = Math.random();
     const pFac = Math.random();
 
     return Vec3.fromSpherical(
-      (1.0 - tFac) * -Math.PI + tFac * Math.PI,
-      0.5 * ((1.0 - pFac) * -Math.PI + pFac * Math.PI),
+      (1.0 - tFac) * -3.141592653589793 + tFac * 3.141592653589793,
+      (1.0 - pFac) * -1.5707963267948966 + pFac * 1.5707963267948966,
       1.0,
       target);
   }
 
+  /**
+     * Reflects an incident vector off a normal vector.
+     *
+     * @param {Vec3} incident the incident vector
+     * @param {Vec3} normal the normal vector
+     * @param {the output vector} target the output vector
+     * @returns the reflected vector
+     */
+  static reflect (
+    incident = new Vec3(),
+    normal = new Vec3(),
+    target = new Vec3()) {
+
+    const nMSq = Vec3.magSq(normal);
+    if (nMSq === 0.0) { return target.reset(); }
+
+    const mInv = 1.0 / Math.sqrt(nMSq);
+    const nx = normal.x * mInv;
+    const ny = normal.y * mInv;
+    const nz = normal.z * mInv;
+
+    const scalar = 2.0 *
+      (nx * incident.x +
+        ny * incident.y +
+        nz * incident.z);
+
+    return target.set(
+      incident.x - scalar * nx,
+      incident.y - scalar * ny,
+      incident.z - scalar * nz);
+  }
+
+  /**
+   * Refracts a vector through a volume using Snell's law.
+   *
+   * @param {Vec3} incident the incident vector
+   * @param {Vec3} normal the normal vector
+   * @param {number} eta ratio of refraction indices
+   * @param {Vec3} target the output vector
+   * @returns the refraction
+   */
+  static refract (
+    incident = new Vec3(),
+    normal = new Vec3(),
+    eta = 0.0,
+    target = new Vec3()) {
+
+    const nDotI = Vec3.dot(normal, incident);
+    const k = 1.0 - eta * eta * (1.0 - nDotI * nDotI);
+    if (k < 0.0) { return target.reset(); }
+    const scalar = eta * nDotI + Math.sqrt(k);
+    return target.setComponents(
+      eta * incident.x - scalar * normal.x,
+      eta * incident.y - scalar * normal.y,
+      eta * incident.z - scalar * normal.z);
+  }
+
+  /**
+   * Normalizes a vector, then multiplies it by a scalar, in effect setting its
+   * magnitude to that scalar.
+   *
+   * @param {Vec3} v the input vector 
+   * @param {number} scalar the new scale
+   * @param {Vec3} target the output vector 
+   */
   static rescale (
     v = new Vec3(),
     scalar = 1.0,
@@ -925,6 +1661,12 @@ class Vec3 {
       v.z * mInv);
   }
 
+  /**
+   * Returns to a vector with a positive value on the x axis, (1.0, 0.0, 0.0) .
+   *
+   * @param {Vec3} target the output vector
+   * @returns right
+   */
   static right (target = new Vec3()) {
 
     return target.setComponents(1.0, 0.0, 0.0);
@@ -974,6 +1716,14 @@ class Vec3 {
       (complcos * axis.z * axis.z + cosa) * v.z);
   }
 
+  /**
+   * Rotates a vector around the x axis by an angle in radians.
+   *
+   * @param {Vec3} v the input vector
+   * @param {number} radians the angle in radians
+   * @param {Vec3} target the output vector
+   * @returns the rotated vector
+   */
   static rotateX (
     v = new Vec3(1.0, 0.0, 0.0),
     radians = 0.0,
@@ -986,6 +1736,18 @@ class Vec3 {
       target);
   }
 
+  /**
+   * Rotates a vector around the x axis.
+   *
+   * Accepts pre-calculated sine and cosine of an angle, so that collections of
+   * vectors can be efficiently rotated without repeatedly calling cos and sin.
+   *
+   * @param {Vec3} v the vector
+   * @param {number} cosa the cosine of the angle
+   * @param {number} sina the sine of the angle
+   * @param {Vec3} target the output vector
+   * @returns the rotated vector
+   */
   static rotateXInternal (
     v = new Vec3(1.0, 0.0, 0.0),
     cosa = 1.0,
@@ -998,6 +1760,14 @@ class Vec3 {
       cosa * v.z + sina * v.y);
   }
 
+  /**
+   * Rotates a vector around the y axis by an angle in radians.
+   *
+   * @param {Vec3} v the input vector
+   * @param {number} radians the angle in radians
+   * @param {Vec3} target the output vector
+   * @returns the rotated vector
+   */
   static rotateY (
     v = new Vec3(1.0, 0.0, 0.0),
     radians = 0.0,
@@ -1010,6 +1780,18 @@ class Vec3 {
       target);
   }
 
+  /**
+   * Rotates a vector around the y axis.
+   *
+   * Accepts pre-calculated sine and cosine of an angle, so that collections of
+   * vectors can be efficiently rotated without repeatedly calling cos and sin.
+   *
+   * @param {Vec3} v the vector
+   * @param {number} cosa the cosine of the angle
+   * @param {number} sina the sine of the angle
+   * @param {Vec3} target the output vector
+   * @returns the rotated vector
+   */
   static rotateYInternal (
     v = new Vec3(1.0, 0.0, 0.0),
     cosa = 1.0,
@@ -1022,6 +1804,14 @@ class Vec3 {
       cosa * v.z - sina * v.x);
   }
 
+  /**
+   * Rotates a vector around the z axis by an angle in radians.
+   *
+   * @param {Vec3} v the input vector
+   * @param {number} radians the angle in radians
+   * @param {Vec3} target the output vector
+   * @returns the rotated vector
+   */
   static rotateZ (
     v = new Vec3(1.0, 0.0, 0.0),
     radians = 0.0,
@@ -1034,6 +1824,18 @@ class Vec3 {
       target);
   }
 
+  /**
+   * Rotates a vector around the z axis.
+   *
+   * Accepts pre-calculated sine and cosine of an angle, so that collections of
+   * vectors can be efficiently rotated without repeatedly calling cos and sin.
+   *
+   * @param {Vec3} v the vector
+   * @param {number} cosa the cosine of the angle
+   * @param {number} sina the sine of the angle
+   * @param {Vec3} target the output vector
+   * @returns the rotated vector
+   */
   static rotateZInternal (
     v = new Vec3(1.0, 0.0, 0.0),
     cosa = 1.0,
@@ -1046,6 +1848,13 @@ class Vec3 {
       v.z);
   }
 
+  /**
+   * Rounds each component of the vector to the nearest whole number.
+   *
+   * @param {Vec3} v the input vector
+   * @param {Vec3} target the output vector
+   * @returns the rounded vector
+   */
   static round (
     v = new Vec3(),
     target = new Vec3()) {
@@ -1056,6 +1865,14 @@ class Vec3 {
       Math.round(v.z));
   }
 
+  /**
+   * Multiplies a vector, the left operand, by a scalar, the right operand.
+   *
+   * @param {Vec3} a the vector
+   * @param {number} b the scalar
+   * @param {Vec3} target the output vector
+   * @returns the scaled vector
+   */
   static scale (
     a = new Vec3(),
     b = 1.0,
@@ -1067,6 +1884,17 @@ class Vec3 {
       a.z * b);
   }
 
+  /**
+   * Eases from the origin to the destination vector by a step, using the
+   * formula t\u00b2 ( 3.0 - 2.0 t ) . When the step is less than zero, returns
+   * the origin. When the step is greater than one, returns the destination.
+   *
+   * @param {Vec3} origin the origin vector
+   * @param {Vec3} dest the destination vector
+   * @param {number} step the step in [0.0, 1.0]
+   * @param {Vec3} target the output vector
+   * @returns the eased vector
+   */
   static smoothStep (
     origin = new Vec3(0.0, 0.0, 0.0),
     dest = new Vec3(1.0, 1.0, 1.0),
@@ -1081,9 +1909,18 @@ class Vec3 {
       return Vec3.fromSource(dest, target);
     }
 
-    return Vec3.lerpUnclamped(origin, dest, step * step * (3.0 - (step + step)));
+    return Vec3.lerpUnclamped(origin, dest,
+      step * step * (3.0 - (step + step)));
   }
 
+  /**
+   * Subtracts the right vector from the left vector.
+   *
+   * @param {Vec3} a the left operand
+   * @param {Vec3} b the right operand
+   * @param {Vec3} target the output vector
+   * @returns the difference
+   */
   static sub (
     a = new Vec3(),
     b = new Vec3(),
@@ -1095,6 +1932,15 @@ class Vec3 {
       a.z - b.z);
   }
 
+  /**
+   * Subtracts the right from the left vector and then normalizes the
+   * difference.
+   *
+   * @param {Vec3} a the left operand
+   * @param {Vec3} b the right operand
+   * @param {Vec3} target the output vector
+   * @returns the normalized difference
+   */
   static subNorm (
     a = new Vec3(),
     b = new Vec3(),
@@ -1116,6 +1962,13 @@ class Vec3 {
       dz * mInv);
   }
 
+  /**
+   * Returns an object with the vector's magnitude (rho), azimuth (theta) and
+   * inclination(phi).
+   *
+   * @param {Vec2} v the input vector
+   * @returns the spherical coordinates 
+   */
   static toSpherical (v = new Vec3(1.0, 0.0, 0.0)) {
     const mSq = Vec3.magSq(v);
     if (mSq === 0.0) {
@@ -1135,6 +1988,13 @@ class Vec3 {
     };
   }
 
+  /**
+   * Truncates each component of the vector.
+   *
+   * @param {Vec3} v the input vector
+   * @param {Vec3} target the output vector
+   * @returns the truncation
+   */
   static trunc (
     v = new Vec3(),
     target = new Vec3()) {
@@ -1145,11 +2005,23 @@ class Vec3 {
       Math.trunc(v.z));
   }
 
+  /**
+   * Returns to a vector with a negative value on the z axis, (0.0, 0.0, 1.0) .
+   *
+   * @param {Vec3} target the output vector
+   * @returns up
+   */
   static up (target = new Vec3()) {
 
     return target.setComponents(0.0, 0.0, 1.0);
   }
 
+  /**
+   * Returns a vector with all components set to zero.
+   *
+   * @param {Vec3} target the output vector
+   * @returns the zero vector
+   */
   static zero (target = new Vec3()) {
 
     return target.setComponents(0.0, 0.0, 0.0);

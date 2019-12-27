@@ -3,9 +3,9 @@
 class Knot3 {
 
   constructor (
-    coord = new Vec3(),
-    foreHandle = new Vec3(),
-    rearHandle = new Vec3()) {
+    coord,
+    foreHandle,
+    rearHandle) {
 
     this._coord = coord;
     this._foreHandle = foreHandle;
@@ -212,8 +212,6 @@ class Knot3 {
     return this;
   }
 
-  scale
-
   rotateZ (radians = 0.0) {
 
     return this.rotateZInternal(
@@ -301,6 +299,19 @@ class Knot3 {
     return this;
   }
 
+  toJsonString (precision = 6) {
+
+    return [
+      '{\"coord\":',
+      this._coord.toJsonString(precision),
+      ',\"foreHandle\":',
+      this._foreHandle.toJsonString(precision),
+      ',\"rearHandle\":',
+      this._rearHandle.toJsonString(precision),
+      '}'
+    ].join('');
+  }
+
   toArray () {
 
     return [
@@ -326,15 +337,15 @@ class Knot3 {
     };
   }
 
-  toString () {
+  toString (precision = 4) {
 
     return [
       '{ coord: ',
-      this._coord.toString(),
+      this._coord.toString(precision),
       ', foreHandle: ',
-      this._foreHandle.toString(),
+      this._foreHandle.toString(precision),
       ', rearHandle: ',
-      this._rearHandle.toString(),
+      this._rearHandle.toString(precision),
       ' }'
     ].join('');
   }
@@ -358,6 +369,36 @@ class Knot3 {
       arr[0], arr[1], arr[2],
       arr[3], arr[4], arr[5],
       arr[6], arr[7], arr[8]);
+  }
+
+  static fromPolar (
+    angle = 0.0,
+    radius = 1.0,
+    handleMag = 1.3333333333333333,
+    target = new Knot3()) {
+
+    const cosa = Math.cos(angle);
+    const sina = Math.sin(angle);
+
+    const co = target.coord;
+    co.setComponents(
+      cosa * radius,
+      sina * radius,
+      0.0);
+
+    const hmsina = sina * handleMag;
+    const hmcosa = cosa * handleMag;
+
+    target.foreHandle.setComponents(
+      co.x - hmsina,
+      co.y + hmcosa,
+      0.0);
+    target.rearHandle.setComponents(
+      co.x + hmsina,
+      co.y - hmcosa,
+      0.0);
+
+    return target;
   }
 
   static fromSource (

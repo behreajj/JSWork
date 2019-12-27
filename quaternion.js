@@ -14,7 +14,7 @@ class Quaternion {
   }
 
   get length () {
-    
+
     return 4;
   }
 
@@ -159,6 +159,17 @@ class Quaternion {
     return [this._real, i.x, i.y, i.z];
   }
 
+  toJsonString (precision = 6) {
+
+    return [
+      '{\"real\":',
+      this._real.toFixed(precision),
+      ',\"imag\":',
+      this._imag.toJsonString(precision),
+      '}'
+    ].join('');
+  }
+
   toObject () {
 
     return {
@@ -167,14 +178,13 @@ class Quaternion {
     };
   }
 
-  toString () {
+  toString (precision = 4) {
 
-    const precision = 4;
     return [
       '{ real: ',
       this._real.toFixed(precision),
       ', imag: ',
-      this._imag.toString(),
+      this._imag.toString(precision),
       ' }'
     ].join('');
   }
@@ -788,8 +798,10 @@ class Quaternion {
       // zNorm = i.z;
     }
 
-    const angle = wNorm <= -1.0 ? IUtils.TAU_D
-      : wNorm >= 1.0 ? 0.0 : 2.0 * Math.acos(wNorm);
+    const angle = (wNorm <= -1.0) ?
+      6.283185307179586 :
+      (wNorm >= 1.0) ? 0.0 :
+      2.0 * Math.acos(wNorm);
     const wAsin = 6.283185307179586 - angle;
     if (wAsin === 0.0) {
       Vec3.forward(axis);

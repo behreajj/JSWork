@@ -141,6 +141,24 @@ class Utils {
   }
 
   /**
+   * Attempts to return a hash code for an object, assumed to be a number.
+   * Converts the input to a String.
+   *
+   * @param {object} v an object
+   * @returns the hash code
+   */
+  static hash (v = '') {
+
+    const s = String(v);
+    const len = s.length;
+    let h = 0;
+    for (let i = 0; i < len; ++i) {
+      h = Math.imul(31, h) + s.charCodeAt(i) | 0;
+    }
+    return h >>> 0;
+  }
+
+  /**
    * Linear interpolation from the origin to the destination value by a step. If
    * the step is less than zero, returns the origin. If the step is greater than
    * one, returns the destination.

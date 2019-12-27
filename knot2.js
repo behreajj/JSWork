@@ -298,6 +298,19 @@ class Knot2 {
       this._rearHandle.y];
   }
 
+  toJsonString (precision = 6) {
+
+    return [
+      '{\"coord\":',
+      this._coord.toJsonString(precision),
+      ',\"foreHandle\":',
+      this._foreHandle.toJsonString(precision),
+      ',\"rearHandle\":',
+      this._rearHandle.toJsonString(precision),
+      '}'
+    ].join('');
+  }
+
   toObject () {
 
     return {
@@ -307,15 +320,15 @@ class Knot2 {
     };
   }
 
-  toString () {
+  toString (precision = 4) {
 
     return [
       '{ coord: ',
-      this._coord.toString(),
+      this._coord.toString(precision),
       ', foreHandle: ',
-      this._foreHandle.toString(),
+      this._foreHandle.toString(precision),
       ', rearHandle: ',
-      this._rearHandle.toString(),
+      this._rearHandle.toString(precision),
       ' }'
     ].join('');
   }

@@ -15,6 +15,11 @@ class Vec4 {
     return 4;
   }
 
+  get w () {
+
+    return this._w;
+  }
+
   get x () {
 
     return this._x;
@@ -30,14 +35,14 @@ class Vec4 {
     return this._z;
   }
 
-  get w () {
-
-    return this._w;
-  }
-
   get [Symbol.toStringTag] () {
 
     return this.constructor.name;
+  }
+
+  set w (v) {
+
+    this._w = v;
   }
 
   set x (v) {
@@ -53,11 +58,6 @@ class Vec4 {
   set z (v) {
 
     this._z = v;
-  }
-
-  set w (v) {
-
-    this._w = v;
   }
 
   [Symbol.iterator] () {
@@ -149,6 +149,21 @@ class Vec4 {
       this._w];
   }
 
+  toJsonString (precision = 6) {
+
+    return [
+      '{\"x\":',
+      this._x.toFixed(precision),
+      ',\"y\":',
+      this._y.toFixed(precision),
+      ',\"z\":',
+      this._z.toFixed(precision),
+      ',\"w\":',
+      this._w.toFixed(precision),
+      '}'
+    ].join('');
+  }
+
   toObject () {
 
     return {
@@ -159,9 +174,8 @@ class Vec4 {
     };
   }
 
-  toString () {
+  toString (precision = 4) {
 
-    const precision = 4;
     return [
       '{ x: ',
       this._x.toFixed(precision),
@@ -541,6 +555,17 @@ class Vec4 {
       u * origin.w + step * dest.w);
   }
 
+  static limit (
+    v = new Vec4(),
+    limit = Number.MAX_VALUE,
+    target = new Vec4()) {
+
+    if (Vec4.magSq(v) > limit * limit) {
+      return Vec4.rescale(v, limit, target);
+    }
+    return Vec4.fromSource(v, target);
+  }
+
   static mag (v = new Vec4()) {
 
     return Math.hypot(v.x, v.y, v.z, v.w);
@@ -552,6 +577,37 @@ class Vec4 {
       v.y * v.y +
       v.z * v.z +
       v.w * v.w;
+  }
+
+  static map (
+    v = new Vec4(),
+    lbOrigin = new Vec4(-1.0, -1.0, -1.0, -1.0),
+    ubOrigin = new Vec4(1.0, 1.0, 1.0, 1.0),
+    lbDest = new Vec4(0.0, 0.0, 0.0, 0.0),
+    ubDest = new Vec4(1.0, 1.0, 1.0, 1.0),
+    target = new Vec4()) {
+
+    const xDenom = ubOrigin.x - lbOrigin.x;
+    const yDenom = ubOrigin.y - lbOrigin.y;
+    const zDenom = ubOrigin.z - lbOrigin.z;
+    const wDenom = ubOrigin.w - lbOrigin.w;
+
+    return target.setComponents(
+      (xDenom === 0.0) ? lbDest.x :
+        lbDest.x + (ubDest.x - lbDest.x) *
+        ((v.x - lbOrigin.x) / xDenom),
+
+      (yDenom === 0.0) ? lbDest.y :
+        lbDest.y + (ubDest.y - lbDest.y) *
+        ((v.y - lbOrigin.y) / yDenom),
+
+      (zDenom === 0.0) ? lbDest.z :
+        lbDest.z + (ubDest.z - lbDest.z) *
+        ((v.z - lbOrigin.z) / zDenom),
+
+      (wDenom === 0.0) ? lbDest.w :
+        lbDest.w + (ubDest.w - lbDest.w) *
+        ((v.w - lbOrigin.w) / wDenom));
   }
 
   static max (

@@ -1,5 +1,18 @@
 'use strict';
 
+/**
+ * A simplex noise class created with reference to Simplex noise demystified" by
+ * Stefan Gustavson (
+ * http://staffwww.itn.liu.se/~stegu/simplexnoise/simplexnoise.pdf ). Hashing
+ * functions are based on Bob Jenkins lookup3 script (
+ * http://burtleburtle.net/bob/c/lookup3.c ) . Flow implementations written with
+ * reference to Simon Geilfus's implementation (
+ * https://github.com/simongeilfus/SimplexNoise ) .
+ *
+ * @author Stefan Gustavson
+ * @author Bob Jenkins
+ * @author Simon Geilfus
+ */
 class Simplex {
 
   /**
@@ -85,7 +98,7 @@ class Simplex {
     sina = 0.0,
     target = new Vec2()) {
 
-    return Vec2.rotateZ(
+    return Vec2.rotateZInternal(
       Simplex.GRAD_2_LUT[
       Simplex.hash(i, j, seed) & 0x7],
       cosa, sina, target);
@@ -177,11 +190,8 @@ class Simplex {
 
     let i1 = 0;
     let j1 = 0;
-    if (x0 > y0) {
-      i1 = 1;
-    } else {
-      j1 = 1;
-    }
+    if (x0 > y0) { i1 = 1; }
+    else { j1 = 1; }
 
     const x1 = x0 - i1 + Simplex.G2;
     const y1 = y0 - j1 + Simplex.G2;
@@ -253,7 +263,8 @@ class Simplex {
       deriv.y *= Simplex.SCALE_2;
     }
 
-    return Simplex.SCALE_2 * (t40 * n0 + t41 * n1 + t42 * n2);
+    return Simplex.SCALE_2 *
+      (t40 * n0 + t41 * n1 + t42 * n2);
   }
 
   /**
@@ -293,31 +304,19 @@ class Simplex {
 
     if (x0 >= y0) {
       if (y0 >= z0) {
-        i1 = 1;
-        i2 = 1;
-        j2 = 1;
+        i1 = 1; i2 = 1; j2 = 1;
       } else if (x0 >= z0) {
-        i1 = 1;
-        i2 = 1;
-        k2 = 1;
+        i1 = 1; i2 = 1; k2 = 1;
       } else {
-        k1 = 1;
-        i2 = 1;
-        k2 = 1;
+        k1 = 1; i2 = 1; k2 = 1;
       }
     } else {
       if (y0 < z0) {
-        k1 = 1;
-        j2 = 1;
-        k2 = 1;
+        k1 = 1; j2 = 1; k2 = 1;
       } else if (x0 < z0) {
-        j1 = 1;
-        j2 = 1;
-        k2 = 1;
+        j1 = 1; j2 = 1; k2 = 1;
       } else {
-        j1 = 1;
-        i2 = 1;
-        j2 = 1;
+        j1 = 1; i2 = 1; j2 = 1;
       }
     }
 
@@ -420,7 +419,8 @@ class Simplex {
       deriv.z *= Simplex.SCALE_3;
     }
 
-    return Simplex.SCALE_3 * (t40 * n0 + t41 * n1 + t42 * n2 + t43 * n3);
+    return Simplex.SCALE_3 *
+      (t40 * n0 + t41 * n1 + t42 * n2 + t43 * n3);
   }
 
   /**
@@ -461,6 +461,7 @@ class Simplex {
       (x0 > w0 ? 0x4 : 0) |
       (y0 > w0 ? 0x2 : 0) |
       (z0 > w0 ? 0x1 : 0)];
+
     const sc0 = sc[0];
     const sc1 = sc[1];
     const sc2 = sc[2];
@@ -617,10 +618,31 @@ class Simplex {
       deriv.w *= Simplex.SCALE_4;
     }
 
-    return Simplex.SCALE_4
-      * (t40 * n0 + t41 * n1 + t42 * n2 + t43 * n3 + t44 * n4);
+    return Simplex.SCALE_4 *
+      (t40 * n0 +
+        t41 * n1 +
+        t42 * n2 +
+        t43 * n3 +
+        t44 * n4);
   }
 
+  /**
+   * Fractal Brownian Motion. For a given number of octaves,
+   * sums the output value of a noise function. Per each
+   * iteration, the output is multiplied by the amplitude;
+   * amplitude is multiplied by gain; frequency is multiplied
+   * by lacunarity.
+   * 
+   * @param {Vec2} v the input coordinate
+   * @param {number} seed the seed
+   * @param {number} octaves the number of iterations
+   * @param {number} lacunarity the lacunarity
+   * @param {number} gain the gain
+   * @param {Vec2} deriv the derivative
+   * @param {Vec2} vin a temporary vector
+   * @param {Vec2} nxy a temporary vector
+   * @returns the value
+   */
   static fbm2 (
     v = new Vec2(),
     seed = Simplex.DEFAULT_SEED,
@@ -650,6 +672,23 @@ class Simplex {
     return sum;
   }
 
+  /**
+   * Fractal Brownian Motion. For a given number of octaves,
+   * sums the output value of a noise function. Per each
+   * iteration, the output is multiplied by the amplitude;
+   * amplitude is multiplied by gain; frequency is multiplied
+   * by lacunarity.
+   * 
+   * @param {Vec3} v the input coordinate
+   * @param {number} seed the seed
+   * @param {number} octaves the number of iterations
+   * @param {number} lacunarity the lacunarity
+   * @param {number} gain the gain
+   * @param {Vec3} deriv the derivative
+   * @param {Vec3} vin a temporary vector
+   * @param {Vec3} nxyz a temporary vector
+   * @returns the value
+   */
   static fbm3 (
     v = new Vec3(),
     seed = Simplex.DEFAULT_SEED,
@@ -679,6 +718,23 @@ class Simplex {
     return sum;
   }
 
+  /**
+   * Fractal Brownian Motion. For a given number of octaves,
+   * sums the output value of a noise function. Per each
+   * iteration, the output is multiplied by the amplitude;
+   * amplitude is multiplied by gain; frequency is multiplied
+   * by lacunarity.
+   * 
+   * @param {Vec4} v the input coordinate
+   * @param {number} seed the seed
+   * @param {number} octaves the number of iterations
+   * @param {number} lacunarity the lacunarity
+   * @param {number} gain the gain
+   * @param {Vec4} deriv the derivative
+   * @param {Vec4} vin a temporary vector
+   * @param {Vec4} nxyzw a temporary vector
+   * @returns the value
+   */
   static fbm4 (
     v = new Vec4(),
     seed = Simplex.DEFAULT_SEED,
@@ -715,7 +771,7 @@ class Simplex {
     seed = Simplex.DEFAULT_SEED,
     deriv = null) {
 
-    return Static.flow2Internal(
+    return Simplex.flow2Internal(
       x, y,
       Math.cos(radians),
       Math.sin(radians),
@@ -739,13 +795,10 @@ class Simplex {
     const x0 = x - (i - t);
     const y0 = y - (j - t);
 
-    const i1 = 0;
-    const j1 = 0;
-    if (x0 > y0) {
-      i1 = 1;
-    } else {
-      j1 = 1;
-    }
+    let i1 = 0;
+    let j1 = 0;
+    if (x0 > y0) { i1 = 1; }
+    else { j1 = 1; }
 
     const x1 = x0 - i1 + Simplex.G2;
     const y1 = y0 - j1 + Simplex.G2;
@@ -771,7 +824,10 @@ class Simplex {
 
     const t0 = 0.5 - (x0 * x0 + y0 * y0);
     if (t0 >= 0.0) {
-      g0 = Simplex.gradRot2(i, j, seed, cosa, sina, Simplex.ROT_2);
+      g0 = Simplex.gradRot2(
+        i, j, seed,
+        cosa, sina,
+        Simplex.ROT_2);
       t20 = t0 * t0;
       t40 = t20 * t20;
       n0 = g0.x * x0 + g0.y * y0;
@@ -779,7 +835,10 @@ class Simplex {
 
     const t1 = 0.5 - (x1 * x1 + y1 * y1);
     if (t1 >= 0.0) {
-      g1 = Simplex.gradRot2(i + i1, j + j1, seed, cosa, sina, Simplex.ROT_2);
+      g1 = Simplex.gradRot2(
+        i + i1, j + j1, seed,
+        cosa, sina,
+        Simplex.ROT_2);
       t21 = t1 * t1;
       t41 = t21 * t21;
       n1 = g1.x * x1 + g1.y * y1;
@@ -787,7 +846,10 @@ class Simplex {
 
     const t2 = 0.5 - (x2 * x2 + y2 * y2);
     if (t2 >= 0.0) {
-      g2 = Simplex.gradRot2(i + 1, j + 1, seed, cosa, sina, Simplex.ROT_2);
+      g2 = Simplex.gradRot2(
+        i + 1, j + 1, seed,
+        cosa, sina,
+        Simplex.ROT_2);
       t22 = t2 * t2;
       t42 = t22 * t22;
       n2 = g2.x * x2 + g2.y * y2;
@@ -817,7 +879,8 @@ class Simplex {
       deriv.y *= Simplex.SCALE_2;
     }
 
-    return Simplex.SCALE_2 * (t40 * n0 + t41 * n1 + t42 * n2);
+    return Simplex.SCALE_2 *
+      (t40 * n0 + t41 * n1 + t42 * n2);
   }
 
   static flow3 (
@@ -828,7 +891,7 @@ class Simplex {
     seed = Simplex.DEFAULT_SEED,
     deriv = null) {
 
-    return Static.flow3Internal(
+    return Simplex.flow3Internal(
       x, y, z,
       Math.cos(radians),
       Math.sin(radians),
@@ -865,31 +928,19 @@ class Simplex {
 
     if (x0 >= y0) {
       if (y0 >= z0) {
-        i1 = 1;
-        i2 = 1;
-        j2 = 1;
+        i1 = 1; i2 = 1; j2 = 1;
       } else if (x0 >= z0) {
-        i1 = 1;
-        i2 = 1;
-        k2 = 1;
+        i1 = 1; i2 = 1; k2 = 1;
       } else {
-        k1 = 1;
-        i2 = 1;
-        k2 = 1;
+        k1 = 1; i2 = 1; k2 = 1;
       }
     } else {
       if (y0 < z0) {
-        k1 = 1;
-        j2 = 1;
-        k2 = 1;
+        k1 = 1; j2 = 1; k2 = 1;
       } else if (x0 < z0) {
-        j1 = 1;
-        j2 = 1;
-        k2 = 1;
+        j1 = 1; j2 = 1; k2 = 1;
       } else {
-        j1 = 1;
-        i2 = 1;
-        j2 = 1;
+        j1 = 1; i2 = 1; j2 = 1;
       }
     }
 
@@ -927,7 +978,10 @@ class Simplex {
 
     const t0 = 0.5 - (x0 * x0 + y0 * y0 + z0 * z0);
     if (t0 >= 0.0) {
-      g0 = Simplex.gradRot3(i, j, k, seed, cosa, sina, Simplex.ROT_3);
+      g0 = Simplex.gradRot3(
+        i, j, k, seed,
+        cosa, sina,
+        Simplex.ROT_3);
       t20 = t0 * t0;
       t40 = t20 * t20;
       n0 = g0.x * x0 + g0.y * y0 + g0.z * z0;
@@ -935,7 +989,9 @@ class Simplex {
 
     const t1 = 0.5 - (x1 * x1 + y1 * y1 + z1 * z1);
     if (t1 >= 0.0) {
-      g1 = Simplex.gradRot3(i + i1, j + j1, k + k1, seed, cosa, sina,
+      g1 = Simplex.gradRot3(
+        i + i1, j + j1, k + k1, seed,
+        cosa, sina,
         Simplex.ROT_3);
       t21 = t1 * t1;
       t41 = t21 * t21;
@@ -944,7 +1000,9 @@ class Simplex {
 
     const t2 = 0.5 - (x2 * x2 + y2 * y2 + z2 * z2);
     if (t2 >= 0.0) {
-      g2 = Simplex.gradRot3(i + i2, j + j2, k + k2, seed, cosa, sina,
+      g2 = Simplex.gradRot3(
+        i + i2, j + j2, k + k2, seed,
+        cosa, sina,
         Simplex.ROT_3);
       t22 = t2 * t2;
       t42 = t22 * t22;
@@ -953,7 +1011,9 @@ class Simplex {
 
     const t3 = 0.5 - (x3 * x3 + y3 * y3 + z3 * z3);
     if (t3 >= 0.0) {
-      g3 = Simplex.gradRot3(i + 1, j + 1, k + 1, seed, cosa, sina,
+      g3 = Simplex.gradRot3(
+        i + 1, j + 1, k + 1, seed,
+        cosa, sina,
         Simplex.ROT_3);
       t23 = t3 * t3;
       t43 = t23 * t23;
@@ -995,7 +1055,11 @@ class Simplex {
       deriv.z *= Simplex.SCALE_3;
     }
 
-    return Simplex.SCALE_3 * (t40 * n0 + t41 * n1 + t42 * n2 + t43 * n3);
+    return Simplex.SCALE_3 *
+      (t40 * n0 +
+        t41 * n1 +
+        t42 * n2 +
+        t43 * n3);
   }
 
   /**
@@ -1111,7 +1175,7 @@ Simplex.F2 = Object.freeze(0.3660254037844386);
 
 /**
  * Squish constant 3D (Math.sqrt(4.0) - 1.0) / 3.0;
- * approximately 0.33333334 .
+ * approximately 0.33333333 .
  */
 Simplex.F3 = Object.freeze(0.3333333333333333);
 
@@ -1133,12 +1197,12 @@ Simplex.G2 = Object.freeze(0.21132486540518708);
 Simplex.G2_2 = Object.freeze(0.42264973081037416);
 
 /**
- * Stretch constant 3D.
+ * Stretch constant 3D. Approximately 0.16666667 .
  */
 Simplex.G3 = Object.freeze(0.16666666666666667);
 
 /**
- * 2x stretch constant 3D.
+ * 2x stretch constant 3D. Approximately 0.33333333 .
  */
 Simplex.G3_2 = Object.freeze(0.33333333333333333);
 

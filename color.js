@@ -52,7 +52,6 @@ class Color extends Vec4 {
     switch (hint) {
       case 'string':
         return Color.toHexString(this);
-        // return this.toString();
       case 'number':
       default:
         return Color.toHexInt(this);
@@ -69,6 +68,15 @@ class Color extends Vec4 {
     return this;
   }
 
+  /**
+   * Sets each channel of the color.
+   * 
+   * @param {number} r red
+   * @param {number} g green
+   * @param {number} b blue
+   * @param {number} a alpha
+   * @returns this color
+   */
   setComponents (r = 0.0, g = 0.0, b = 0.0, a = 1.0) {
 
     this._x = r;
@@ -79,6 +87,21 @@ class Color extends Vec4 {
     return this;
   }
 
+  toJsonString (precision = 6) {
+
+    return [
+      '{\"r\":',
+      this._x.toFixed(precision),
+      ',\"g\":',
+      this._y.toFixed(precision),
+      ',\"b\":',
+      this._z.toFixed(precision),
+      ',\"a\":',
+      this._w.toFixed(precision),
+      '}'
+    ].join('');
+  }
+  
   toObject () {
 
     return {
@@ -89,9 +112,8 @@ class Color extends Vec4 {
     };
   }
 
-  toString () {
+  toString (precision = 4) {
 
-    const precision = 4;
     return [
       '{ r: ',
       this._x.toFixed(precision),
@@ -362,32 +384,28 @@ class Color extends Vec4 {
       return target.setComponents(v.z, v.z, v.z, v.w);
     }
 
-    const h = (v.x % 1.0) * 6.0;
+    const h = (v.x - Math.floor(v.x)) * 6.0;
     const sector = Math.trunc(h);
     const tint1 = v.z * (1.0 - v.y);
     const tint2 = v.z * (1.0 - v.y * (h - sector));
     const tint3 = v.z * (1.0 - v.y * (1.0 + sector - h));
 
-    if (sector === 0) {
-      return target.setComponents(v.z, tint3, tint1, v.w);
+    switch (sector) {
+      case 0:
+        return target.setComponents(v.z, tint3, tint1, v.w);
+      case 1:
+        return target.setComponents(tint2, v.z, tint1, v.w);
+      case 2:
+        return target.setComponents(tint1, v.z, tint3, v.w);
+      case 3:
+        return target.setComponents(tint1, tint2, v.z, v.w);
+      case 4:
+        return target.setComponents(tint3, tint1, v.z, v.w);
+      case 5:
+        return target.setComponents(v.z, tint1, tint2, v.w);
+      default:
+        return Color.black(target);
     }
-    if (sector === 1) {
-      return target.setComponents(tint2, v.z, tint1, v.w);
-    }
-    if (sector === 2) {
-      return target.setComponents(tint1, v.z, tint3, v.w);
-    }
-    if (sector === 3) {
-      return target.setComponents(tint1, tint2, v.z, v.w);
-    }
-    if (sector === 4) {
-      return target.setComponents(tint3, tint1, v.z, v.w);
-    }
-    if (sector === 5) {
-      return target.setComponents(v.z, tint1, tint2, v.w);
-    }
-
-    return Color.black(target);
   }
 
   static inverse (
@@ -560,7 +578,7 @@ class Color extends Vec4 {
   }
 
   /**
-   * Convert a color to grayscale based on its perceived luminance.
+   * Converts a color to grayscale based on its perceived luminance.
    *
    * @param {Color} c the input color
    * @param {Color} target the output color
@@ -630,17 +648,18 @@ class Color extends Vec4 {
 
   /**
    * Converts a color to an integer where hexadecimal represents the ARGB color
-   * channels: 0xAARRGGB .
+   * channels: 0xAARRGGB . Uses unsigned bit shift right to force a positive
+   * integer.
    *
    * @param {Color} c the color
    * @returns the color in hexadecimal
    */
   static toHexInt (c = new Color()) {
 
-    return Math.trunc(c.a * 0xff + 0.5) << 0x18
+    return (Math.trunc(c.a * 0xff + 0.5) << 0x18
       | Math.trunc(c.r * 0xff + 0.5) << 0x10
       | Math.trunc(c.g * 0xff + 0.5) << 0x8
-      | Math.trunc(c.b * 0xff + 0.5);
+      | Math.trunc(c.b * 0xff + 0.5)) >>> 0;
   }
 
   /**

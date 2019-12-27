@@ -13,7 +13,7 @@ class Complex {
     return this._imag;
   }
 
-  get length() {
+  get length () {
 
     return 2;
   }
@@ -83,7 +83,7 @@ class Complex {
   }
 
   set (i = -1, v = 0.0) {
-    
+
     switch (i) {
       case 0: case -2:
         this._real = v;
@@ -92,6 +92,7 @@ class Complex {
         this._imag = v;
         break;
     }
+    
     return this;
   }
 
@@ -108,14 +109,24 @@ class Complex {
     return [this._real, this._imag];
   }
 
+  toJsonString (precision = 6) {
+
+    return [
+      '{\"real\":',
+      this._real.toFixed(precision),
+      ',\"imag\":',
+      this._imag.toFixed(precision),
+      '}'
+    ].join('');
+  }
+
   toObject () {
 
     return { real: this._real, imag: this._imag };
   }
 
-  toString () {
+  toString (precision = 4) {
 
-    const precision = 4;
     return [
       '{ real: ',
       this._real.toFixed(precision),

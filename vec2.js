@@ -1,9 +1,21 @@
 'use strict';
 
+/**
+ * A mutable, extensible class influenced by GLSL, OSL and p5*js's p5.Vector .
+ * This is intended for storing points and directions in two-dimensional
+ * graphics programs. Instance methods are limited, while most static methods
+ * require an explicit output variable to be provided.
+ */
 class Vec2 {
 
+  /**
+   * Constructs a vector from numbers.
+   *
+   * @param {number} x the x coordinate
+   * @param {number} y the y coordinate
+   */
   constructor (x = 0.0, y = 0.0) {
-    
+
     this._x = x;
     this._y = y;
   }
@@ -62,16 +74,19 @@ class Vec2 {
     }
   }
 
-  // equals (obj) {
-  //   if (!obj) {
-  //     return false;
+  // equals (obj) {if (!obj) {return false;
   //   }
-  //   if (obj.constructor.name !== this.constructor.name) {
-  //     return false;
+  //   if (obj.constructor.name !== this.constructor.name) {return false;
   //   }
   //   return Vec2.approx(this, obj);
   // }
 
+  /**
+   * Gets a component of this vector by index.
+   *
+   * @param {number} i the index
+   * @returns the value
+   */
   get (i = -1) {
 
     switch (i) {
@@ -84,6 +99,11 @@ class Vec2 {
     }
   }
 
+  /**
+   * Resets this vector to an initial state, ( 0.0, 0.0 ) .
+   *
+   * @returns this vector
+   */
   reset () {
 
     this._x = 0.0;
@@ -92,6 +112,13 @@ class Vec2 {
     return this;
   }
 
+  /**
+   * Sets a component of this vector by index.
+   *
+   * @param {number} i the index
+   * @param {number} v the value
+   * @returns this vector
+   */
   set (i = -1, v = 0.0) {
 
     switch (i) {
@@ -106,6 +133,13 @@ class Vec2 {
     return this;
   }
 
+  /**
+   * Sets the components of this vector.
+   *
+   * @param {number} x the x coordinate
+   * @param {number} y the y coordinate
+   * @returns this vector
+   */
   setComponents (x = 0.0, y = 0.0) {
 
     this._x = x;
@@ -114,19 +148,51 @@ class Vec2 {
     return this;
   }
 
+  /**
+   * Returns an array of length 2 containing this vector's components.
+   *
+   * @returns the array
+   */
   toArray () {
 
     return [this._x, this._y];
   }
 
+  /**
+   * Returns a JSON formatted string.
+   * 
+   * @param {number} precision number of decimal places
+   * @returns the string
+   */
+  toJsonString(precision = 6) {
+
+    return [
+      '{\"x\":',
+      this._x.toFixed(precision),
+      ',\"y\":',
+      this._y.toFixed(precision),
+      '}'
+    ].join('');
+  }
+
+  /**
+   * Returns an object literal with this vector's components.
+   *
+   * @returns the object
+   */
   toObject () {
 
     return { x: this._x, y: this._y };
   }
 
-  toString () {
+  /**
+   * Returns a string representation of this vector.
+   *
+   * @param {number} precision number of decimal places
+   * @returns the string
+   */
+  toString (precision = 4) {
 
-    const precision = 4;
     return [
       '{ x: ',
       this._x.toFixed(precision),
@@ -136,6 +202,13 @@ class Vec2 {
     ].join('');
   }
 
+  /**
+   * Finds the absolute value of each vector component.
+   *
+   * @param {Vec2} v the input vector
+   * @param {Vec2} target the output vector
+   * @returns the absolute vector
+   */
   static abs (
     v = new Vec2(),
     target = new Vec3()) {
@@ -145,6 +218,14 @@ class Vec2 {
       Math.abs(v.y));
   }
 
+  /**
+   * Adds two vectors together.
+   *
+   * @param {Vec2} a the left operand
+   * @param {Vec2} b the right operand
+   * @param {Vec2} target the output vector
+   * @returns the sum
+   */
   static add (
     a = new Vec2(),
     b = new Vec2(),
@@ -155,6 +236,14 @@ class Vec2 {
       a.y + b.y);
   }
 
+  /**
+   * Adds and then normalizes two vectors.
+   *
+   * @param {Vec2} a the left operand
+   * @param {Vec2} b the right operand
+   * @param {Vec2} target the output vector
+   * @returns the normalized sum
+   */
   static addNorm (
     a = new Vec2(),
     b = new Vec2(),
@@ -174,6 +263,13 @@ class Vec2 {
       dy * mInv);
   }
 
+  /**
+   * Finds the angle between two vectors.
+   *
+   * @param {Vec2} a the left operand
+   * @param {Vec2} b the right operand
+   * @returns the angle
+   */
   static angleBetween (
     a = new Vec2(),
     b = new Vec2()) {
@@ -185,6 +281,14 @@ class Vec2 {
     return Math.acos(Vec2.dot(a, b) / (Vec2.mag(a) * Vec2.mag(b)));
   }
 
+  /**
+   * Tests to see if two vectors approximate each other.
+   *
+   * @param {Vec2} a the left operand
+   * @param {Vec2} b the right operand 
+   * @param {number} tolerance the tolerance
+   * @returns the evaluation
+   */
   static approx (
     a = new Vec2(),
     b = new Vec2(),
@@ -194,6 +298,14 @@ class Vec2 {
       Math.abs(b.x - a.x) < tolerance;
   }
 
+  /**
+   * Tests to see if two vectors approximate each other.
+   *
+   * @param {Vec2} a the input vector
+   * @param {number} b the magnitude
+   * @param {number} tolerance the tolerance
+   * @returns the evaluation
+   */
   static approxMag (
     a = new Vec2(),
     b = 1.0,
@@ -202,16 +314,44 @@ class Vec2 {
     return Math.abs((b * b) - Vec2.magSq(a)) < tolerance;
   }
 
+  /**
+   * Tests to see if two vectors are parallel.
+   *
+   * @param {Vec2} a left comparisand
+   * @param {Vec2} b right comparisand
+   * @returns the evaluation
+   */
   static areParallel (a = new Vec2(), b = new Vec2()) {
 
     return (a.x * b.y - a.y * b.x) === 0.0;
   }
 
+  /**
+   * Returns to a vector with a negative value on the y axis, (0.0, -1.0) .
+   *
+   * @param {Vec2} target the output vector
+   * @returns back
+   */
   static back (target = new Vec2()) {
 
     return target.setComponents(0.0, -1.0);
   }
 
+  /**
+   * Returns a point on a Bezier curve described by two anchor points and two
+   * control points according to a step in [0.0, 1.0].
+   *
+   * When the step is less than one, returns the first anchor point. When the
+   * step is greater than one, returns the second anchor point.
+   *
+   * @param {Vec2} ap0 the first anchor point
+   * @param {Vec2} cp0 the first control point
+   * @param {Vec2} cp1 the second control point
+   * @param {Vec2} ap1 the second anchor point
+   * @param {number} step the step
+   * @param {Vec2} target the output vector
+   * @returns the point along the curve
+   */
   static bezierPoint (
     ap0 = new Vec2(),
     cp0 = new Vec2(),
@@ -248,6 +388,22 @@ class Vec2 {
       ap1.y * tcb);
   }
 
+  /**
+   * Returns a tangent on a Bezier curve described by two anchor points and two
+   * control points according to a step in [0.0, 1.0].
+   *
+   * When the step is less than one, returns the first anchor point subtracted
+   * from the first control point. When the step is greater than one, returns
+   * the second anchor point subtracted from the second control point.
+   *
+   * @param {Vec2} ap0 the first anchor point
+   * @param {Vec2} cp0 the first control point
+   * @param {Vec2} cp1 the second control point
+   * @param {Vec2} ap1 the second anchor point
+   * @param {number} step the step
+   * @param {Vec2} target the output vector
+   * @returns the tangent along the curve
+   */
   static bezierTangent (
     ap0 = new Vec2(),
     cp0 = new Vec2(),
@@ -280,6 +436,13 @@ class Vec2 {
       (ap1.y - cp1.y) * tsq3);
   }
 
+  /**
+   * Raises each component of the vector to the nearest greater integer.
+   *
+   * @param {Vec2} v the input vector
+   * @param {Vec2} target the output vector
+   * @returns the result
+   */
   static ceil (
     v = new Vec2(),
     target = new Vec2()) {
@@ -289,6 +452,15 @@ class Vec2 {
       Math.ceil(v.y));
   }
 
+  /**
+   * Clamps a vector to a range within the lower and upper bound.
+   *
+   * @param {Vec2} v the input vector
+   * @param {Vec2} lb the range lower bound
+   * @param {Vec2} ub the range upper bound
+   * @param {Vec2} target the output vector
+   * @returns the clamped vector
+   */
   static clamp (
     v = new Vec2(),
     lb = new Vec2(0.0, 0.0),
@@ -300,6 +472,14 @@ class Vec2 {
       Math.min(Math.max(v.y, lb.y), ub.y));
   }
 
+  /**
+   * Clamps the vector to a range in [0.0, 1.0]. Useful for working with uv
+   * coordinates.
+   *
+   * @param {Vec2} v the input vector
+   * @param {Vec2} target the output vector
+   * @returns the clamped vector
+   */
   static clamp01 (
     v = new Vec2(),
     target = new Vec2()) {
@@ -309,6 +489,13 @@ class Vec2 {
       Math.min(Math.max(v.y, 0.0), 1.0));
   }
 
+  /**
+   * Compares two vectors by magnitude. To be provided to array sort functions.
+   *
+   * @param {Vec2} a left comparisand
+   * @param {Vec2} b right comparisand
+   * @returns the comparison
+   */
   static compareMag (
     a = new Vec2(),
     b = new Vec2()) {
@@ -322,6 +509,14 @@ class Vec2 {
     return 0;
   }
 
+  /**
+   * Compares two vectors by its y component, then its x component. To be
+   * provided to array sort functions.
+   *
+   * @param {Vec2} a left comparisand
+   * @param {Vec2} b right comparisand
+   * @returns the comparison
+   */
   static compareYx (
     a = new Vec2(),
     b = new Vec2()) {
@@ -334,6 +529,15 @@ class Vec2 {
     return 0;
   }
 
+  /**
+   * Multiplies a magnitude, the left operand, by the sign of the right operand,
+   * such that the magnitude of a matches the sign of b.
+   *
+   * @param {Vec2} a left operand
+   * @param {Vec2} b right operand
+   * @param {Vec2} target the output vector
+   * @returns the signed magnitude
+   */
   static copySign (
     a = new Vec2(),
     b = new Vec2(),
@@ -344,6 +548,14 @@ class Vec2 {
       a.y * Math.sign(b.y));
   }
 
+  /**
+   * Finds the absolute value of the difference between two vectors.
+   *
+   * @param {Vec2} a left operand
+   * @param {Vec2} b right operand
+   * @param {Vec2} target the output vector
+   * @returns the absolute difference
+   */
   static diff (
     a = new Vec2(),
     b = new Vec2(),
@@ -354,6 +566,14 @@ class Vec2 {
       Math.abs(b.y - a.y));
   }
 
+  /**
+   * Finds the Chebyshev distance between two vectors. Forms a square pattern
+   * when plotted.
+   *
+   * @param {Vec2} a left operand
+   * @param {Vec2} b right operand
+   * @returns the distance
+   */
   static distChebyshev (
     a = new Vec2(),
     b = new Vec2()) {
@@ -363,6 +583,14 @@ class Vec2 {
       Math.abs(b.y - a.y));
   }
 
+  /**
+   * Finds the Euclidean distance between two vectors. Where possible, use
+   * distance squared to avoid the computational cost of the square-root.
+   *
+   * @param {Vec2} a left operand
+   * @param {Vec2} b right operand
+   * @returns the distance
+   */
   static distEuclidean (
     a = new Vec2(),
     b = new Vec2()) {
@@ -372,6 +600,14 @@ class Vec2 {
       b.y - a.y);
   }
 
+  /**
+   * Finds the Manhattan distance between two vectors. Forms a diamond pattern
+   * when plotted.
+   *
+   * @param {Vec2} a left operand
+   * @param {Vec2} b right operand
+   * @returns the distance
+   */
   static distManhattan (
     a = new Vec2(),
     b = new Vec2()) {
@@ -380,6 +616,17 @@ class Vec2 {
       Math.abs(b.y - a.y);
   }
 
+  /**
+   * Finds the Minkowski distance between two vectors. This is a generalization
+   * of other distance formulae. When the exponent value, c, is 1.0, the
+   * Minkowski distance equals the Manhattan distance; when it is 2.0, Minkowski
+   * equals the Euclidean distance.
+   *
+   * @param {Vec2} a left operand
+   * @param {Vec2} b right operand
+   * @param {number} c the exponent
+   * @returns the distance
+   */
   static distMinkowski (
     a = new Vec2(),
     b = new Vec2(),
@@ -395,6 +642,15 @@ class Vec2 {
       1.0 / c);
   }
 
+  /**
+   * Finds the Euclidean distance squared between two vectors. Equivalent to
+   * subtracting one vector from the other, then finding the dot product of the
+   * difference with itself.
+   *
+   * @param {Vec2} a left operand
+   * @param {Vec2} b right operand
+   * @returns the distance
+   */
   static distSq (
     a = new Vec2(),
     b = new Vec2()) {
@@ -404,6 +660,16 @@ class Vec2 {
     return xd * xd + yd * yd;
   }
 
+  /**
+   * Divides the left operand by the right, component-wise. This is
+   * mathematically incorrect, but serves as a shortcut for transforming a
+   * vector by the inverse of a scalar matrix.
+   *
+   * @param {Vec2} a numerator
+   * @param {Vec2} b denominator
+   * @param {Vec2} target the output vector
+   * @returns the quotient
+   */
   static div (
     a = new Vec2(1.0, 1.0),
     b = new Vec2(1.0, 1.0),
@@ -414,6 +680,14 @@ class Vec2 {
       b.y !== 0.0 ? a.y / b.y : 0.0);
   }
 
+  /**
+   * Finds the dot product of two vectors by summing the products of their
+   * corresponding components. dot ( a, b ) := ax bx + ay by .
+   *
+   * @param {Vec2} a left operand
+   * @param {Vec2} b right operand
+   * @returns the dot product
+   */
   static dot (
     a = new Vec2(),
     b = new Vec2()) {
@@ -421,6 +695,13 @@ class Vec2 {
     return a.x * b.x + a.y * b.y;
   }
 
+  /**
+   * Returns a vector with all components set to a small, positive non-zero
+   * value, 0.000001 .
+   *
+   * @param {Vec2} target the output vector
+   * @returns epsilon
+   */
   static epsilon (target = new Vec2()) {
 
     return target.setComponents(
@@ -428,6 +709,13 @@ class Vec2 {
       0.000001);
   }
 
+  /**
+   * Floors each component of the vector.
+   *
+   * @param {Vec2} v the input vector
+   * @param {Vec2} target the output vector
+   * @returns the floor
+   */
   static floor (
     v = new Vec2(),
     target = new Vec2()) {
@@ -437,6 +725,15 @@ class Vec2 {
       Math.floor(v.y));
   }
 
+  /**
+   * Applies the % operator (truncation-based modulo) to each component of the
+   * left operand.
+   *
+   * @param {Vec2} a left operand
+   * @param {Vec2} b right operand
+   * @param {Vec2} target the output vector
+   * @returns the result 
+   */
   static fmod (
     a = new Vec2(),
     b = new Vec2(),
@@ -447,11 +744,24 @@ class Vec2 {
       b.y !== 0.0 ? a.y % b.y : a.y);
   }
 
+  /**
+   * Returns to a vector with a positive value on the y axis, (0.0, 1.0) .
+   *
+   * @param {Vec2} target the output vector
+   * @returns forward
+   */
   static forward (target = new Vec2()) {
 
     return target.setComponents(0.0, 1.0);
   }
 
+  /**
+   * Returns the fractional portion of the vector's components.
+   *
+   * @param {Vec2} v the input vector
+   * @param {Vec2} target the output vector
+   * @returns the fractional portion
+   */
   static fract (
     v = new Vec2(),
     target = new Vec2()) {
@@ -461,6 +771,13 @@ class Vec2 {
       v.y - Math.trunc(v.y));
   }
 
+  /**
+   * Creates a vector from the array.
+   *
+   * @param {Array} arr the array
+   * @param {Vec2} target the output vector
+   * @returns the vector
+   */
   static fromArray (
     arr = [0.0, 0.0],
     target = new Vec2()) {
@@ -470,6 +787,14 @@ class Vec2 {
       arr[1]);
   }
 
+  /**
+   * Creates a vector from polar coordinates.
+   *
+   * @param {number} azimuth the azimuth in radians
+   * @param {number} radius the radius
+   * @param {Vec2} target the output vector
+   * @returns the vector
+   */
   static fromPolar (
     azimuth = 0.0,
     radius = 1.0,
@@ -480,6 +805,13 @@ class Vec2 {
       radius * Math.sin(azimuth));
   }
 
+  /**
+   * Creates a vector from a scalar.
+   *
+   * @param {number} scalar the scalar
+   * @param {Vec2} target the output vector
+   * @returns the vector
+   */
   static fromScalar (
     scalar = 1.0,
     target = new Vec2()) {
@@ -489,6 +821,13 @@ class Vec2 {
       scalar);
   }
 
+  /**
+   * Copies a vector's coordinates from a source.
+   *
+   * @param {Vec2} source the source vector
+   * @param {Vec2} target the output vector
+   * @returns the vector
+   */
   static fromSource (
     source = new Vec2(),
     target = new Vec2()) {
@@ -498,6 +837,15 @@ class Vec2 {
       source.y);
   }
 
+  /**
+   * Returns a 2D grid of vectors.
+   *
+   * @param {number} rows rows
+   * @param {number} cols columns
+   * @param {Vec2} lowerBound the lower bound
+   * @param {Vec2} upperBound the upper bound
+   * @returns the grid
+   */
   static grid (
     rows = 3,
     cols = 3,
@@ -533,39 +881,87 @@ class Vec2 {
     return result;
   }
 
+  /**
+   * Finds the vector's heading in the range [ -PI, PI ] .
+   *
+   * @param {Vec2} v the input vector
+   * @returns the angle in radians
+   */
   static headingSigned (v = new Vec2(1.0, 0.0)) {
 
     return Math.atan2(v.y, v.z);
   }
 
+  /**
+   * Finds the vector's heading in the range [ 0.0, TAU ] .
+   *
+   * @param {Vec2} v the input vector
+   * @returns the angle in radians
+   */
   static headingUnsigned (v = new Vec2(1.0, 0.0)) {
 
     const angle = Vec2.headingSigned(v);
     return angle - 6.283185307179586 * Math.floor(angle * 0.15915494309189535);
   }
 
+  /**
+   * Tests to see if all the vector's components are non-zero. Useful when
+   * testing valid dimensions (width and depth) stored in vectors.
+   *
+   * @param {Vec2} v the input vector
+   * @returns the evaluation
+   */
   static isNonZero (v = new Vec2()) {
 
     return (v.y !== 0.0) &&
       (v.x !== 0.0);
   }
 
+  /**
+   * Tests to see if the vector is on the unit circle, i.e., has a magnitude of
+   * approximately 1.0.
+   *
+   * @param {Vec2} v the input vector
+   * @returns the evaluation
+   */
   static isUnit (v = new Vec2()) {
 
     return Vec2.approxMag(v, 1.0);
   }
 
+  /**
+   * Tests to see if all the vector's components are zero. Useful when
+   * safeguarding against invalid directions.
+   *
+   * @param {Vec2} v the input vector
+   * @returns the evaluation
+   */
   static isZero (v = new Vec2()) {
 
     return (v.y === 0.0) &&
       (v.x === 0.0);
   }
 
+  /**
+    * Returns to a vector with a negative value on the x axis, (-1.0, 0.0) .
+    *
+    * @param {Vec2} target the output vector
+    * @returns left
+    */
   static left (target = new Vec2()) {
 
     return target.setComponents(-1.0, 0.0);
   }
 
+  /**
+   * A clamped linear interpolation from an origin to a destination by a step.
+   *
+   * @param {Vec2} origin the original vector
+   * @param {Vec2} dest the destination vector
+   * @param {number} step the step
+   * @param {Vec2} target the output vector
+   * @returns the interpolation
+   */
   static lerp (
     origin = new Vec2(0.0, 0.0),
     dest = new Vec2(1.0, 1.0),
@@ -583,6 +979,16 @@ class Vec2 {
     return Vec2.lerpUnclamped(origin, dest, step);
   }
 
+  /**
+    * An unclamped linear interpolation from an origin to a destination by a
+    * step.
+    *
+    * @param {Vec2} origin the original vector
+    * @param {Vec2} dest the destination vector
+    * @param {number} step the step
+    * @param {Vec2} target the output vector
+    * @returns the interpolation
+    */
   static lerpUnclamped (
     origin = new Vec2(0.0, 0.0),
     dest = new Vec2(1.0, 1.0),
@@ -595,16 +1001,93 @@ class Vec2 {
       u * origin.y + step * dest.y);
   }
 
+  /**
+   * Limits a vector's magnitude to a scalar. Does nothing if the vector is
+   * beneath the limit.
+   *
+   * @param {Vec2} v the input vector
+   * @param {number} limit the limit
+   * @param {Vec2} target the output vector
+   * @returns the limited vector
+   */
+  static limit (
+    v = new Vec2(),
+    limit = Number.MAX_VALUE,
+    target = new Vec2()) {
+
+    if (Vec2.magSq(v) > limit * limit) {
+      return Vec2.rescale(v, limit, target);
+    }
+    return Vec2.fromSource(v, target);
+  }
+
+  /**
+   * Finds the length, or magnitude, of a vector. Also referred to as the radius
+   * when using polar coordinates. Where possible, use magSq or dot to avoid the
+   * computational cost of the square-root.
+   *
+   * @param {Vec2} v the input vector
+   * @returns the magnitude
+   */
   static mag (v = new Vec2()) {
 
     return Math.hypot(v.x, v.y);
   }
 
+  /**
+   * Finds the length-, or magnitude-, squared of a vector. Returns the same
+   * result as dot ( a , a ) . Useful when calculating the lengths of many
+   * vectors, so as to avoid the computational cost of the square-root.
+   *
+   * @param {Vec2} v the input vector
+   * @returns the magnitude squared
+   */
   static magSq (v = new Vec2()) {
 
     return v.x * v.x + v.y * v.y;
   }
 
+  /**
+   * Maps an input vector from an original range to a target range.
+   *
+   * @param {Vec2} v the input vector
+   * @param {Vec2} lbOrigin the lower bound original range
+   * @param {Vec2} ubOrigin the upper bound original range
+   * @param {Vec2} lbDest the lower bound destination range
+   * @param {Vec2} ubDest the upper bound destination range
+   * @param {Vec2} target the output vector
+   * @returns the output vector
+   */
+  static map (
+    v = new Vec2(),
+    lbOrigin = new Vec2(-1.0, -1.0),
+    ubOrigin = new Vec2(1.0, 1.0),
+    lbDest = new Vec2(0.0, 0.0),
+    ubDest = new Vec2(1.0, 1.0),
+    target = new Vec2()) {
+
+    const xDenom = ubOrigin.x - lbOrigin.x;
+    const yDenom = ubOrigin.y - lbOrigin.y;
+
+    return target.setComponents(
+      (xDenom === 0.0) ? lbDest.x :
+        lbDest.x + (ubDest.x - lbDest.x) *
+        ((v.x - lbOrigin.x) / xDenom),
+
+      (yDenom === 0.0) ? lbDest.y :
+        lbDest.y + (ubDest.y - lbDest.y) *
+        ((v.y - lbOrigin.y) / yDenom));
+  }
+
+  /**
+   * Sets the target vector to the maximum components of the input vector and a
+   * upper bound.
+   *
+   * @param {Vec2} a the input vector
+   * @param {Vec2} b the upper bound
+   * @param {Vec2} target the output vector
+   * @returns the maximal values
+   */
   static max (
     a = new Vec2(),
     b = new Vec2(),
@@ -615,6 +1098,15 @@ class Vec2 {
       Math.max(a.y, b.y));
   }
 
+  /**
+   * Sets the target vector to the minimum components of the input vector and a
+   * lower bound.
+   *
+   * @param {Vec2} a the input vector
+   * @param {Vec2} b the lower bound
+   * @param {Vec2} target the output vector
+   * @returns the minimal values
+   */
   static min (
     a = new Vec2(),
     b = new Vec2(),
@@ -625,6 +1117,17 @@ class Vec2 {
       Math.min(a.y, b.y));
   }
 
+  /**
+   * Mixes two vectors together by a step in [0.0, 1.0] with the help of an
+   * easing function.
+   *
+   * @param {Vec2} origin the origin vector
+   * @param {Vec2} dest the destination vector
+   * @param {number} step the step
+   * @param {function} easingFunc  the easing function
+   * @param {Vec2} target the output vector
+   * @returns the mix
+   */
   static mix (
     origin = new Vec2(0.0, 0.0),
     dest = new Vec2(1.0, 1.0),
@@ -635,6 +1138,14 @@ class Vec2 {
     return easingFunc(origin, dest, step, target);
   }
 
+  /**
+   * Mods each component of the left vector by those of the right.
+   *
+   * @param {Vec2} a the left operand
+   * @param {Vec2} b the right operand
+   * @param {Vec2} target the output vector
+   * @returns the result
+   */
   static mod (
     a = new Vec2(),
     b = new Vec2(),
@@ -645,6 +1156,15 @@ class Vec2 {
       b.y !== 0.0 ? a.y - b.y * Math.floor(a.y / b.y) : a.y);
   }
 
+  /**
+   * A specialized form of mod which subtracts the floor of the vector from the
+   * vector. For Vec2s, useful for managing texture coordinates in the range
+   * [0.0, 1.0].
+   *
+   * @param {Vec2} v the input vector
+   * @param {Vec2} target the output vector
+   * @returns the result
+   */
   static mod1 (
     v = new Vec2(),
     target = new Vec2()) {
@@ -654,6 +1174,16 @@ class Vec2 {
       v.y - Math.floor(v.y));
   }
 
+  /**
+   * Multiplies two vectors, component-wise. Such multiplication is
+   * mathematically incorrect, but serves as a shortcut for transforming a
+   * vector by a scalar matrix.
+   *
+   * @param {Vec2} a the left operand
+   * @param {Vec2} b the right operand
+   * @param {Vec2} target the output vector
+   * @returns the product
+   */
   static mul (
     a = new Vec2(1.0, 1.0),
     b = new Vec2(1.0, 1.0),
@@ -664,6 +1194,13 @@ class Vec2 {
       a.y * b.y);
   }
 
+  /**
+   * Negates the input vector.
+   *
+   * @param {Vec2} v the input vector
+   * @param {Vec2} target the output vector
+   * @returns the negation
+   */
   static negate (
     v = new Vec2(),
     target = new Vec2()) {
@@ -671,11 +1208,25 @@ class Vec2 {
     return target.setComponents(-v.x, -v.y);
   }
 
+  /**
+   * Returns a vector with all components set to negative one.
+   *
+   * @param {Vec2} target the output vector
+   * @returns negative one
+   */
   static negOne (target = new Vec2()) {
 
     return target.setComponents(-1.0, -1.0);
   }
 
+  /**
+   * Divides a vector by its magnitude, such that the new magnitude is 1.0. The
+   * result is a unit vector, as it lies on the circumference of a unit circle.
+   *
+   * @param {Vec2} v the input vector
+   * @param {Vec2} target the output vector
+   * @returns the normalized vector
+   */
   static normalize (
     v = new Vec2(),
     target = new Vec2()) {
@@ -691,11 +1242,35 @@ class Vec2 {
       v.y * mInv);
   }
 
+  /**
+   * Returns a vector with both components set to one.
+   *
+   * @param {Vec2} target the output vector
+   * @returns one
+   */
   static one (target = new Vec2()) {
 
     return target.setComponents(1.0, 1.0);
   }
 
+  /**
+   * Finds the perpendicular of a vector in the counter-clockwise direction,
+   * such that
+   *
+   * perp ( right ) = forward, perp ( 1.0, 0.0 ) = ( 0.0, 1.0 )
+   *
+   * perp ( forward ) = left, perp ( 0.0, 1.0 ) = ( -1.0, 0.0 )
+   *
+   * perp ( left ) = back, perp ( -1.0, 0.0 ) = ( 0.0, -1.0 )
+   *
+   * perp ( back ) = right, perp ( 0.0, -1.0 ) = ( 1.0, 0.0 )
+   *
+   * In terms of the components, perp ( x, y ) = ( -y, x ) .
+   *
+   * @param {Vec2} v the vector
+   * @param {Vec2} target the output vector
+   * @returns the perpendicular
+   */
   static perpendicularCCW (
     v = new Vec2(1.0, 0.0),
     target = new Vec2()) {
@@ -703,6 +1278,23 @@ class Vec2 {
     return target.setComponents(-v.y, v.x);
   }
 
+  /**
+   * Finds the perpendicular of a vector in the clockwise direction, such that
+   *
+   * perp ( right ) = back, perp( 1.0, 0.0 ) = ( 0.0, -1.0 )
+   *
+   * perp ( back ) = left, perp( 0.0, -1.0 ) = ( -1.0, 0.0 )
+   *
+   * perp ( left ) = forward, perp( -1.0, 0.0 ) = ( 0.0, 1.0 )
+   *
+   * perp ( forward ) = right, perp( 0.0, 1.0 ) = ( 1.0, 0.0 )
+   *
+   * In terms of the components, perp ( x, y ) = ( y, -x ) .
+   *
+   * @param {Vec2} v the vector
+   * @param {Vec2} target the output vector
+   * @returns the perpendicular
+   */
   static perpendicularCW (
     v = new Vec2(1.0, 0.0),
     target = new Vec2()) {
@@ -710,6 +1302,14 @@ class Vec2 {
     return target.setComponents(v.y, -v.x);
   }
 
+  /**
+   * Raises a vector to the power of another vector.
+   *
+   * @param {Vec2} a the left operand
+   * @param {Vec2} b the right operand
+   * @param {Vec2} target the output vector
+   * @returns the result
+   */
   static pow (
     a = new Vec2(),
     b = new Vec2(),
@@ -720,6 +1320,13 @@ class Vec2 {
       Math.pow(a.y, b.y));
   }
 
+  /**
+   * Returns the scalar projection of a onto b .
+   *
+   * @param {Vec2} a the left operand
+   * @param {Vec2} b the right operand
+   * @returns the scalar projection
+   */
   static projectScalar (
     a = new Vec2(),
     b = new Vec2()) {
@@ -731,6 +1338,16 @@ class Vec2 {
     return 0.0;
   }
 
+  /**
+   * Projects one vector onto another. Defined as
+   *
+   * proj ( a, b ) := b ( dot ( a, b ) / dot ( b, b ) )
+   *
+   * @param {Vec2} a the left operand
+   * @param {Vec2} b the right operand
+   * @param {Vec2} target the output vector
+   * @returns the projection
+   */
   static projectVector (
     a = new Vec2(),
     b = new Vec2(),
@@ -739,6 +1356,15 @@ class Vec2 {
     return Vec2.scale(b, Vec2.projectScalar(a, b), target);
   }
 
+  /**
+   * Creates a random point in the Cartesian coordinate system given a lower and
+   * an upper bound.
+   *
+   * @param {Vec2} lb the lower bound
+   * @param {Vec2} ub the upper bound
+   * @param {Vec2} target the output vector
+   * @returns the random vector
+   */
   static randomCartesian (
     lb = new Vec2(-1.0, -1.0),
     ub = new Vec2(1.0, 1.0),
@@ -752,13 +1378,73 @@ class Vec2 {
       (1.0 - yFac) * lb.y + yFac * ub.y);
   }
 
+  /**
+   *  Creates a vector with a magnitude of 1.0 at a random heading, such that it
+   *  lies on the unit circle.
+   *
+   *  @param {Vec2} target  the output vector
+   *  @returns the random vector
+   */
   static randomPolar (target = new Vec2()) {
 
     const tFac = Math.random();
     return Vec2.fromPolar(
-      (1.0 - tFac) * -Math.PI + tFac * Math.PI,
+      (1.0 - tFac) * -3.141592653589793 + tFac * 3.141592653589793,
       1.0,
       target);
+  }
+
+  /**
+   * Reflects an incident vector off a normal vector.
+   *
+   * @param {Vec2} incident the incident vector
+   * @param {Vec2} normal the normal vector
+   * @param {the output vector} target the output vector
+   * @returns the reflected vector
+   */
+  static reflect (
+    incident = new Vec2(),
+    normal = new Vec2(),
+    target = new Vec2()) {
+
+    const nMSq = Vec2.magSq(normal);
+    if (nMSq === 0.0) { return target.reset(); }
+
+    const mInv = 1.0 / Math.sqrt(nMSq);
+    const nx = normal.x * mInv;
+    const ny = normal.y * mInv;
+
+    const scalar = 2.0 *
+      (nx * incident.x +
+        ny * incident.y);
+
+    return target.set(
+      incident.x - scalar * nx,
+      incident.y - scalar * ny);
+  }
+
+  /**
+   * Refracts a vector through a volume using Snell's law.
+   *
+   * @param {Vec2} incident the incident vector
+   * @param {Vec2} normal the normal vector
+   * @param {number} eta ratio of refraction indices
+   * @param {Vec2} target the output vector
+   * @returns the refraction
+   */
+  static refract (
+    incident = new Vec2(),
+    normal = new Vec2(),
+    eta = 0.0,
+    target = new Vec2()) {
+
+    const nDotI = Vec2.dot(normal, incident);
+    const k = 1.0 - eta * eta * (1.0 - nDotI * nDotI);
+    if (k < 0.0) { return target.reset(); }
+    const scalar = eta * nDotI + Math.sqrt(k);
+    return target.setComponents(
+      eta * incident.x - scalar * normal.x,
+      eta * incident.y - scalar * normal.y);
   }
 
   /**
