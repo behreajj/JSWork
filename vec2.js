@@ -211,7 +211,7 @@ class Vec2 {
    */
   static abs (
     v = new Vec2(),
-    target = new Vec3()) {
+    target = new Vec2()) {
 
     return target.setComponents(
       Math.abs(v.x),
@@ -229,7 +229,7 @@ class Vec2 {
   static add (
     a = new Vec2(),
     b = new Vec2(),
-    target = new Vec3()) {
+    target = new Vec2()) {
 
     return target.setComponents(
       a.x + b.x,
@@ -510,7 +510,7 @@ class Vec2 {
   }
 
   /**
-   * Compares two vectors by its y component, then its x component. To be
+   * Compares two vectors by y component, then x component. To be
    * provided to array sort functions.
    *
    * @param {Vec2} a left comparisand
@@ -1399,7 +1399,7 @@ class Vec2 {
    *
    * @param {Vec2} incident the incident vector
    * @param {Vec2} normal the normal vector
-   * @param {the output vector} target the output vector
+   * @param {Vec2} target the output vector
    * @returns the reflected vector
    */
   static reflect (
@@ -1560,7 +1560,7 @@ class Vec2 {
 
   /**
    * Eases from the origin to the destination vector by a step, using the
-   * formula t\u00b2 ( 3.0 - 2.0 t ) . When the step is less than zero, returns
+   * formula t t ( 3.0 - 2.0 t ) . When the step is less than zero, returns
    * the origin. When the step is greater than one, returns the destination.
    *
    * @param {Vec2} origin the origin vector

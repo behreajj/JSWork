@@ -161,7 +161,7 @@ class Vec3 {
   }
 
   /**
-   * Returns an array of length 2 containing this vector's components.
+   * Returns an array of length 3 containing this vector's components.
    *
    * @returns the array
    */
@@ -172,7 +172,7 @@ class Vec3 {
 
   /**
    * Returns a JSON formatted string.
-   * 
+   *
    * @param {number} precision number of decimal places
    * @returns the string
    */
@@ -351,11 +351,23 @@ class Vec3 {
       ((a.x * b.y - a.y * b.x) === 0.0);
   }
 
+  /**
+   * Finds the vector's azimuth, or heading, in the range [ -PI, PI ] .
+   *
+   * @param {Vec3} v the input vector
+   * @returns the angle in radians
+   */
   static azimuthSigned (v = new Vec3(1.0, 0.0, 0.0)) {
 
     return Math.atan2(v.y, v.x);
   }
 
+  /**
+   * Finds the vector's heading in the range [ 0.0, TAU ] .
+   *
+   * @param {Vec3} v the input vector
+   * @returns the angle in radians
+   */
   static azimuthUnsigned (v = new Vec3(1.0, 0.0, 0.0)) {
 
     const angle = Vec3.azimuthSigned(v);
@@ -504,7 +516,7 @@ class Vec3 {
    * @param {Vec3} v the input vector
    * @param {Vec3} lb the range lower bound
    * @param {Vec3} ub the range upper bound
-   * @param {Vec#} target the output vector
+   * @param {Vec3} target the output vector
    * @returns the clamped vector
    */
   static clamp (
@@ -558,7 +570,7 @@ class Vec3 {
   }
 
   /**
-   * Compares two vectors by its y component, then its x component. To be
+   * Compares two vectors by z component, y component, then x component. To be
    * provided to array sort functions.
    *
    * @param {Vec3} a left comparisand
@@ -1144,7 +1156,7 @@ class Vec3 {
   /**
    * Returns to a vector with a negative value on the x axis, (-1.0, 0.0, 0.0) .
    *
-   * @param {Vec2} target the output vector
+   * @param {Vec3} target the output vector
    * @returns left
    */
   static left (target = new Vec3()) {
@@ -1178,16 +1190,16 @@ class Vec3 {
     return Vec3.lerpUnclamped(origin, dest, step);
   }
 
-   /**
-    * An unclamped linear interpolation from an origin to a destination by a
-    * step.
-    *
-    * @param {Vec3} origin the original vector
-    * @param {Vec3} dest the destination vector
-    * @param {number} step the step
-    * @param {Vec3} target the output vector
-    * @returns the interpolation
-    */
+  /**
+   * An unclamped linear interpolation from an origin to a destination by a
+   * step.
+   *
+   * @param {Vec3} origin the original vector
+   * @param {Vec3} dest the destination vector
+   * @param {number} step the step
+   * @param {Vec3} target the output vector
+   * @returns the interpolation
+   */
   static lerpUnclamped (
     origin = new Vec3(0.0, 0.0, 0.0),
     dest = new Vec3(1.0, 1.0, 1.0),
@@ -1261,12 +1273,12 @@ class Vec3 {
    * @returns the output vector
    */
   static map (
-    v = new Vec2(),
-    lbOrigin = new Vec2(-1.0, -1.0, -1.0),
-    ubOrigin = new Vec2(1.0, 1.0, 1.0),
-    lbDest = new Vec2(0.0, 0.0, 0.0),
-    ubDest = new Vec2(1.0, 1.0, 1.0),
-    target = new Vec2()) {
+    v = new Vec3(),
+    lbOrigin = new Vec3(-1.0, -1.0, -1.0),
+    ubOrigin = new Vec3(1.0, 1.0, 1.0),
+    lbDest = new Vec3(0.0, 0.0, 0.0),
+    ubDest = new Vec3(1.0, 1.0, 1.0),
+    target = new Vec3()) {
 
     const xDenom = ubOrigin.x - lbOrigin.x;
     const yDenom = ubOrigin.y - lbOrigin.y;
@@ -1507,9 +1519,9 @@ class Vec3 {
    *
    * proj ( a, b ) := b ( dot ( a, b ) / dot ( b, b ) )
    *
-   * @param {Vec2} a the left operand
-   * @param {Vec2} b the right operand
-   * @param {Vec2} target the output vector
+   * @param {Vec3} a the left operand
+   * @param {Vec3} b the right operand
+   * @param {Vec3} target the output vector
    * @returns the projection
    */
   static projectVector (
@@ -1584,7 +1596,7 @@ class Vec3 {
      *
      * @param {Vec3} incident the incident vector
      * @param {Vec3} normal the normal vector
-     * @param {the output vector} target the output vector
+     * @param {Vec3} target the output vector
      * @returns the reflected vector
      */
   static reflect (
@@ -1672,6 +1684,16 @@ class Vec3 {
     return target.setComponents(1.0, 0.0, 0.0);
   }
 
+  /**
+   *  Rotates a vector around an arbitrary axis. The axis is assumed to be
+   *  normalized.
+   *
+   *  @param {Vec3} v the vector
+   *  @param {number} radians the angle in radians
+   *  @param {Vec3} axis the axis
+   *  @param {Vec3} target the output vector
+   *  @returns the rotated vector
+   */
   static rotate (
     v = new Vec3(1.0, 0.0, 0.0),
     radians = 0.0,
@@ -1686,6 +1708,20 @@ class Vec3 {
       target);
   }
 
+  /**
+   * Rotates a vector around an arbitrary axis. The axis is assumed to be
+   * normalized.
+   *
+   * Accepts pre-calculated sine and cosine of an angle, so that collections of
+   * vectors can be efficiently rotated without repeatedly calling cos and sin.
+   *
+   * @param {Vec3} v the vector
+   * @param {number} cosa the cosine of the angle
+   * @param {number} sina the sine of the angle
+   * @param {Vec3} axis the axis
+   * @param {Vec3} target the output vector
+   * @returns the rotated vector
+   */
   static rotateInternal (
     v = new Vec3(1.0, 0.0, 0.0),
     cosa = 1.0,
@@ -1886,8 +1922,8 @@ class Vec3 {
 
   /**
    * Eases from the origin to the destination vector by a step, using the
-   * formula t\u00b2 ( 3.0 - 2.0 t ) . When the step is less than zero, returns
-   * the origin. When the step is greater than one, returns the destination.
+   * formula t t ( 3.0 - 2.0 t ) . When the step is less than zero, returns the
+   * origin. When the step is greater than one, returns the destination.
    *
    * @param {Vec3} origin the origin vector
    * @param {Vec3} dest the destination vector
@@ -1966,7 +2002,7 @@ class Vec3 {
    * Returns an object with the vector's magnitude (rho), azimuth (theta) and
    * inclination(phi).
    *
-   * @param {Vec2} v the input vector
+   * @param {Vec3} v the input vector
    * @returns the spherical coordinates 
    */
   static toSpherical (v = new Vec3(1.0, 0.0, 0.0)) {
@@ -2006,7 +2042,7 @@ class Vec3 {
   }
 
   /**
-   * Returns to a vector with a negative value on the z axis, (0.0, 0.0, 1.0) .
+   * Returns to a vector with a positive value on the z axis, (0.0, 0.0, 1.0) .
    *
    * @param {Vec3} target the output vector
    * @returns up

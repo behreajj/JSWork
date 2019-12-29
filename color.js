@@ -234,30 +234,6 @@ class Color extends Vec4 {
     return target.setComponents(0.0, 0.0, 1.0, 1.0);
   }
 
-  static clamp (
-    c = new Color(),
-    lb = new Color(0.0, 0.0, 0.0, 0.0),
-    ub = new Color(1.0, 1.0, 1.0, 1.0),
-    target = new Color()) {
-
-    return target.setComponents(
-      Math.min(Math.max(c.r, lb.r), ub.r),
-      Math.min(Math.max(c.g, lb.g), ub.g),
-      Math.min(Math.max(c.b, lb.b), ub.b),
-      Math.min(Math.max(c.a, lb.a), ub.a));
-  }
-
-  static clamp01 (
-    c = new Color(),
-    target = new Color()) {
-
-    return target.setComponents(
-      Math.min(Math.max(c.r, 0.0), 1.0),
-      Math.min(Math.max(c.g, 0.0), 1.0),
-      Math.min(Math.max(c.b, 0.0), 1.0),
-      Math.min(Math.max(c.a, 0.0), 1.0));
-  }
-
   /**
    * Returns the color clear black, ( 0.0, 0.0, 0.0, 0.0 ) .
    *
@@ -280,6 +256,13 @@ class Color extends Vec4 {
     return target.setComponents(1.0, 1.0, 1.0, 0.0);
   }
 
+  /**
+   * Compares two colors by luminance. To be provided to array sort functions.
+   *
+   * @param {Color} a left comparisand
+   * @param {Color} b right comparisand
+   * @returns the comparison
+   */
   static compareLuminance (
     a = new Color(),
     b = new Color()) {
@@ -406,17 +389,6 @@ class Color extends Vec4 {
       default:
         return Color.black(target);
     }
-  }
-
-  static inverse (
-    c = new Color(),
-    target = new Color()) {
-
-    return target.setComponents(
-      Math.max(0.0, 1.0 - c.r),
-      Math.max(0.0, 1.0 - c.g),
-      Math.max(0.0, 1.0 - c.b),
-      Math.min(Math.max(c.a, 0.0), 1.0));
   }
 
   /**
@@ -618,9 +590,7 @@ class Color extends Vec4 {
       }
 
       hue *= 0.16666666666666667;
-      if (hue < 0.0) {
-        hue += 1.0
-      }
+      if (hue < 0.0) { hue += 1.0 }
     }
 
     const sat = (bri === 0.0) ? 0.0 : (delta / bri);
@@ -637,7 +607,9 @@ class Color extends Vec4 {
    * @param {Color} target the output color
    * @returns the color in XYZ
    */
-  static rgbaToXyzw (c = new Color(), target = new Vec4()) {
+  static rgbaToXyzw (
+    c = new Color(), 
+    target = new Vec4()) {
 
     return target.setComponents(
       0.412453 * c.r + 0.357580 * c.g + 0.180423 * c.b,
@@ -723,7 +695,9 @@ class Color extends Vec4 {
    * @param {Color} target the output color
    * @returns the color in RGB
    */
-  static xyzwToRgba (v = new Vec4(), target = new Color()) {
+  static xyzwToRgba (
+    v = new Vec4(), 
+    target = new Color()) {
 
     return target.setComponents(
       3.240479 * v.x - 1.537150 * v.y - 0.498535 * v.z,

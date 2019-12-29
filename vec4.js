@@ -1,7 +1,21 @@
 'use strict';
 
+/**
+ * A mutable, extensible class influenced by GLSL, OSL and p5*js's p5.Vector .
+ * This is intended for storing points and directions in three-dimensional
+ * graphics programs. Instance methods are limited, while most static methods
+ * require an explicit output variable to be provided.
+ */
 class Vec4 {
 
+  /**
+   * Constructs a vector from numbers.
+   *
+   * @param {number} x the x coordinate
+   * @param {number} y the y coordinate
+   * @param {number} z the z coordinate
+   * @param {number} w the w coordinate
+   */
   constructor (x = 0.0, y = 0.0, z = 0.0, w = 0.0) {
 
     this._x = x;
@@ -84,6 +98,12 @@ class Vec4 {
     }
   }
 
+  /**
+   * Gets a component of this vector by index.
+   *
+   * @param {number} i the index
+   * @returns the value
+   */
   get (i = -1) {
 
     switch (i) {
@@ -100,6 +120,11 @@ class Vec4 {
     }
   }
 
+  /**
+   * Resets this vector to an initial state, ( 0.0, 0.0, 0.0, 0.0 ) .
+   *
+   * @returns this vector
+   */
   reset () {
 
     this._x = 0.0;
@@ -110,6 +135,13 @@ class Vec4 {
     return this;
   }
 
+  /**
+   * Sets a component of this vector by index.
+   *
+   * @param {number} i the index
+   * @param {number} v the value
+   * @returns this vector
+   */
   set (i = -1, v = 0.0) {
 
     switch (i) {
@@ -130,6 +162,15 @@ class Vec4 {
     return this;
   }
 
+  /**
+   * Sets the components of this vector.
+   *
+   * @param {number} x the x coordinate
+   * @param {number} y the y coordinate
+   * @param {number} z the z coordinate
+   * @param {number} w the w coordinate
+   * @returns this vector
+   */
   setComponents (x = 0.0, y = 0.0, z = 0.0, w = 0.0) {
 
     this._x = x;
@@ -140,6 +181,11 @@ class Vec4 {
     return this;
   }
 
+  /**
+   * Returns an array of length 4 containing this vector's components.
+   *
+   * @returns the array
+   */
   toArray () {
 
     return [
@@ -149,6 +195,12 @@ class Vec4 {
       this._w];
   }
 
+  /**
+   * Returns a JSON formatted string.
+   *
+   * @param {number} precision number of decimal places
+   * @returns the string
+   */
   toJsonString (precision = 6) {
 
     return [
@@ -164,6 +216,11 @@ class Vec4 {
     ].join('');
   }
 
+  /**
+   * Returns an object literal with this vector's components.
+   *
+   * @returns the object
+   */
   toObject () {
 
     return {
@@ -174,6 +231,12 @@ class Vec4 {
     };
   }
 
+  /**
+   * Returns a string representation of this vector.
+   *
+   * @param {number} precision number of decimal places
+   * @returns the string
+   */
   toString (precision = 4) {
 
     return [
@@ -189,6 +252,13 @@ class Vec4 {
     ].join('');
   }
 
+  /**
+   * Finds the absolute value of each vector component.
+   *
+   * @param {Vec4} v the input vector
+   * @param {Vec4} target the output vector
+   * @returns the absolute vector
+   */
   static abs (
     v = new Vec4(),
     target = new Vec4()) {
@@ -200,6 +270,14 @@ class Vec4 {
       Math.abs(v.w));
   }
 
+  /**
+   * Adds two vectors together.
+   *
+   * @param {Vec4} a the left operand
+   * @param {Vec4} b the right operand
+   * @param {Vec4} target the output vector
+   * @returns the sum
+   */
   static add (
     a = new Vec4(),
     b = new Vec4(),
@@ -212,6 +290,14 @@ class Vec4 {
       a.w + b.w);
   }
 
+  /**
+   * Adds and then normalizes two vectors.
+   *
+   * @param {Vec4} a the left operand
+   * @param {Vec4} b the right operand
+   * @param {Vec4} target the output vector
+   * @returns the normalized sum
+   */
   static addNorm (
     a = new Vec4(),
     b = new Vec4(),
@@ -235,6 +321,14 @@ class Vec4 {
       dw * mInv);
   }
 
+  /**
+   * Tests to see if two vectors approximate each other.
+   *
+   * @param {Vec4} a the left operand
+   * @param {Vec4} b the right operand 
+   * @param {number} tolerance the tolerance
+   * @returns the evaluation
+   */
   static approx (
     a = new Vec4(),
     b = new Vec4(),
@@ -246,6 +340,14 @@ class Vec4 {
       Math.abs(b.x - a.x) < tolerance;
   }
 
+  /**
+   * Tests to see if two vectors approximate each other.
+   *
+   * @param {Vec4} a the input vector
+   * @param {number} b the magnitude
+   * @param {number} tolerance the tolerance
+   * @returns the evaluation
+   */
   static approxMag (
     a = new Vec4(),
     b = 1.0,
@@ -254,6 +356,25 @@ class Vec4 {
     return Math.abs((b * b) - Vec4.magSq(a)) < tolerance;
   }
 
+  /**
+   * Returns to a vector with a negative value on the y axis, (0.0, -1.0, 0.0,
+   * 0.0) .
+   *
+   * @param {Vec4} target the output vector
+   * @returns back
+   */
+  static back (target = new Vec4()) {
+
+    return target.setComponents(0.0, -1.0, 0.0, 0.0);
+  }
+
+  /**
+   * Raises each component of the vector to the nearest greater integer.
+   *
+   * @param {Vec4} v the input vector
+   * @param {Vec4} target the output vector
+   * @returns the result
+   */
   static ceil (
     v = new Vec4(),
     target = new Vec4()) {
@@ -265,6 +386,15 @@ class Vec4 {
       Math.ceil(v.w));
   }
 
+  /**
+   * Clamps a vector to a range within the lower and upper bound.
+   *
+   * @param {Vec4} v the input vector
+   * @param {Vec4} lb the range lower bound
+   * @param {Vec4} ub the range upper bound
+   * @param {Vec4} target the output vector
+   * @returns the clamped vector
+   */
   static clamp (
     v = new Vec4(),
     lb = new Vec4(0.0, 0.0, 0.0, 0.0),
@@ -278,6 +408,14 @@ class Vec4 {
       Math.min(Math.max(v.w, lb.w), ub.w));
   }
 
+  /**
+   * Clamps the vector to a range in [0.0, 1.0]. Useful for working with uv
+   * coordinates.
+   *
+   * @param {Vec4} v the input vector
+   * @param {Vec4} target the output vector
+   * @returns the clamped vector
+   */
   static clamp01 (
     v = new Vec4(),
     target = new Vec4()) {
@@ -289,6 +427,13 @@ class Vec4 {
       Math.min(Math.max(v.w, 0.0), 1.0));
   }
 
+  /**
+   * Compares two vectors by magnitude. To be provided to array sort functions.
+   *
+   * @param {Vec4} a left comparisand
+   * @param {Vec4} b right comparisand
+   * @returns the comparison
+   */
   static compareMag (
     a = new Vec4(),
     b = new Vec4()) {
@@ -302,6 +447,14 @@ class Vec4 {
     return 0;
   }
 
+  /**
+   * Compares two vectors by w component, z component, y component, then x
+   * component. To be provided to array sort functions.
+   *
+   * @param {Vec4} a left comparisand
+   * @param {Vec4} b right comparisand
+   * @returns the comparison
+   */
   static compareWzyx (
     a = new Vec4(),
     b = new Vec4()) {
@@ -318,6 +471,15 @@ class Vec4 {
     return 0;
   }
 
+  /**
+   * Multiplies a magnitude, the left operand, by the sign of the right operand,
+   * such that the magnitude of a matches the sign of b.
+   *
+   * @param {Vec4} a left operand
+   * @param {Vec4} b right operand
+   * @param {Vec4} target the output vector
+   * @returns the signed magnitude
+   */
   static copySign (
     a = new Vec4(),
     b = new Vec4(),
@@ -330,6 +492,14 @@ class Vec4 {
       a.w * Math.sign(b.w));
   }
 
+  /**
+   * Finds the absolute value of the difference between two vectors.
+   *
+   * @param {Vec4} a left operand
+   * @param {Vec4} b right operand
+   * @param {Vec4} target the output vector
+   * @returns the absolute difference
+   */
   static diff (
     a = new Vec4(),
     b = new Vec4(),
@@ -342,6 +512,14 @@ class Vec4 {
       Math.abs(b.w - a.w));
   }
 
+  /**
+   * Finds the Chebyshev distance between two vectors. Forms a square pattern
+   * when plotted.
+   *
+   * @param {Vec4} a left operand
+   * @param {Vec4} b right operand
+   * @returns the distance
+   */
   static distChebyshev (
     a = new Vec4(),
     b = new Vec4()) {
@@ -353,6 +531,14 @@ class Vec4 {
       Math.abs(b.w - a.w));
   }
 
+  /**
+   * Finds the Euclidean distance between two vectors. Where possible, use
+   * distance squared to avoid the computational cost of the square-root.
+   *
+   * @param {Vec4} a left operand
+   * @param {Vec4} b right operand
+   * @returns the distance
+   */
   static distEuclidean (
     a = new Vec4(),
     b = new Vec4()) {
@@ -364,6 +550,14 @@ class Vec4 {
       b.w - a.w);
   }
 
+  /**
+   * Finds the Manhattan distance between two vectors. Forms a diamond pattern
+   * when plotted.
+   *
+   * @param {Vec4} a left operand
+   * @param {Vec4} b right operand
+   * @returns the distance
+   */
   static distManhattan (
     a = new Vec4(),
     b = new Vec4()) {
@@ -374,6 +568,17 @@ class Vec4 {
       Math.abs(b.w - a.w);
   }
 
+  /**
+   * Finds the Minkowski distance between two vectors. This is a generalization
+   * of other distance formulae. When the exponent value, c, is 1.0, the
+   * Minkowski distance equals the Manhattan distance; when it is 2.0, Minkowski
+   * equals the Euclidean distance.
+   *
+   * @param {Vec4} a left operand
+   * @param {Vec4} b right operand
+   * @param {number} c the exponent
+   * @returns the distance
+   */
   static distMinkowski (
     a = new Vec4(),
     b = new Vec4(),
@@ -391,6 +596,15 @@ class Vec4 {
       1.0 / c);
   }
 
+  /**
+   * Finds the Euclidean distance squared between two vectors. Equivalent to
+   * subtracting one vector from the other, then finding the dot product of the
+   * difference with itself.
+   *
+   * @param {Vec4} a left operand
+   * @param {Vec4} b right operand
+   * @returns the distance
+   */
   static distSq (
     a = new Vec4(),
     b = new Vec4()) {
@@ -405,6 +619,16 @@ class Vec4 {
       wd * wd;
   }
 
+  /**
+   * Divides the left operand by the right, component-wise. This is
+   * mathematically incorrect, but serves as a shortcut for transforming a
+   * vector by the inverse of a scalar matrix.
+   *
+   * @param {Vec4} a numerator
+   * @param {Vec4} b denominator
+   * @param {Vec4} target the output vector
+   * @returns the quotient
+   */
   static div (
     a = new Vec4(1.0, 1.0, 1.0, 1.0),
     b = new Vec4(1.0, 1.0, 1.0, 1.0),
@@ -417,6 +641,14 @@ class Vec4 {
       b.w !== 0.0 ? a.w / b.w : 0.0);
   }
 
+  /**
+   * Finds the dot product of two vectors by summing the products of their
+   * corresponding components. dot ( a, b ) := ax bx + ay by + az bz .
+   *
+   * @param {Vec4} a left operand
+   * @param {Vec4} b right operand
+   * @returns the dot product
+   */
   static dot (
     a = new Vec4(),
     b = new Vec4()) {
@@ -427,6 +659,25 @@ class Vec4 {
       a.w * b.w;
   }
 
+  /**
+   * Returns to a vector with a negative value on the z axis, (0.0, 0.0, -1.0,
+   * 0.0) .
+   *
+   * @param {Vec4} target the output vector
+   * @returns down
+   */
+  static down (target = new Vec4()) {
+
+    return target.setComponents(0.0, 0.0, -1.0, 0.0);
+  }
+
+  /**
+   * Returns a vector with all components set to a small, positive non-zero
+   * value, 0.000001 .
+   *
+   * @param {Vec4} target the output vector
+   * @returns epsilon
+   */
   static epsilon (target = new Vec4()) {
 
     return target.setComponents(
@@ -436,6 +687,13 @@ class Vec4 {
       0.000001);
   }
 
+  /**
+   * Floors each component of the vector.
+   *
+   * @param {Vec4} v the input vector
+   * @param {Vec4} target the output vector
+   * @returns the floor
+   */
   static floor (
     v = new Vec4(),
     target = new Vec4()) {
@@ -447,6 +705,15 @@ class Vec4 {
       Math.floor(v.w));
   }
 
+  /**
+   * Applies the % operator (truncation-based modulo) to each component of the
+   * left operand.
+   *
+   * @param {Vec4} a left operand
+   * @param {Vec4} b right operand
+   * @param {Vec4} target the output vector
+   * @returns the result 
+   */
   static fmod (
     a = new Vec4(),
     b = new Vec4(),
@@ -459,6 +726,26 @@ class Vec4 {
       b.w !== 0.0 ? a.w % b.w : a.w);
   }
 
+
+  /**
+   * Returns to a vector with a positive value on the y axis, (0.0, 1.0, 0.0,
+   * 0.0) .
+   *
+   * @param {Vec4} target the output vector
+   * @returns forward
+   */
+  static forward (target = new Vec4()) {
+
+    return target.setComponents(0.0, 1.0, 0.0, 0.0);
+  }
+
+  /**
+   * Returns the fractional portion of the vector's components.
+   *
+   * @param {Vec4} v the input vector
+   * @param {Vec4} target the output vector
+   * @returns the fractional portion
+   */
   static fract (
     v = new Vec4(),
     target = new Vec4()) {
@@ -470,6 +757,13 @@ class Vec4 {
       v.w - Math.trunc(v.w));
   }
 
+  /**
+   * Creates a vector from the array.
+   *
+   * @param {Array} arr the array
+   * @param {Vec4} target the output vector
+   * @returns the vector
+   */
   static fromArray (
     arr = [0.0, 0.0, 0.0, 0.0],
     target = new Vec4()) {
@@ -481,6 +775,13 @@ class Vec4 {
       arr[3]);
   }
 
+  /**
+   * Creates a vector from a scalar.
+   *
+   * @param {number} scalar the scalar
+   * @param {Vec4} target the output vector
+   * @returns the vector
+   */
   static fromScalar (
     scalar = 1.0,
     target = new Vec4()) {
@@ -492,6 +793,13 @@ class Vec4 {
       scalar);
   }
 
+  /**
+   * Copies a vector's coordinates from a source.
+   *
+   * @param {Vec4} source the source vector
+   * @param {Vec4} target the output vector
+   * @returns the vector
+   */
   static fromSource (
     source = new Vec4(),
     target = new Vec4()) {
@@ -503,6 +811,13 @@ class Vec4 {
       source.w);
   }
 
+  /**
+   * Tests to see if all the vector's components are non-zero. Useful when
+   * testing valid dimensions (width, depth and height) stored in vectors.
+   *
+   * @param {Vec4} v the input vector
+   * @returns the evaluation
+   */
   static isNonZero (v = new Vec4()) {
 
     return (v.w !== 0.0) &&
@@ -511,11 +826,25 @@ class Vec4 {
       (v.x !== 0.0);
   }
 
+  /**
+   * Tests to see if the vector is on the unit sphere, i.e., has a magnitude of
+   * approximately 1.0.
+   *
+   * @param {Vec4} v the input vector
+   * @returns the evaluation
+   */
   static isUnit (v = new Vec4()) {
 
-    return Vec3.approxMag(v, 1.0);
+    return Vec4.approxMag(v, 1.0);
   }
 
+  /**
+   * Tests to see if all the vector's components are zero. Useful when
+   * safeguarding against invalid directions.
+   *
+   * @param {Vec4} v the input vector
+   * @returns the evaluation
+   */
   static isZero (v = new Vec4()) {
 
     return (v.w === 0.0) &&
@@ -524,6 +853,27 @@ class Vec4 {
       (v.x === 0.0);
   }
 
+  /**
+   * Returns to a vector with a negative value on the x axis, (-1.0, 0.0, 0.0,
+   * 0.0) .
+   *
+   * @param {Vec4} target the output vector
+   * @returns left
+   */
+  static left (target = new Vec4()) {
+
+    return target.setComponents(-1.0, 0.0, 0.0, 0.0);
+  }
+
+  /**
+   * A clamped linear interpolation from an origin to a destination by a step.
+   *
+   * @param {Vec4} origin the original vector
+   * @param {Vec4} dest the destination vector
+   * @param {number} step the step
+   * @param {Vec4} target the output vector
+   * @returns the interpolation
+   */
   static lerp (
     origin = new Vec4(0.0, 0.0, 0.0, 0.0),
     dest = new Vec4(1.0, 1.0, 1.0, 1.0),
@@ -541,6 +891,16 @@ class Vec4 {
     return Vec4.lerpUnclamped(origin, dest, step);
   }
 
+  /**
+   * An unclamped linear interpolation from an origin to a destination by a
+   * step.
+   *
+   * @param {Vec4} origin the original vector
+   * @param {Vec4} dest the destination vector
+   * @param {number} step the step
+   * @param {Vec4} target the output vector
+   * @returns the interpolation
+   */
   static lerpUnclamped (
     origin = new Vec4(0.0, 0.0, 0.0, 0.0),
     dest = new Vec4(1.0, 1.0, 1.0, 1.0),
@@ -555,6 +915,15 @@ class Vec4 {
       u * origin.w + step * dest.w);
   }
 
+  /**
+   * Limits a vector's magnitude to a scalar. Does nothing if the vector is
+   * beneath the limit.
+   *
+   * @param {Vec4} v the input vector
+   * @param {number} limit the limit
+   * @param {Vec4} target the output vector
+   * @returns the limited vector
+   */
   static limit (
     v = new Vec4(),
     limit = Number.MAX_VALUE,
@@ -566,11 +935,27 @@ class Vec4 {
     return Vec4.fromSource(v, target);
   }
 
+  /**
+   * Finds the length, or magnitude, of a vector. Also referred to as the radius
+   * when using polar coordinates. Where possible, use magSq or dot to avoid the
+   * computational cost of the square-root.
+   *
+   * @param {Vec4} v the input vector
+   * @returns the magnitude
+   */
   static mag (v = new Vec4()) {
 
     return Math.hypot(v.x, v.y, v.z, v.w);
   }
 
+  /**
+   * Finds the length-, or magnitude-, squared of a vector. Returns the same
+   * result as dot ( a , a ) . Useful when calculating the lengths of many
+   * vectors, so as to avoid the computational cost of the square-root.
+   *
+   * @param {Vec4} v the input vector
+   * @returns the magnitude squared
+   */
   static magSq (v = new Vec4()) {
 
     return v.x * v.x +
@@ -579,6 +964,17 @@ class Vec4 {
       v.w * v.w;
   }
 
+  /**
+   * Maps an input vector from an original range to a target range.
+   *
+   * @param {Vec4} v the input vector
+   * @param {Vec4} lbOrigin the lower bound original range
+   * @param {Vec4} ubOrigin the upper bound original range
+   * @param {Vec4} lbDest the lower bound destination range
+   * @param {Vec4} ubDest the upper bound destination range
+   * @param {Vec4} target the output vector
+   * @returns the output vector
+   */
   static map (
     v = new Vec4(),
     lbOrigin = new Vec4(-1.0, -1.0, -1.0, -1.0),
@@ -610,6 +1006,15 @@ class Vec4 {
         ((v.w - lbOrigin.w) / wDenom));
   }
 
+  /**
+   * Sets the target vector to the maximum components of the input vector and a
+   * upper bound.
+   *
+   * @param {Vec4} a the input vector
+   * @param {Vec4} b the upper bound
+   * @param {Vec4} target the output vector
+   * @returns the maximal values
+   */
   static max (
     a = new Vec4(),
     b = new Vec4(),
@@ -622,6 +1027,15 @@ class Vec4 {
       Math.max(a.w, b.w));
   }
 
+  /**
+   * Sets the target vector to the minimum components of the input vector and a
+   * lower bound.
+   *
+   * @param {Vec4} a the input vector
+   * @param {Vec4} b the lower bound
+   * @param {Vec4} target the output vector
+   * @returns the minimal values
+   */
   static min (
     a = new Vec4(),
     b = new Vec4(),
@@ -634,6 +1048,17 @@ class Vec4 {
       Math.min(a.w, b.w));
   }
 
+  /**
+   * Mixes two vectors together by a step in [0.0, 1.0] with the help of an
+   * easing function.
+   *
+   * @param {Vec4} origin the origin vector
+   * @param {Vec4} dest the destination vector
+   * @param {number} step the step
+   * @param {function} easingFunc  the easing function
+   * @param {Vec4} target the output vector
+   * @returns the mix
+   */
   static mix (
     origin = new Vec4(0.0, 0.0, 0.0, 0.0),
     dest = new Vec4(1.0, 1.0, 1.0, 1.0),
@@ -644,6 +1069,14 @@ class Vec4 {
     return easingFunc(origin, dest, step, target);
   }
 
+  /**
+   * Mods each component of the left vector by those of the right.
+   *
+   * @param {Vec4} a the left operand
+   * @param {Vec4} b the right operand
+   * @param {Vec4} target the output vector
+   * @returns the result
+   */
   static mod (
     a = new Vec4(),
     b = new Vec4(),
@@ -656,6 +1089,14 @@ class Vec4 {
       b.w !== 0.0 ? a.w - b.w * Math.floor(a.w / b.w) : a.w);
   }
 
+  /**
+   * A specialized form of mod which subtracts the floor of the vector from the
+   * vector.
+   *
+   * @param {Vec4} v the input vector
+   * @param {Vec4} target the output vector
+   * @returns the result
+   */
   static mod1 (
     v = new Vec4(),
     target = new Vec4()) {
@@ -667,6 +1108,16 @@ class Vec4 {
       v.w - Math.floor(v.w));
   }
 
+  /**
+   * Multiplies two vectors, component-wise. Such multiplication is
+   * mathematically incorrect, but serves as a shortcut for transforming a
+   * vector by a scalar matrix.
+   *
+   * @param {Vec4} a the left operand
+   * @param {Vec4} b the right operand
+   * @param {Vec4} target the output vector
+   * @returns the product
+   */
   static mul (
     a = new Vec4(1.0, 1.0, 1.0, 1.0),
     b = new Vec4(1.0, 1.0, 1.0, 1.0),
@@ -679,6 +1130,13 @@ class Vec4 {
       a.w * b.w);
   }
 
+  /**
+   * Negates the input vector.
+   *
+   * @param {Vec4} v the input vector
+   * @param {Vec4} target the output vector
+   * @returns the negation
+   */
   static negate (
     v = new Vec4(),
     target = new Vec4()) {
@@ -686,11 +1144,25 @@ class Vec4 {
     return target.setComponents(-v.x, -v.y, -v.z, -v.w);
   }
 
+  /**
+   * Returns a vector with all components set to negative one.
+   *
+   * @param {Vec4} target the output vector
+   * @returns negative one
+   */
   static negOne (target = new Vec4()) {
 
     return target.setComponents(-1.0, -1.0, -1.0, -1.0);
   }
 
+  /**
+   * Divides a vector by its magnitude, such that the new magnitude is 1.0. The
+   * result is a unit vector, as it lies on the circumference of a unit sphere.
+   *
+   * @param {Vec4} v the input vector
+   * @param {Vec4} target the output vector
+   * @returns the normalized vector
+   */
   static normalize (
     v = new Vec4(),
     target = new Vec4()) {
@@ -708,11 +1180,25 @@ class Vec4 {
       v.w * mInv);
   }
 
+  /**
+   * Returns a vector with both components set to one.
+   *
+   * @param {Vec4} target the output vector
+   * @returns one
+   */
   static one (target = new Vec4()) {
 
     return target.setComponents(1.0, 1.0, 1.0, 1.0);
   }
 
+  /**
+   * Raises a vector to the power of another vector.
+   *
+   * @param {Vec4} a the left operand
+   * @param {Vec4} b the right operand
+   * @param {Vec4} target the output vector
+   * @returns the result
+   */
   static pow (
     a = new Vec4(),
     b = new Vec4(),
@@ -725,6 +1211,15 @@ class Vec4 {
       Math.pow(a.w, b.w));
   }
 
+  /**
+   * Creates a random point in the Cartesian coordinate system given a lower and
+   * an upper bound.
+   *
+   * @param {Vec4} lb the lower bound
+   * @param {Vec4} ub the upper bound
+   * @param {Vec4} target the output vector
+   * @returns the random vector
+   */
   static randomCartesian (
     lb = new Vec4(-1.0, -1.0, -1.0, -1.0),
     ub = new Vec4(1.0, 1.0, 1.0, 1.0),
@@ -762,6 +1257,14 @@ class Vec4 {
       rw * mInv);
   }
 
+  /**
+   * Normalizes a vector, then multiplies it by a scalar, in effect setting its
+   * magnitude to that scalar.
+   *
+   * @param {Vec4} v the input vector 
+   * @param {number} scalar the new scale
+   * @param {Vec4} target the output vector 
+   */
   static rescale (
     v = new Vec4(),
     scalar = 1.0,
@@ -780,6 +1283,25 @@ class Vec4 {
       v.w * mInv);
   }
 
+  /**
+   * Returns to a vector with a positive value on the x axis, (1.0, 0.0, 0.0,
+   * 0.0) .
+   *
+   * @param {Vec4} target the output vector
+   * @returns right
+   */
+  static right (target = new Vec4()) {
+
+    return target.setComponents(1.0, 0.0, 0.0, 0.0);
+  }
+
+  /**
+   * Rounds each component of the vector to the nearest whole number.
+   *
+   * @param {Vec4} v the input vector
+   * @param {Vec4} target the output vector
+   * @returns the rounded vector
+   */
   static round (
     v = new Vec4(),
     target = new Vec4()) {
@@ -791,6 +1313,14 @@ class Vec4 {
       Math.round(v.w));
   }
 
+  /**
+   * Multiplies a vector, the left operand, by a scalar, the right operand.
+   *
+   * @param {Vec4} a the vector
+   * @param {number} b the scalar
+   * @param {Vec4} target the output vector
+   * @returns the scaled vector
+   */
   static scale (
     a = new Vec4(),
     b = 1.0,
@@ -803,6 +1333,17 @@ class Vec4 {
       a.w * b);
   }
 
+  /**
+   * Eases from the origin to the destination vector by a step, using the
+   * formula t t ( 3.0 - 2.0 t ) . When the step is less than zero, returns the
+   * origin. When the step is greater than one, returns the destination.
+   *
+   * @param {Vec4} origin the origin vector
+   * @param {Vec4} dest the destination vector
+   * @param {number} step the step in [0.0, 1.0]
+   * @param {Vec4} target the output vector
+   * @returns the eased vector
+   */
   static smoothStep (
     origin = new Vec4(0.0, 0.0, 0.0, 0.0),
     dest = new Vec4(1.0, 1.0, 1.0, 1.0),
@@ -810,17 +1351,25 @@ class Vec4 {
     target = new Vec4()) {
 
     if (step <= 0.0) {
-      return Vec3.fromSource(origin, target);
+      return Vec4.fromSource(origin, target);
     }
 
     if (step >= 1.0) {
-      return Vec3.fromSource(dest, target);
+      return Vec4.fromSource(dest, target);
     }
 
     return Vec4.lerpUnclamped(origin, dest,
       step * step * (3.0 - (step + step)));
   }
 
+  /**
+   * Subtracts the right vector from the left vector.
+   *
+   * @param {Vec4} a the left operand
+   * @param {Vec4} b the right operand
+   * @param {Vec4} target the output vector
+   * @returns the difference
+   */
   static sub (
     a = new Vec4(),
     b = new Vec4(),
@@ -833,6 +1382,15 @@ class Vec4 {
       a.w - b.w);
   }
 
+  /**
+   * Subtracts the right from the left vector and then normalizes the
+   * difference.
+   *
+   * @param {Vec4} a the left operand
+   * @param {Vec4} b the right operand
+   * @param {Vec4} target the output vector
+   * @returns the normalized difference
+   */
   static subNorm (
     a = new Vec4(),
     b = new Vec4(),
@@ -859,6 +1417,13 @@ class Vec4 {
       dw * mInv);
   }
 
+  /**
+   * Truncates each component of the vector.
+   *
+   * @param {Vec4} v the input vector
+   * @param {Vec4} target the output vector
+   * @returns the truncation
+   */
   static trunc (
     v = new Vec4(),
     target = new Vec4()) {
@@ -870,6 +1435,24 @@ class Vec4 {
       Math.trunc(v.w));
   }
 
+  /**
+   * Returns to a vector with a positive value on the z axis, (0.0, 0.0, 1.0,
+   * 0.0) .
+   *
+   * @param {Vec4} target the output vector
+   * @returns up
+   */
+  static up (target = new Vec4()) {
+
+    return target.setComponents(0.0, 0.0, 1.0, 0.0);
+  }
+
+  /**
+   * Returns a vector with all components set to zero.
+   *
+   * @param {Vec4} target the output vector
+   * @returns the zero vector
+   */
   static zero (target = new Vec4()) {
 
     return target.setComponents(0.0, 0.0, 0.0, 0.0);
