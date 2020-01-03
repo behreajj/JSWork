@@ -284,6 +284,25 @@ class Vec3 {
   }
 
   /**
+   * Evaluates two vectors like booleans, using the analytic definition of the
+   * AND logic gate.
+   *
+   * @param {Vec3} a the left operand
+   * @param {Vec3} b the right operand
+   * @param {Vec3} target the output vector
+   */
+  static and (
+    a = new Vec3(),
+    b = new Vec3(),
+    target = new Vec3()) {
+
+    return target.setComponents(
+      Boolean(a.x) & Boolean(b.x),
+      Boolean(a.y) & Boolean(b.y),
+      Boolean(a.z) & Boolean(b.z));
+  }
+
+  /**
    * Finds the angle between two vectors.
    *
    * @param {Vec3} a the left operand
@@ -1467,6 +1486,22 @@ class Vec3 {
   }
 
   /**
+   * Evaluates a vector like a boolean, where n != 0.0 is true.
+   *
+   * @param {Vec3} v the input vector
+   * @param {Vec3} target the output vector
+   */
+  static not (
+    v = new Vec3(),
+    target = new Vec3()) {
+
+    return target.setComponents(
+      v.x !== 0.0 ? 0.0 : 1.0,
+      v.y !== 0.0 ? 0.0 : 1.0,
+      v.z !== 0.0 ? 0.0 : 1.0);
+  }
+
+  /**
    * Returns a vector with both components set to one.
    *
    * @param {Vec3} target the output vector
@@ -1475,6 +1510,25 @@ class Vec3 {
   static one (target = new Vec3()) {
 
     return target.setComponents(1.0, 1.0, 1.0);
+  }
+
+  /**
+   * Evaluates two vectors like booleans, using the analytic definition of the
+   * OR logic gate.
+   * 
+   * @param {Vec3} a the left operand
+   * @param {Vec3} b the right operand
+   * @param {Vec3} target the output vector
+   */
+  static or (
+    a = new Vec3(),
+    b = new Vec3(),
+    target = new Vec3()) {
+
+    return target.setComponents(
+      Boolean(a.x) | Boolean(b.x),
+      Boolean(a.y) | Boolean(b.y),
+      Boolean(a.z) | Boolean(b.z));
   }
 
   /**
@@ -1921,6 +1975,24 @@ class Vec3 {
   }
 
   /**
+   * Finds the sign of a vector: -1.0 if negative; 1.0 if positive; 0.0 if
+   * neither.
+   *
+   * @param {Vec3} v the input vector
+   * @param {Vec3} target the output vector
+   * @returns the sign
+   */
+  static sign (
+    v = new Vec3(),
+    target = new Vec3()) {
+
+    return target.setComponents(
+      Math.sign(v.x),
+      Math.sign(v.y),
+      Math.sign(v.z));
+  }
+
+  /**
    * Eases from the origin to the destination vector by a step, using the
    * formula t t ( 3.0 - 2.0 t ) . When the step is less than zero, returns the
    * origin. When the step is greater than one, returns the destination.
@@ -2050,6 +2122,26 @@ class Vec3 {
   static up (target = new Vec3()) {
 
     return target.setComponents(0.0, 0.0, 1.0);
+  }
+
+  /**
+   * Evaluates two vectors like booleans, using the analytic definition of the
+   * exclusive or (XOR) logic gate.
+   *
+   * @param {Vec3} a the left operand
+   * @param {Vec3} b the right operand
+   * @param {Vec3} target the output vector
+   * @returns the evaluation
+   */
+  static xor (
+    a = new Vec3(),
+    b = new Vec3(),
+    target = new Vec3()) {
+
+    return target.setComponents(
+      Boolean(a.x) ^ Boolean(b.x),
+      Boolean(a.y) ^ Boolean(b.y),
+      Boolean(a.z) ^ Boolean(b.z));
   }
 
   /**

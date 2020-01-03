@@ -164,7 +164,7 @@ class Vec2 {
    * @param {number} precision number of decimal places
    * @returns the string
    */
-  toJsonString(precision = 6) {
+  toJsonString (precision = 6) {
 
     return [
       '{\"x\":',
@@ -261,6 +261,24 @@ class Vec2 {
     return target.setComponents(
       dx * mInv,
       dy * mInv);
+  }
+
+  /**
+   * Evaluates two vectors like booleans, using the analytic definition of the
+   * AND logic gate.
+   *
+   * @param {Vec2} a the left operand
+   * @param {Vec2} b the right operand
+   * @param {Vec2} target the output vector
+   */
+  static and (
+    a = new Vec2(),
+    b = new Vec2(),
+    target = new Vec2()) {
+
+    return target.setComponents(
+      Boolean(a.x) & Boolean(b.x),
+      Boolean(a.y) & Boolean(b.y));
   }
 
   /**
@@ -1243,6 +1261,21 @@ class Vec2 {
   }
 
   /**
+   * Evaluates a vector like a boolean, where n != 0.0 is true.
+   *
+   * @param {Vec2} v the input vector
+   * @param {Vec2} target the output vector
+   */
+  static not (
+    v = new Vec2(),
+    target = new Vec2()) {
+
+    return target.setComponents(
+      v.x !== 0.0 ? 0.0 : 1.0,
+      v.y !== 0.0 ? 0.0 : 1.0);
+  }
+
+  /**
    * Returns a vector with both components set to one.
    *
    * @param {Vec2} target the output vector
@@ -1251,6 +1284,24 @@ class Vec2 {
   static one (target = new Vec2()) {
 
     return target.setComponents(1.0, 1.0);
+  }
+
+  /**
+   * Evaluates two vectors like booleans, using the analytic definition of the
+   * OR logic gate.
+   * 
+   * @param {Vec2} a the left operand
+   * @param {Vec2} b the right operand
+   * @param {Vec2} target the output vector
+   */
+  static or (
+    a = new Vec2(),
+    b = new Vec2(),
+    target = new Vec2()) {
+
+    return target.setComponents(
+      Boolean(a.x) | Boolean(b.x),
+      Boolean(a.y) | Boolean(b.y));
   }
 
   /**
@@ -1559,6 +1610,23 @@ class Vec2 {
   }
 
   /**
+   * Finds the sign of a vector: -1.0 if negative; 1.0 if positive; 0.0 if
+   * neither.
+   *
+   * @param {Vec2} v the input vector
+   * @param {Vec2} target the output vector
+   * @returns the sign
+   */
+  static sign (
+    v = new Vec2(),
+    target = new Vec2()) {
+
+    return target.setComponents(
+      Math.sign(v.x),
+      Math.sign(v.y));
+  }
+
+  /**
    * Eases from the origin to the destination vector by a step, using the
    * formula t t ( 3.0 - 2.0 t ) . When the step is less than zero, returns
    * the origin. When the step is greater than one, returns the destination.
@@ -1673,6 +1741,25 @@ class Vec2 {
   static uvCenter (target = new Vec2()) {
 
     return target.setComponents(0.5, 0.5);
+  }
+
+  /**
+   * Evaluates two vectors like booleans, using the analytic definition of the
+   * exclusive or (XOR) logic gate.
+   *
+   * @param {Vec2} a the left operand
+   * @param {Vec2} b the right operand
+   * @param {Vec2} target the output vector
+   * @returns the evaluation
+   */
+  static xor (
+    a = new Vec2(),
+    b = new Vec2(),
+    target = new Vec2()) {
+
+    return target.setComponents(
+      Boolean(a.x) ^ Boolean(b.x),
+      Boolean(a.y) ^ Boolean(b.y));
   }
 
   /**
