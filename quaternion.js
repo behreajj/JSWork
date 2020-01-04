@@ -221,6 +221,10 @@ class Quaternion {
       i.z * mInv);
   }
 
+  static any (q = new Quaternion()) {
+    return q.real !== 0.0 || Vec3.any(q.imag);
+  }
+
   static applyTo (
     q = new Quaternion(),
     v = new Vec3(),
@@ -448,11 +452,6 @@ class Quaternion {
     return Quaternion.approxMag(q, 1.0);
   }
 
-  static isZero (q = new Quaternion()) {
-
-    return q.real === 0.0 && Vec3.isZero(q.imag);
-  }
-
   static mag (q = new Quaternion()) {
 
     const i = q.imag;
@@ -479,6 +478,11 @@ class Quaternion {
       ai.x * bw + aw * bi.x + ai.y * bi.z - ai.z * bi.y,
       ai.y * bw + aw * bi.y + ai.z * bi.x - ai.x * bi.z,
       ai.z * bw + aw * bi.z + ai.x * bi.y - ai.y * bi.x);
+  }
+
+  static none (q = new Quaternion()) {
+
+    return q.real === 0.0 && Vec3.none(q.imag);
   }
 
   static normalize (

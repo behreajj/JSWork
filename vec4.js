@@ -322,6 +322,21 @@ class Vec4 {
   }
 
   /**
+   * Tests to see if all the vector's components are non-zero. Useful when
+   * testing valid dimensions (width and depth) stored in vectors.
+   *
+   * @param {Vec4} v the input vector
+   * @returns the evaluation
+   */
+  static all (v = new Vec4()) {
+
+    return (v.w !== 0.0) &&
+      (v.z !== 0.0) &&
+      (v.y !== 0.0) &&
+      (v.x !== 0.0);
+  }
+
+  /**
    * Evaluates two vectors like booleans, using the analytic definition of the
    * AND logic gate.
    *
@@ -339,6 +354,21 @@ class Vec4 {
       Boolean(a.y) & Boolean(b.y),
       Boolean(a.z) & Boolean(b.z),
       Boolean(a.w) & Boolean(b.w));
+  }
+
+  /**
+     * Tests to see if any of the vector's components are non-zero. Useful when
+     * testing valid dimensions (width and depth) stored in vectors.
+     *
+     * @param {Vec4} v the input vector
+     * @returns the evaluation
+     */
+  static any (v = new Vec4()) {
+
+    return (v.w !== 0.0) ||
+      (v.z !== 0.0) ||
+      (v.y !== 0.0) ||
+      (v.x !== 0.0);
   }
 
   /**
@@ -492,7 +522,7 @@ class Vec4 {
   }
 
   /**
-   * Multiplies a magnitude, the left operand, by the sign of the right operand,
+   * Multiplies an absolute magnitude, the left operand, by the sign of the right operand,
    * such that the magnitude of a matches the sign of b.
    *
    * @param {Vec4} a left operand
@@ -506,10 +536,10 @@ class Vec4 {
     target = new Vec4()) {
 
     return target.setComponents(
-      a.x * Math.sign(b.x),
-      a.y * Math.sign(b.y),
-      a.z * Math.sign(b.z),
-      a.w * Math.sign(b.w));
+      Math.abs(a.x) * Math.sign(b.x),
+      Math.abs(a.y) * Math.sign(b.y),
+      Math.abs(a.z) * Math.sign(b.z),
+      Math.abs(a.w) * Math.sign(b.w));
   }
 
   /**
@@ -832,21 +862,6 @@ class Vec4 {
   }
 
   /**
-   * Tests to see if all the vector's components are non-zero. Useful when
-   * testing valid dimensions (width, depth and height) stored in vectors.
-   *
-   * @param {Vec4} v the input vector
-   * @returns the evaluation
-   */
-  static isNonZero (v = new Vec4()) {
-
-    return (v.w !== 0.0) &&
-      (v.z !== 0.0) &&
-      (v.y !== 0.0) &&
-      (v.x !== 0.0);
-  }
-
-  /**
    * Tests to see if the vector is on the unit sphere, i.e., has a magnitude of
    * approximately 1.0.
    *
@@ -856,21 +871,6 @@ class Vec4 {
   static isUnit (v = new Vec4()) {
 
     return Vec4.approxMag(v, 1.0);
-  }
-
-  /**
-   * Tests to see if all the vector's components are zero. Useful when
-   * safeguarding against invalid directions.
-   *
-   * @param {Vec4} v the input vector
-   * @returns the evaluation
-   */
-  static isZero (v = new Vec4()) {
-
-    return (v.w === 0.0) &&
-      (v.z === 0.0) &&
-      (v.y === 0.0) &&
-      (v.x === 0.0);
   }
 
   /**
@@ -1173,6 +1173,21 @@ class Vec4 {
   static negOne (target = new Vec4()) {
 
     return target.setComponents(-1.0, -1.0, -1.0, -1.0);
+  }
+
+  /**
+   * Tests to see if all the vector's components are zero. Useful when
+   * safeguarding against invalid directions.
+   *
+   * @param {Vec4} v the input vector
+   * @returns the evaluation
+   */
+  static none (v = new Vec4()) {
+
+    return (v.w === 0.0) &&
+      (v.z === 0.0) &&
+      (v.y === 0.0) &&
+      (v.x === 0.0);
   }
 
   /**

@@ -101,7 +101,7 @@ class Color extends Vec4 {
       '}'
     ].join('');
   }
-  
+
   toObject () {
 
     return {
@@ -199,6 +199,16 @@ class Color extends Vec4 {
 
     return Color.fromHexInt(
       Color.toHexInt(c) >> (places * 0x08),
+      target);
+  }
+
+  static bitShiftRightUnsigned (
+    c = new Color(),
+    places = 1,
+    target = new Color()) {
+
+    return Color.fromHexInt(
+      Color.toHexInt(c) >>> (places * 0x08),
       target);
   }
 
@@ -608,7 +618,7 @@ class Color extends Vec4 {
    * @returns the color in XYZ
    */
   static rgbaToXyzw (
-    c = new Color(), 
+    c = new Color(),
     target = new Vec4()) {
 
     return target.setComponents(
@@ -619,19 +629,30 @@ class Color extends Vec4 {
   }
 
   /**
-   * Converts a color to an integer where hexadecimal represents the ARGB color
-   * channels: 0xAARRGGB . Uses unsigned bit shift right to force a positive
-   * integer.
+   * Converts a color to a signed number where hexadecimal represents the ARGB
+   * color channels: 0xAARRGGB .
    *
    * @param {Color} c the color
    * @returns the color in hexadecimal
    */
   static toHexInt (c = new Color()) {
 
-    return (Math.trunc(c.a * 0xff + 0.5) << 0x18
+    return Math.trunc(c.a * 0xff + 0.5) << 0x18
       | Math.trunc(c.r * 0xff + 0.5) << 0x10
       | Math.trunc(c.g * 0xff + 0.5) << 0x8
-      | Math.trunc(c.b * 0xff + 0.5)) >>> 0;
+      | Math.trunc(c.b * 0xff + 0.5);
+  }
+
+  /**
+   * Converts a color to an unsigned number where hexadecimal represents the
+   * ARGB color channels: 0xAARRGGB .
+   *
+   * @param {Color} c the color
+   * @returns the color in hexadecimal
+   */
+  static toHexLong (c = new Color()) {
+
+    return Color.toHexInt(c) >>> 0;
   }
 
   /**
@@ -696,7 +717,7 @@ class Color extends Vec4 {
    * @returns the color in RGB
    */
   static xyzwToRgba (
-    v = new Vec4(), 
+    v = new Vec4(),
     target = new Color()) {
 
     return target.setComponents(

@@ -284,6 +284,20 @@ class Vec3 {
   }
 
   /**
+   * Tests to see if all the vector's components are non-zero. Useful when
+   * testing valid dimensions (width and depth) stored in vectors.
+   *
+   * @param {Vec3} v the input vector
+   * @returns the evaluation
+   */
+  static all (v = new Vec3()) {
+
+    return (v.z !== 0.0) &&
+      (v.y !== 0.0) &&
+      (v.x !== 0.0);
+  }
+
+  /**
    * Evaluates two vectors like booleans, using the analytic definition of the
    * AND logic gate.
    *
@@ -313,11 +327,25 @@ class Vec3 {
     a = new Vec3(),
     b = new Vec3()) {
 
-    if (Vec3.isZero(a) || Vec3.isZero(b)) {
+    if (Vec3.none(a) || Vec3.none(b)) {
       return 0.0;
     }
 
     return Math.acos(Vec3.dot(a, b) / (Vec3.mag(a) * Vec3.mag(b)));
+  }
+
+  /**
+   * Tests to see if any of the vector's components are non-zero. Useful when
+   * testing valid dimensions (width and depth) stored in vectors.
+   *
+   * @param {Vec3} v the input vector
+   * @returns the evaluation
+   */
+  static all (v = new Vec3()) {
+
+    return (v.z !== 0.0) ||
+      (v.y !== 0.0) ||
+      (v.x !== 0.0);
   }
 
   /**
@@ -611,7 +639,7 @@ class Vec3 {
   }
 
   /**
-   * Multiplies a magnitude, the left operand, by the sign of the right operand,
+   * Multiplies an absolute magnitude, the left operand, by the sign of the right operand,
    * such that the magnitude of a matches the sign of b.
    *
    * @param {Vec3} a left operand
@@ -625,9 +653,9 @@ class Vec3 {
     target = new Vec3()) {
 
     return target.setComponents(
-      a.x * Math.sign(b.x),
-      a.y * Math.sign(b.y),
-      a.z * Math.sign(b.z));
+      Math.abs(a.x) * Math.sign(b.x),
+      Math.abs(a.y) * Math.sign(b.y),
+      Math.abs(a.z) * Math.sign(b.z));
   }
 
   /**
@@ -1133,20 +1161,6 @@ class Vec3 {
   }
 
   /**
-   * Tests to see if all the vector's components are non-zero. Useful when
-   * testing valid dimensions (width, depth and height) stored in vectors.
-   *
-   * @param {Vec3} v the input vector
-   * @returns the evaluation
-   */
-  static isNonZero (v = new Vec3()) {
-
-    return (v.z !== 0.0) &&
-      (v.y !== 0.0) &&
-      (v.x !== 0.0);
-  }
-
-  /**
    * Tests to see if the vector is on the unit sphere, i.e., has a magnitude of
    * approximately 1.0.
    *
@@ -1156,20 +1170,6 @@ class Vec3 {
   static isUnit (v = new Vec3()) {
 
     return Vec3.approxMag(v, 1.0);
-  }
-
-  /**
-   * Tests to see if all the vector's components are zero. Useful when
-   * safeguarding against invalid directions.
-   *
-   * @param {Vec3} v the input vector
-   * @returns the evaluation
-   */
-  static isZero (v = new Vec3()) {
-
-    return (v.z === 0.0) &&
-      (v.y === 0.0) &&
-      (v.x === 0.0);
   }
 
   /**
@@ -1459,6 +1459,20 @@ class Vec3 {
   static negOne (target = new Vec3()) {
 
     return target.setComponents(-1.0, -1.0, -1.0);
+  }
+
+  /**
+   * Tests to see if all the vector's components are zero. Useful when
+   * safeguarding against invalid directions.
+   *
+   * @param {Vec3} v the input vector
+   * @returns the evaluation
+   */
+  static none (v = new Vec3()) {
+
+    return (v.z === 0.0) &&
+      (v.y === 0.0) &&
+      (v.x === 0.0);
   }
 
   /**

@@ -185,6 +185,26 @@ class Vec2 {
     return { x: this._x, y: this._y };
   }
 
+  hashCode() {
+    const xstr = String(this._x);
+    const len0 = xstr.length;
+    let xhsh = 0;
+    for (let i = 0; i < len0; ++i) {
+      xhsh = Math.imul(31, xhsh) + xstr.charCodeAt(i) | 0;
+    }
+    // xhsh >>>= 0;
+
+    const ystr = String(this._y);
+    const len1 = ystr.length;
+    let yhsh = 0;
+    for (let i = 0; i < len1; ++i) {
+      yhsh = Math.imul(31, yhsh) + ystr.charCodeAt(i) | 0;
+    }
+    // yhsh >>>= 0
+
+    return (xhsh ^ yhsh) >>> 0;
+  }
+
   /**
    * Returns a string representation of this vector.
    *
@@ -264,6 +284,19 @@ class Vec2 {
   }
 
   /**
+   * Tests to see if all the vector's components are non-zero. Useful when
+   * testing valid dimensions (width and depth) stored in vectors.
+   *
+   * @param {Vec2} v the input vector
+   * @returns the evaluation
+   */
+  static all (v = new Vec2()) {
+
+    return (v.y !== 0.0) &&
+      (v.x !== 0.0);
+  }
+
+  /**
    * Evaluates two vectors like booleans, using the analytic definition of the
    * AND logic gate.
    *
@@ -292,11 +325,24 @@ class Vec2 {
     a = new Vec2(),
     b = new Vec2()) {
 
-    if (Vec2.isZero(a) || Vec2.isZero(b)) {
+    if (Vec2.none(a) || Vec2.none(b)) {
       return 0.0;
     }
 
     return Math.acos(Vec2.dot(a, b) / (Vec2.mag(a) * Vec2.mag(b)));
+  }
+
+  /**
+   * Tests to see if any of the vector's components are non-zero. Useful when
+   * testing valid dimensions (width and depth) stored in vectors.
+   *
+   * @param {Vec2} v the input vector
+   * @returns the evaluation
+   */
+  static any (v = new Vec2()) {
+
+    return (v.y !== 0.0) ||
+      (v.x !== 0.0);
   }
 
   /**
@@ -548,7 +594,7 @@ class Vec2 {
   }
 
   /**
-   * Multiplies a magnitude, the left operand, by the sign of the right operand,
+   * Multiplies an absolute magnitude, the left operand, by the sign of the right operand,
    * such that the magnitude of a matches the sign of b.
    *
    * @param {Vec2} a left operand
@@ -562,8 +608,8 @@ class Vec2 {
     target = new Vec2()) {
 
     return target.setComponents(
-      a.x * Math.sign(b.x),
-      a.y * Math.sign(b.y));
+      Math.abs(a.x) * Math.sign(b.x),
+      Math.abs(a.y) * Math.sign(b.y));
   }
 
   /**
@@ -923,19 +969,6 @@ class Vec2 {
   }
 
   /**
-   * Tests to see if all the vector's components are non-zero. Useful when
-   * testing valid dimensions (width and depth) stored in vectors.
-   *
-   * @param {Vec2} v the input vector
-   * @returns the evaluation
-   */
-  static isNonZero (v = new Vec2()) {
-
-    return (v.y !== 0.0) &&
-      (v.x !== 0.0);
-  }
-
-  /**
    * Tests to see if the vector is on the unit circle, i.e., has a magnitude of
    * approximately 1.0.
    *
@@ -945,19 +978,6 @@ class Vec2 {
   static isUnit (v = new Vec2()) {
 
     return Vec2.approxMag(v, 1.0);
-  }
-
-  /**
-   * Tests to see if all the vector's components are zero. Useful when
-   * safeguarding against invalid directions.
-   *
-   * @param {Vec2} v the input vector
-   * @returns the evaluation
-   */
-  static isZero (v = new Vec2()) {
-
-    return (v.y === 0.0) &&
-      (v.x === 0.0);
   }
 
   /**
@@ -1235,6 +1255,19 @@ class Vec2 {
   static negOne (target = new Vec2()) {
 
     return target.setComponents(-1.0, -1.0);
+  }
+
+  /**
+   * Tests to see if all the vector's components are zero. Useful when
+   * safeguarding against invalid directions.
+   *
+   * @param {Vec2} v the input vector
+   * @returns the evaluation
+   */
+  static none (v = new Vec2()) {
+
+    return (v.y === 0.0) &&
+      (v.x === 0.0);
   }
 
   /**

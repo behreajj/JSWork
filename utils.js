@@ -58,8 +58,8 @@ class Utils {
   }
 
   /**
-   * Multiplies a magnitude, the left operand, by the sign of the right operand,
-   * such that the magnitude of a matches the sign of b.
+   * Multiplies the absolute of a magnitude, the left operand, by the sign of
+   * the right operand, such that the magnitude of a matches the sign of b.
    *
    * @param {number} a left operand
    * @param {number} b right operand
@@ -67,7 +67,7 @@ class Utils {
    */
   static copySign (a = 0.0, b = 1.0) {
 
-    return a * Math.sign(b);
+    return Math.abs(a) * Math.sign(b);
   }
 
   /**
