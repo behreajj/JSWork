@@ -78,7 +78,6 @@ class Color extends Vec4 {
    * @returns this color
    */
   setComponents (r = 0.0, g = 0.0, b = 0.0, a = 1.0) {
-
     this._x = r;
     this._y = g;
     this._z = b;
@@ -182,6 +181,16 @@ class Color extends Vec4 {
       target);
   }
 
+  /**
+   * Converts a color to an integer, performs a bitwise left
+   * shift operation, then converts the result to a color. The
+   * number of places is multiplied by 0x08.
+   * 
+   * @param {Color} c the color
+   * @param {number} places the number of places
+   * @param {Color} target the output color
+   * @returns the shifted color
+   */
   static bitShiftLeft (
     c = new Color(),
     places = 1,
@@ -192,6 +201,16 @@ class Color extends Vec4 {
       target);
   }
 
+  /**
+   * Converts a color to an integer, performs a bitwise right
+   * shift operation, then converts the result to a color. The
+   * number of places is multiplied by 0x08.
+   * 
+   * @param {Color} c the color
+   * @param {number} places the number of places
+   * @param {Color} target the output color
+   * @returns the shifted color
+   */
   static bitShiftRight (
     c = new Color(),
     places = 1,
@@ -202,6 +221,16 @@ class Color extends Vec4 {
       target);
   }
 
+  /**
+   * Converts a color to an integer, performs an unsigned
+   * bitwise right shift operation, then converts the result
+   * to a color. The number of places is multiplied by 0x08.
+   * 
+   * @param {Color} c the color
+   * @param {number} places the number of places
+   * @param {Color} target the output color
+   * @returns the shifted color
+   */
   static bitShiftRightUnsigned (
     c = new Color(),
     places = 1,
@@ -212,6 +241,16 @@ class Color extends Vec4 {
       target);
   }
 
+  /**
+   * Converts two colors to integers, performs the bitwise XOR
+   * operation (exclusive or) on them, then converts the
+   * result to a color.
+   * 
+   * @param {Color} a the left operand
+   * @param {Color} b the right operand
+   * @param {Color} target the output color
+   * @returns the color
+   */
   static bitXor (
     a = new Color(),
     b = new Color(),
@@ -242,6 +281,47 @@ class Color extends Vec4 {
   static blue (target = new Color()) {
 
     return target.setComponents(0.0, 0.0, 1.0, 1.0);
+  }
+
+  /**
+     * Clamps a color to a lower- and upper-bound.
+     * 
+     * @param {Color} c the color
+     * @param {Color} lb the lower bound
+     * @param {Color} ub the upper bound
+     * @param {Color} target the output color
+     * @returns the clamped color
+     */
+  static clamp (
+    c = new Color(),
+    lb = new Color(0.0, 0.0, 0.0, 1.0),
+    ub = new Color(1.0, 1.0, 1.0, 1.0),
+    target = new Color()) {
+
+    return target.setComponents(
+      Math.min(Math.max(c.x, lb.x), ub.x),
+      Math.min(Math.max(c.y, lb.y), ub.y),
+      Math.min(Math.max(c.z, lb.z), ub.z),
+      Math.min(Math.max(c.w, lb.w), ub.w));
+  }
+
+  /**
+   * Ensures that the values of the color are clamped to the
+   * range [0.0, 1.0].
+   * 
+   * @param {Color} c the color
+   * @param {Color} target the output color
+   * @returns the clamped color
+   */
+  static clamp01 (
+    c = new Color(),
+    target = new Color()) {
+
+    return target.setComponents(
+      Math.min(Math.max(c.x, 0.0), 1.0),
+      Math.min(Math.max(c.y, 0.0), 1.0),
+      Math.min(Math.max(c.z, 0.0), 1.0),
+      Math.min(Math.max(c.w, 0.0), 1.0));
   }
 
   /**
@@ -298,6 +378,69 @@ class Color extends Vec4 {
   }
 
   /**
+   * Converts a 2D direction to a color. Normalizes the
+   * direction, multiplies it by 0.5, then adds 0.5 .
+   * 
+   * @param {Vec2} v the 2D direction
+   * @param {Color} target the output color
+   * @returns the color 
+   */
+  static fromDir2 (v, target = new Color()) {
+
+    const mSq = v.x * v.x + v.y * v.y;
+    if (mSq === 0.0) {
+      return target.setComponents(0.5, 0.5, 0.5, 1.0);
+    }
+
+    let r = 0.5;
+    let g = 0.5;
+
+    if (Math.abs(1.0 - mSq) < 0.000001) {
+      r = v.x * 0.5 + 0.5;
+      g = v.y * 0.5 + 0.5;
+    } else {
+      const mInv = 0.5 / Math.sqrt(mSq);
+      r = v.x * mInv + 0.5;
+      g = v.y * mInv + 0.5;
+    }
+
+    return target.setComponents(r, g, 0.5, 1.0);
+  }
+
+  /**
+   * Converts a 3D direction to a color. Normalizes the
+   * direction, multiplies it by 0.5, then adds 0.5 .
+   * 
+   * @param {Vec3} v the 3D direction
+   * @param {Color} target the output color
+   * @returns the color 
+   */
+  static fromDir3 (v, target = new Color()) {
+
+    const mSq = v.x * v.x + v.y * v.y + v.z * v.z;
+    if (mSq === 0.0) {
+      return target.setComponents(0.5, 0.5, 0.5, 1.0);
+    }
+
+    let r = 0.5;
+    let g = 0.5;
+    let b = 0.5;
+
+    if (Math.abs(1.0 - mSq) < 0.000001) {
+      r = v.x * 0.5 + 0.5;
+      g = v.y * 0.5 + 0.5;
+      b = v.z * 0.5 + 0.5;
+    } else {
+      const mInv = 0.5 / Math.sqrt(mSq);
+      r = v.x * mInv + 0.5;
+      g = v.y * mInv + 0.5;
+      b = v.y * mInv + 0.5;
+    }
+
+    return target.setComponents(r, g, b, 1.0);
+  }
+
+  /**
    * Convert a hexadecimal representation of a color stored as AARRGGBB into a
    * color.
    *
@@ -316,6 +459,13 @@ class Color extends Vec4 {
       (c >> 0x18 & 0xff) * 0.00392156862745098);
   }
 
+  /**
+   * Creates a color from the array.
+   *
+   * @param {Array} arr the array
+   * @param {Color} target the output color
+   * @returns the color
+   */
   static fromArray (
     arr = [0.0, 0.0, 0.0, 1.0],
     target = new Color()) {
@@ -335,9 +485,17 @@ class Color extends Vec4 {
     }
   }
 
+  /**
+   * Creates a color from a scalar.
+   *
+   * @param {number} scalar the scalar
+   * @param {number} alpha the alpha channel
+   * @param {Color} target the output color
+   * @returns the color
+   */
   static fromScalar (
     scalar = 1.0,
-    alpha = 1.0,
+    alpha = scalar,
     target = new Color()) {
 
     return target.setComponents(
@@ -347,6 +505,14 @@ class Color extends Vec4 {
       alpha);
   }
 
+  /**
+   * Creates a color from a source, which can be either a Vec4 or a Color, which
+   * is a child of the former.
+   *
+   * @param {Vec4} source the source vector
+   * @param {Color} target the output color
+   * @returns the color
+   */
   static fromSource (
     source = new Vec4(),
     target = new Color()) {
@@ -369,6 +535,14 @@ class Color extends Vec4 {
     return target.setComponents(0.0, 1.0, 0.0, 1.0);
   }
 
+  /**
+   * Converts from a Vec4 -- which contains data for hue, saturation and
+   * brightness -- to a color with red, green and blue channels.
+   *
+   * @param {Vec4} v the hsba vector
+   * @param {Color} target the output color
+   * @returns the color
+   */
   static hsbaToRgba (
     v = new Vec4(0.0, 0.0, 0.0, 1.0),
     target = new Color()) {
@@ -399,6 +573,69 @@ class Color extends Vec4 {
       default:
         return Color.black(target);
     }
+  }
+
+  /**
+   * Eases between an origin and destination color with linear interpolation.
+   * 
+   * @param {Color} origin the origin color
+   * @param {Color} dest the destination color
+   * @param {number} step the step
+   * @param {Color} target the output color
+   * @returns the eased color
+   */
+  static lerpRgba (
+    origin = new Color(0.0, 0.0, 0.0, 1.0),
+    dest = new Color(1.0, 1.0, 1.0, 1.0),
+    step = 0.5,
+    target = new Color()) {
+
+    if (step <= 0.0) {
+      return Color.fromSource(origin, target);
+    }
+
+    if (step >= 1.0) {
+      return Color.fromSource(dest, target);
+    }
+
+    const u = 1.0 - step
+    return target.setComponents(
+      u * origin.x + step * dest.x,
+      u * origin.y + step * dest.y,
+      u * origin.z + step * dest.z,
+      u * origin.w + step * dest.w);
+  }
+
+  /**
+   * Eases between an origin and destination color with hermite interpolation.
+   *
+   * @param {Color} origin the origin color
+   * @param {Color} dest the destination color
+   * @param {number} step the step
+   * @param {Color} target the output color
+   * @returns the eased color
+   */
+  static smoothStepRgba (
+    origin = new Color(0.0, 0.0, 0.0, 1.0),
+    dest = new Color(1.0, 1.0, 1.0, 1.0),
+    step = 0.5,
+    target = new Color()) {
+
+    if (step <= 0.0) {
+      return Color.fromSource(origin, target);
+    }
+
+    if (step >= 1.0) {
+      return Color.fromSource(dest, target);
+    }
+
+    const t = step * step * (3.0 - (step + step));
+    const u = 1.0 - t;
+    return target.setComponents(
+      u * origin.x + t * dest.x,
+      u * origin.y + t * dest.y,
+      u * origin.z + t * dest.z,
+      u * origin.w + t * dest.w);
   }
 
   /**
@@ -441,7 +678,7 @@ class Color extends Vec4 {
       new Color(0.912418, 0.286275, 0.298039, 1.0), // 0xFFE9494C
       new Color(0.824314, 0.198431, 0.334902, 1.0), // 0xFFD23355
       new Color(0.703268, 0.142484, 0.383007, 1.0), // 0xFFB32462
-
+      
       new Color(0.584052, 0.110588, 0.413856, 1.0), // 0xFF951C6A
       new Color(0.471373, 0.080784, 0.430588, 1.0), // 0xFF78156E
       new Color(0.367320, 0.045752, 0.432680, 1.0), // 0xFF5E0C6E
@@ -511,6 +748,15 @@ class Color extends Vec4 {
       c.a);
   }
 
+  /**
+   * Creates a random HSBA vector, then converts it to an RGBA color.
+   *
+   * @param {Vec4} lb the lower bound
+   * @param {Vec4} ub the upper bound
+   * @param {Color} target the output color
+   * @param {Vec4} hsba the hsba color
+   * @returns the color
+   */
   static randomHsba (
     lb = new Vec4(0.0, 0.0, 0.0, 1.0),
     ub = new Vec4(1.0, 1.0, 1.0, 1.0),
@@ -531,6 +777,13 @@ class Color extends Vec4 {
     return Color.hsbaToRgba(hsba, target);
   }
 
+  /**
+   * Creates a random color from red, green, blue and alpha channels.
+   * 
+   * @param {Vec4} lb the lower bound
+   * @param {Vec4} ub the upper bound
+   * @param {Color} target the output color
+   */
   static randomRgba (
     lb = new Vec4(0.0, 0.0, 0.0, 1.0),
     ub = new Vec4(1.0, 1.0, 1.0, 1.0),

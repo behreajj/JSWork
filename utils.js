@@ -141,19 +141,19 @@ class Utils {
   }
 
   /**
-   * Attempts to return a hash code for an object, assumed to be a number.
-   * Converts the input to a String.
+   * Attempts to return a hash code for an object. Converts the input to a
+   * String.
    *
    * @param {object} v an object
    * @returns the hash code
    */
-  static hash (v = '') {
+  static hashCode (v = '') {
 
     const s = String(v);
     const len = s.length;
     let h = 0;
     for (let i = 0; i < len; ++i) {
-      h = Math.imul(31, h) + s.charCodeAt(i) | 0;
+      h = Math.imul(31, h) ^ s.charCodeAt(i) | 0;
     }
     return h >>> 0;
   }
@@ -274,6 +274,19 @@ class Utils {
   static radians (degrees = 0.0) {
 
     return degrees * Utils.DEG_TO_RAD;
+  }
+
+  /**
+   * Rounds a value to a given number of places.
+   * 
+   * @param {number} value the value
+   * @param {number} places the number of places
+   */
+  static round (value = 0.0, places = 3) {
+
+    if (places < 1) { return Math.round(value); }
+    const n = Math.pow(10, places);
+    return Math.round(value * n) / n;
   }
 
   /**

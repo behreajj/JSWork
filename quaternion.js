@@ -221,7 +221,13 @@ class Quaternion {
       i.z * mInv);
   }
 
+  static all (q = new Quaternion()) {
+
+    return q.real !== 0.0 && Vec3.all(q.imag);
+  }
+
   static any (q = new Quaternion()) {
+
     return q.real !== 0.0 || Vec3.any(q.imag);
   }
 
@@ -371,6 +377,48 @@ class Quaternion {
       arr[1],
       arr[2],
       arr[3]);
+  }
+
+  static fromAxes (
+    right = Vec3.right(),
+    forward = Vec3.forward(),
+    up = Vec3.up(),
+    target = new Quaternion()) {
+
+    return Quaternion.fromAxesInternal(
+      right.x, forward.y, up.z,
+      forward.z, up.y,
+      up.x, right.z,
+      right.y, forward.x,
+      target);
+  }
+
+  static fromAxesInternal (
+    rightx = 1.0,
+    forwardy = 1.0,
+    upz = 1.0,
+    forwardz = 0.0,
+    upy = 1.0,
+    upx = 0.0,
+    rightz = 0.0,
+    righty = 0.0,
+    forwardx = 0.0,
+    target = new Quaternion()) {
+
+    const w = 0.5 * Math.sqrt(
+      Utils.max(0.0, 1.0 + rightx + forwardy + upz));
+
+    const x = 0.5 * Math.sqrt(
+      Utils.max(0.0, 1.0 + rightx - forwardy - upz));
+    const y = 0.5 * Math.sqrt(
+      Utils.max(0.0, 1.0 - rightx + forwardy - upz));
+    const z = 0.5 * Math.sqrt(
+      Utils.max(0.0, 1.0 - rightx - forwardy + upz));
+
+    return target.set(w,
+      Math.copySign(x, forwardz - upy),
+      Math.copySign(y, upx - rightz),
+      Math.copySign(z, righty - forwardx));
   }
 
   static fromAxisAngle (
@@ -805,7 +853,7 @@ class Quaternion {
     const angle = (wNorm <= -1.0) ?
       6.283185307179586 :
       (wNorm >= 1.0) ? 0.0 :
-      2.0 * Math.acos(wNorm);
+        2.0 * Math.acos(wNorm);
     const wAsin = 6.283185307179586 - angle;
     if (wAsin === 0.0) {
       Vec3.forward(axis);

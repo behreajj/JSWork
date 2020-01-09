@@ -74,12 +74,25 @@ class Vec2 {
     }
   }
 
-  // equals (obj) {if (!obj) {return false;
-  //   }
-  //   if (obj.constructor.name !== this.constructor.name) {return false;
-  //   }
-  //   return Vec2.approx(this, obj);
-  // }
+  /**
+   * Tests equivalence between this and another object. For rough equivalence of
+   * floating point components, use the static approx function instead.
+   *
+   * @param {object} obj the object
+   * @returns the evaluation
+   */
+  equals (obj) {
+
+    if (!obj) {
+      return false;
+    }
+
+    if (obj.constructor.name !== this.constructor.name) {
+      return false;
+    }
+
+    return this.hashCode() === obj.hashCode();
+  }
 
   /**
    * Gets a component of this vector by index.
@@ -97,6 +110,35 @@ class Vec2 {
       default:
         return 0.0;
     }
+  }
+
+  /**
+   * Returns a hash code for this vector based on its x and y components.
+   * 
+   * @returns the hash code
+   */
+  hashCode () {
+
+    const xstr = String(this._x);
+    const len0 = xstr.length;
+    let xhsh = 0;
+    for (let i = 0; i < len0; ++i) {
+      xhsh = Math.imul(31, xhsh) ^ xstr.charCodeAt(i) | 0;
+    }
+    xhsh >>>= 0;
+
+    const ystr = String(this._y);
+    const len1 = ystr.length;
+    let yhsh = 0;
+    for (let i = 0; i < len1; ++i) {
+      yhsh = Math.imul(31, yhsh) ^ ystr.charCodeAt(i) | 0;
+    }
+    yhsh >>>= 0;
+
+    let hsh = -2128831035;
+    hsh = Math.imul(16777619, hsh) ^ xhsh;
+    hsh = Math.imul(16777619, hsh) ^ yhsh;
+    return hsh;
   }
 
   /**
@@ -183,26 +225,6 @@ class Vec2 {
   toObject () {
 
     return { x: this._x, y: this._y };
-  }
-
-  hashCode() {
-    const xstr = String(this._x);
-    const len0 = xstr.length;
-    let xhsh = 0;
-    for (let i = 0; i < len0; ++i) {
-      xhsh = Math.imul(31, xhsh) + xstr.charCodeAt(i) | 0;
-    }
-    // xhsh >>>= 0;
-
-    const ystr = String(this._y);
-    const len1 = ystr.length;
-    let yhsh = 0;
-    for (let i = 0; i < len1; ++i) {
-      yhsh = Math.imul(31, yhsh) + ystr.charCodeAt(i) | 0;
-    }
-    // yhsh >>>= 0
-
-    return (xhsh ^ yhsh) >>> 0;
   }
 
   /**
