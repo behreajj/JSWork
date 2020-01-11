@@ -119,6 +119,7 @@ class Vec2 {
    */
   hashCode () {
 
+    /* x hash code. */
     const xstr = String(this._x);
     const len0 = xstr.length;
     let xhsh = 0;
@@ -127,14 +128,16 @@ class Vec2 {
     }
     xhsh >>>= 0;
 
+    /* y hash code. */
     const ystr = String(this._y);
     const len1 = ystr.length;
     let yhsh = 0;
-    for (let i = 0; i < len1; ++i) {
-      yhsh = Math.imul(31, yhsh) ^ ystr.charCodeAt(i) | 0;
+    for (let j = 0; j < len1; ++j) {
+      yhsh = Math.imul(31, yhsh) ^ ystr.charCodeAt(j) | 0;
     }
     yhsh >>>= 0;
 
+    /* Composite hash code. */
     let hsh = -2128831035;
     hsh = Math.imul(16777619, hsh) ^ xhsh;
     hsh = Math.imul(16777619, hsh) ^ yhsh;

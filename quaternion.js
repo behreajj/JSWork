@@ -102,6 +102,19 @@ class Quaternion {
     }
   }
 
+  equals (obj) {
+
+    if (!obj) {
+      return false;
+    }
+
+    if (obj.constructor.name !== this.constructor.name) {
+      return false;
+    }
+
+    return this.hashCode() === obj.hashCode();
+  }
+
   get (i = -1) {
 
     switch (i) {
@@ -116,6 +129,24 @@ class Quaternion {
       default:
         return 0.0;
     }
+  }
+
+  hashCode () {
+
+    const rstr = String(this._real);
+    const len0 = rstr.length;
+    let rhsh = 0;
+    for (let i = 0; i < len0; ++i) {
+      rhsh = Math.imul(31, rhsh) ^ rstr.charCodeAt(i) | 0;
+    }
+    rhsh >>>= 0;
+
+    const ihsh = this._imag.hashCode();
+
+    let hsh = -2128831035;
+    hsh = Math.imul(16777619, hsh) ^ rhsh;
+    hsh = Math.imul(16777619, hsh) ^ ihsh;
+    return hsh;
   }
 
   reset () {

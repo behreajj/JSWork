@@ -87,6 +87,26 @@ class Vec3 {
   }
 
   /**
+   * Tests equivalence between this and another object. For rough equivalence of
+   * floating point components, use the static approx function instead.
+   *
+   * @param {object} obj the object
+   * @returns the evaluation
+   */
+  equals (obj) {
+
+    if (!obj) {
+      return false;
+    }
+
+    if (obj.constructor.name !== this.constructor.name) {
+      return false;
+    }
+
+    return this.hashCode() === obj.hashCode();
+  }
+
+  /**
    * Gets a component of this vector by index.
    *
    * @param {number} i the index
@@ -104,6 +124,48 @@ class Vec3 {
       default:
         return 0.0;
     }
+  }
+
+  /**
+   * Returns a hash code for this vector based on its x, y and z components.
+   *
+   * @returns the hash code
+   */
+  hashCode () {
+
+    /* x hash code. */
+    const xstr = String(this._x);
+    const len0 = xstr.length;
+    let xhsh = 0;
+    for (let i = 0; i < len0; ++i) {
+      xhsh = Math.imul(31, xhsh) ^ xstr.charCodeAt(i) | 0;
+    }
+    xhsh >>>= 0;
+
+    /* y hash code. */
+    const ystr = String(this._y);
+    const len1 = ystr.length;
+    let yhsh = 0;
+    for (let j = 0; j < len1; ++j) {
+      yhsh = Math.imul(31, yhsh) ^ ystr.charCodeAt(j) | 0;
+    }
+    yhsh >>>= 0;
+
+    /* z hash code. */
+    const zstr = String(this._z);
+    const len2 = zstr.length;
+    let zhsh = 0;
+    for (let k = 0; k < len2; ++k) {
+      zhsh = Math.imul(31, zhsh) ^ zstr.charCodeAt(k) | 0;
+    }
+    zhsh >>>= 0;
+
+    /* Composite hash code. */
+    let hsh = -2128831035;
+    hsh = Math.imul(16777619, hsh) ^ xhsh;
+    hsh = Math.imul(16777619, hsh) ^ yhsh;
+    hsh = Math.imul(16777619, hsh) ^ zhsh;
+    return hsh;
   }
 
   /**

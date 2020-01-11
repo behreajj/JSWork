@@ -2,6 +2,15 @@
 
 class Color extends Vec4 {
 
+  /**
+   * Constructs a color by color channels, where each channel is a number in the
+   * range [0.0, 1.0].
+   *
+   * @param {number} r the red channel
+   * @param {number} g the green channel
+   * @param {number} b the blue channel
+   * @param {number} a the alpha channel
+   */
   constructor (r = 0.0, g = 0.0, b = 0.0, a = 1.0) {
 
     super(r, g, b, a);
@@ -58,6 +67,21 @@ class Color extends Vec4 {
     }
   }
 
+  /**
+   * Returns the hash code for this color. Equivalent to converting the color to
+   * a hex long.
+   * @returns the hash code
+   */
+  hashCode () {
+
+    return Color.toHexLong(this);
+  }
+
+  /**
+   * Resets this color to an initial state, (0.0, 0.0, 0.0, 1.0) .
+   *
+   * @returns this vector
+   */
   reset () {
 
     this._x = 0.0;
@@ -86,6 +110,12 @@ class Color extends Vec4 {
     return this;
   }
 
+  /**
+   * Returns a JSON formatted string.
+   * 
+   * @param {number} precision number of decimal places
+   * @returns the string
+   */
   toJsonString (precision = 6) {
 
     return [
@@ -101,6 +131,11 @@ class Color extends Vec4 {
     ].join('');
   }
 
+  /**
+   * Returns an object literal with this color's components.
+   * 
+   * @returns the object
+   */
   toObject () {
 
     return {
@@ -111,6 +146,12 @@ class Color extends Vec4 {
     };
   }
 
+  /**
+   * Returns a string representation of this color.
+   * 
+   * @param {number} precision number of decimal places
+   * @returns the string
+   */
   toString (precision = 4) {
 
     return [
@@ -294,15 +335,15 @@ class Color extends Vec4 {
      */
   static clamp (
     c = new Color(),
-    lb = new Color(0.0, 0.0, 0.0, 1.0),
-    ub = new Color(1.0, 1.0, 1.0, 1.0),
+    lb = new Vec4(0.0, 0.0, 0.0, 1.0),
+    ub = new Vec4(1.0, 1.0, 1.0, 1.0),
     target = new Color()) {
 
     return target.setComponents(
-      Math.min(Math.max(c.x, lb.x), ub.x),
-      Math.min(Math.max(c.y, lb.y), ub.y),
-      Math.min(Math.max(c.z, lb.z), ub.z),
-      Math.min(Math.max(c.w, lb.w), ub.w));
+      Math.min(Math.max(c.r, lb.x), ub.x),
+      Math.min(Math.max(c.g, lb.y), ub.y),
+      Math.min(Math.max(c.b, lb.z), ub.z),
+      Math.min(Math.max(c.a, lb.w), ub.w));
   }
 
   /**
@@ -385,7 +426,9 @@ class Color extends Vec4 {
    * @param {Color} target the output color
    * @returns the color 
    */
-  static fromDir2 (v, target = new Color()) {
+  static fromDir2 (
+    v = Vec2.right(),
+    target = new Color()) {
 
     const mSq = v.x * v.x + v.y * v.y;
     if (mSq === 0.0) {
@@ -415,7 +458,9 @@ class Color extends Vec4 {
    * @param {Color} target the output color
    * @returns the color 
    */
-  static fromDir3 (v, target = new Color()) {
+  static fromDir3 (
+    v = Vec3.right(),
+    target = new Color()) {
 
     const mSq = v.x * v.x + v.y * v.y + v.z * v.z;
     if (mSq === 0.0) {
@@ -678,7 +723,7 @@ class Color extends Vec4 {
       new Color(0.912418, 0.286275, 0.298039, 1.0), // 0xFFE9494C
       new Color(0.824314, 0.198431, 0.334902, 1.0), // 0xFFD23355
       new Color(0.703268, 0.142484, 0.383007, 1.0), // 0xFFB32462
-      
+
       new Color(0.584052, 0.110588, 0.413856, 1.0), // 0xFF951C6A
       new Color(0.471373, 0.080784, 0.430588, 1.0), // 0xFF78156E
       new Color(0.367320, 0.045752, 0.432680, 1.0), // 0xFF5E0C6E

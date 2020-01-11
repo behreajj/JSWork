@@ -62,6 +62,26 @@ class Complex {
     }
   }
 
+  /**
+   * Tests equivalence between this and another object. For rough equivalence of
+   * floating point components, use the static approx functio instead.
+   *
+   * @param {object} obj the object
+   * @returns the evaluation
+   */
+  equals (obj) {
+
+    if (!obj) {
+      return false;
+    }
+
+    if (obj.constructor.name !== this.constructor.name) {
+      return false;
+    }
+
+    return this.hashCode() === obj.hashCode();
+  }
+
   get (i = -1) {
 
     switch (i) {
@@ -72,6 +92,38 @@ class Complex {
       default:
         return 0.0;
     }
+  }
+
+  /**
+   * Returns a hash code for this complex number based on its real and imaginary components.
+   * 
+   * @returns the hash code
+   */
+  hashCode () {
+
+    /* real hash code. */
+    const rstr = String(this._real);
+    const len0 = rstr.length;
+    let rhsh = 0;
+    for (let i = 0; i < len0; ++i) {
+      rhsh = Math.imul(31, rhsh) ^ rstr.charCodeAt(i) | 0;
+    }
+    rhsh >>>= 0;
+
+    /* imag hash code. */
+    const istr = String(this._imag);
+    const len1 = istr.length;
+    let ihsh = 0;
+    for (let j = 0; j < len1; ++j) {
+      ihsh = Math.imul(31, ihsh) ^ istr.charCodeAt(j) | 0;
+    }
+    ihsh >>>= 0;
+
+    /* Composite hash code. */
+    let hsh = -2128831035;
+    hsh = Math.imul(16777619, hsh) ^ rhsh;
+    hsh = Math.imul(16777619, hsh) ^ ihsh;
+    return hsh;
   }
 
   reset () {
@@ -92,7 +144,7 @@ class Complex {
         this._imag = v;
         break;
     }
-    
+
     return this;
   }
 

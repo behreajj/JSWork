@@ -107,7 +107,7 @@ class Curve2 {
     const kn = this._knots;
     const len = kn.length;
     const index = this._closedLoop ?
-      i - len * Math.floor(i / len) : i;
+      i - Math.imul(len, Math.floor(i / len)) : i;
     return kn[index];
   }
 

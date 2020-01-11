@@ -2,6 +2,14 @@
 
 class ColorKey {
 
+  /**
+   * Constructs a color key from a step, in the range [0.0, 1.0], and a color
+   * present at that step. When a color is not provided, the color, including
+   * alpha, will match the step's value.
+   *
+   * @param {number} step the step in [0.0, 1.0]
+   * @param {Color} color the color
+   */
   constructor (
     step = 0.0,
     color = Color.fromScalar(step)) {
@@ -60,8 +68,7 @@ class ColorKey {
   }
 
   /**
-   * Tests equivalence between this and another object. For rough equivalence of
-   * floating point components, use the static approx function instead.
+   * Tests equivalence between this and another object. 
    *
    * @param {object} obj the object
    * @returns the evaluation
@@ -104,8 +111,9 @@ class ColorKey {
   }
 
   /**
-   * Returns a hash code for this color key based on its step.
-   * 
+   * Returns a hash code for this color key based on its step, but not its
+   * color.
+   *
    * @returns the hash code
    */
   hashCode () {

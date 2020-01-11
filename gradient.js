@@ -2,18 +2,30 @@
 
 class Gradient {
 
+  /**
+   * Constructs a color gradient from a series of color keys. If none are
+   * provided, the gradient will have a clear black color key at 0.0 and an
+   * opaque white color key at 1.0 .
+   *
+   * @param  {...ColorKey} keys the color keys
+   */
   constructor (...keys) {
 
     this._keys = [];
 
     const len = keys.length;
-    for (let i = 0; i < len; ++i) {
-      this.append(keys[i]);
+    if (len === 0) {
+      this._keys.push(
+        new ColorKey(0.0,
+          Color.clearBlack()));
+      this._keys.push(
+        new ColorKey(1.0,
+          Color.white()));
+    } else {
+      for (let i = 0; i < len; ++i) {
+        this.appendKey(keys[i]);
+      }
     }
-  }
-
-  get keys () {
-    return this._keys;
   }
 
   get length () {
@@ -24,11 +36,6 @@ class Gradient {
   get [Symbol.toStringTag] () {
 
     return this.constructor.name;
-  }
-
-  set keys (v) {
-
-    this._keys = v;
   }
 
   [Symbol.iterator] () {
@@ -54,13 +61,51 @@ class Gradient {
   }
 
   /**
+   * Appends a series of color keys to the gradient.
+   * 
+   * @param  {...ColorKey} keys color keys
+   * @returns this gradient
+   */
+  appendAll (...keys) {
+
+    const len = keys.length;
+    for (let i = 0; i < len; ++i) {
+      this.appendKey(keys[i]);
+    }
+
+    return this;
+  }
+
+  /**
+   * Appends a series of colors to the gradient. Pre-existing color keys are
+   * shifted to the left.
+   *
+   * @param  {...Color} colors the colors
+   * @returns this gradient
+   */
+  appendColor (...colors) {
+
+    const len = colors.length;
+    this.shiftKeysLeft(len);
+    const oldLen = this._keys.length;
+    const denom = 1.0 / (oldLen + len - 1.0);
+    for (let i = 0; i < len; ++i) {
+      const step = (oldLen + i) * denom;
+      const key = new ColorKey(step, colors[i]);
+      this._keys.push(key);
+    }
+
+    return this;
+  }
+
+  /**
    * Appends a color key to the gradient. If a color key at the insertion key's
    * step already exist, the old key is replaced with the new.
    *
    * @param {ColorKey} key the color key
    * @returns this gradient
    */
-  append (key = new ColorKey()) {
+  appendKey (key = new ColorKey()) {
 
     const query = this.containsKey(key);
     if (query !== -1) {
@@ -239,6 +284,19 @@ class Gradient {
   }
 
   /**
+   * Gets a color key by index.
+   * 
+   * @param {number} i the index
+   * @returns the key
+   */
+  get (i = -1) {
+
+    const len = this._keys.length;
+    const j = i - Math.imul(len, Math.floor(i / len));
+    return this._keys[j];
+  }
+
+  /**
    * Gets the first color key in this gradient.
    * 
    * @returns the color key
@@ -287,6 +345,19 @@ class Gradient {
   }
 
   /**
+   * Removes the color key at the provided index.
+   * 
+   * @param {number} i the index
+   * @returns the color key
+   */
+  removeAt (i = -1) {
+
+    const len = this._keys.length;
+    const j = i - Math.imul(len, Math.floor(i / len));
+    return this._keys.splice(j, 1)[0];
+  }
+
+  /**
    * Removes the first color key from this gradient.
    * 
    * @returns the color key
@@ -307,6 +378,23 @@ class Gradient {
   }
 
   /**
+   * Resets this gradient to an initial condition, with
+   * two color keys: clear black at 0.0, and opaque white
+   * at 1.0 .
+   * 
+   * @returns this gradient
+   */
+  reset () {
+
+    this._keys = [
+      new ColorKey(0.0, Color.clearBlack()),
+      new ColorKey(1.0, Color.white())
+    ];
+
+    return this;
+  }
+
+  /**
    * Reverses the gradient.
    * 
    * @returns this gradient
@@ -318,6 +406,23 @@ class Gradient {
     for (let i = 0; i < len; ++i) {
       const key = this._keys[i];
       key.step = 1.0 - key.step;
+    }
+
+    return this;
+  }
+
+  /**
+   * Squishes present color keys to accomodate a newly inserted color.
+   *
+   * @param {number} added number of new colors
+   */
+  shiftKeysLeft (added = 1) {
+
+    const len = this._keys.length;
+    const scalar = 1.0 / (len + added - 1.0);
+    for (let i = 0; i < len; ++i) {
+      const key = this._keys[i];
+      key.step = key.step * i * scalar;
     }
 
     return this;
@@ -388,6 +493,26 @@ class Gradient {
   }
 
   /**
+   * Creates a gradient from an array of colors, where the
+   * color keys are evenly distributed across.
+   * 
+   * @param {Color[]} colors the array of colors
+   * @param {Gradient} target the output gradient
+   * @returns the gradient
+   */
+  static fromColors (colors, target = new Gradient()) {
+
+    target._keys = [];
+    const len = colors.length;
+    const scalar = 1.0 / (len - 1.0);
+    for (let i = 0; i < len; ++i) {
+      const step = i * scalar;
+      target._keys.push(new ColorKey(step, colors[i]));
+    }
+    return target;
+  }
+
+  /**
    * Returns the Magma color palette, consisting of 16 keys.
    * 
    * @param {Gradient} target the output gradient
@@ -395,22 +520,19 @@ class Gradient {
    */
   static paletteMagma (target = new Gradient()) {
 
-    target.keys = [
+    target._keys = [
       new ColorKey(0.000, new Color(0.988235, 1.000000, 0.698039)),
       new ColorKey(0.067, new Color(0.987190, 0.843137, 0.562092)),
       new ColorKey(0.167, new Color(0.984314, 0.694118, 0.446275)),
       new ColorKey(0.200, new Color(0.981176, 0.548235, 0.354510)),
-
       new ColorKey(0.267, new Color(0.962353, 0.412549, 0.301176)),
       new ColorKey(0.333, new Color(0.912418, 0.286275, 0.298039)),
       new ColorKey(0.400, new Color(0.824314, 0.198431, 0.334902)),
       new ColorKey(0.467, new Color(0.703268, 0.142484, 0.383007)),
-
       new ColorKey(0.533, new Color(0.584052, 0.110588, 0.413856)),
       new ColorKey(0.600, new Color(0.471373, 0.080784, 0.430588)),
       new ColorKey(0.667, new Color(0.367320, 0.045752, 0.432680)),
       new ColorKey(0.733, new Color(0.267974, 0.002353, 0.416732)),
-
       new ColorKey(0.800, new Color(0.174118, 0.006275, 0.357647)),
       new ColorKey(0.867, new Color(0.093856, 0.036863, 0.232941)),
       new ColorKey(0.933, new Color(0.040784, 0.028758, 0.110327)),
@@ -429,7 +551,7 @@ class Gradient {
    */
   static paletteRgb (target = new Gradient()) {
 
-    target.keys = [
+    target._keys = [
       new ColorKey(0.000, Color.red()),
       new ColorKey(0.167, Color.yellow()),
       new ColorKey(0.333, Color.green()),
@@ -449,22 +571,19 @@ class Gradient {
    */
   static paletteViridis (target = new Gradient()) {
 
-    target.keys = [
+    target._keys = [
       new ColorKey(0.000, new Color(0.266667, 0.003922, 0.329412)),
       new ColorKey(0.067, new Color(0.282353, 0.100131, 0.420654)),
       new ColorKey(0.167, new Color(0.276078, 0.184575, 0.487582)),
       new ColorKey(0.200, new Color(0.254902, 0.265882, 0.527843)),
-
       new ColorKey(0.267, new Color(0.221961, 0.340654, 0.549281)),
       new ColorKey(0.333, new Color(0.192157, 0.405229, 0.554248)),
       new ColorKey(0.400, new Color(0.164706, 0.469804, 0.556863)),
       new ColorKey(0.467, new Color(0.139869, 0.534379, 0.553464)),
-
       new ColorKey(0.533, new Color(0.122092, 0.595033, 0.543007)),
       new ColorKey(0.600, new Color(0.139608, 0.658039, 0.516863)),
       new ColorKey(0.667, new Color(0.210458, 0.717647, 0.471895)),
       new ColorKey(0.733, new Color(0.326797, 0.773595, 0.407582)),
-
       new ColorKey(0.800, new Color(0.477647, 0.821961, 0.316863)),
       new ColorKey(0.867, new Color(0.648366, 0.858039, 0.208889)),
       new ColorKey(0.933, new Color(0.825098, 0.884967, 0.114771)),
