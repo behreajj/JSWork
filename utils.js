@@ -328,7 +328,9 @@ class Utils {
 
   /**
    * Smallest signficant differentiation between two floating point values.
-   * Approximately 0.000001 . Alternatively, see Number.EPSILON .
+   * Approximately 0.000001 . Alternative to Number.EPSILON . Useful as a
+   * tolerance when testing if two single precision real numbers approximate
+   * each other.
    */
   static get EPSILON () {
 
@@ -372,7 +374,7 @@ class Utils {
   }
 
   /**
-   * An approximation of \u03c6, or ( 1.0 + SQRT ( 5.0 ) ) / 2.0 , 1.61803399 .
+   * An approximation of PHI, or ( 1.0 + SQRT ( 5.0 ) ) / 2.0 , 1.61803399 .
    */
   static get PHI () {
 

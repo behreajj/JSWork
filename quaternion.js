@@ -2,6 +2,13 @@
 
 class Quaternion {
 
+  /**
+   * Constructs a new quaternion. Defaults to the identity, where the real
+   * component is 1.0 and the imaginary component is zero.
+   *
+   * @param {number} real the real component
+   * @param {Vec3} imag the imaginary component
+   */
   constructor (real = 1.0, imag = new Vec3()) {
 
     this._real = real;
@@ -104,14 +111,11 @@ class Quaternion {
 
   equals (obj) {
 
-    if (!obj) {
-      return false;
-    }
-
+    if (!obj) { return false; }
+    if (this === obj) { return true; }
     if (obj.constructor.name !== this.constructor.name) {
       return false;
     }
-
     return this.hashCode() === obj.hashCode();
   }
 
@@ -141,11 +145,9 @@ class Quaternion {
     }
     rhsh >>>= 0;
 
-    const ihsh = this._imag.hashCode();
-
     let hsh = -2128831035;
     hsh = Math.imul(16777619, hsh) ^ rhsh;
-    hsh = Math.imul(16777619, hsh) ^ ihsh;
+    hsh = Math.imul(16777619, hsh) ^ this._imag.hashCode();
     return hsh;
   }
 

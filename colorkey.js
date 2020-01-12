@@ -75,14 +75,11 @@ class ColorKey {
    */
   equals (obj) {
 
-    if (!obj) {
-      return false;
-    }
-
+    if (!obj) { return false; }
+    if (this === obj) { return true; }
     if (obj.constructor.name !== this.constructor.name) {
       return false;
     }
-
     return this.hashCode() === obj.hashCode();
   }
 

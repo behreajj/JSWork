@@ -1136,7 +1136,7 @@ class Simplex {
    * @param {Vec4} xDeriv the derivative for the x evaluation
    * @param {Vec4} yDeriv the derivative for the y evaluation
    * @param {Vec4} zDeriv the derivative for the z evaluation
-   * @param {Vec4} wDeriv the derivative for the z evaluation
+   * @param {Vec4} wDeriv the derivative for the w evaluation
    * @returns the noise vector
    */
   static noise4 (

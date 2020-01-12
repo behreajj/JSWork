@@ -31,6 +31,27 @@ class Entity {
     }
   }
 
+  equals (obj) {
+
+    if (!obj) { return false; }
+    if (this === obj) { return true; }
+    if (obj.constructor.name !== this.constructor.name) {
+      return false;
+    }
+    return this.hashCode() === obj.hashCode();
+  }
+
+  hashCode () {
+
+    const s = this._name;
+    const len = s.length;
+    let h = 0;
+    for (let i = 0; i < len; ++i) {
+      h = Math.imul(31, h) ^ s.charCodeAt(i) | 0;
+    }
+    return h >>> 0;
+  }
+
   toString () {
 
     return [

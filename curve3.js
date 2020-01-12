@@ -66,6 +66,16 @@ class Curve3 {
     }
   }
 
+  equals (obj) {
+
+    if (!obj) { return false; }
+    if (this === obj) { return true; }
+    if (obj.constructor.name !== this.constructor.name) {
+      return false;
+    }
+    return this.hashCode() === obj.hashCode();
+  }
+
   evalFirst (
     ptTarget = new Vec3(),
     tnTarget = new Vec3()) {
@@ -119,6 +129,29 @@ class Curve3 {
   getLast () {
 
     return this._knots[this._knots.length - 1];
+  }
+
+  hashCode () {
+
+    const bhsh = this._closedLoop ? 1231 : 1237;
+
+    let arrhsh = 0;
+    const len = this._knots.length;
+    for (let i = 0; i < len; ++i) {
+      const knot = this._knots[i];
+      arrhsh = Math.imul(31, arrhsh) ^ knot.hashCode() | 0;
+    }
+    arrhsh >>>= 0;
+
+    let hsh = -2128831035;
+    hsh = Math.imul(16777619, hsh) ^ bhsh;
+    hsh = Math.imul(16777619, hsh) ^ arrhsh;
+    return hsh;
+  }
+
+  removeAt(i = 0) {
+
+    return this._knots.splice(i, 1)[0];
   }
 
   removeFirst () {
@@ -230,6 +263,27 @@ class Curve3 {
     }
 
     return this;
+  }
+
+  toJsonString (precision = 6) {
+
+    const result = [
+      '{\"closedLoop\":',
+      this._closedLoop,
+      ',\"knots\":['];
+
+    const kn = this._knots;
+    const len = kn.length;
+    const last = len - 1;
+    for (let i = 0; i < len; ++i) {
+      result.push(kn[i].toJsonString(precision));
+      if (i < last) {
+        result.push(',');
+      }
+    }
+
+    result.push(']}')
+    return result.join('');
   }
 
   toString (precision = 4) {

@@ -83,14 +83,13 @@ class Vec2 {
    */
   equals (obj) {
 
-    if (!obj) {
-      return false;
-    }
+    // TODO: Forgot to add this condition to equals.
 
+    if (!obj) { return false; }
+    if (this === obj) { return true; }
     if (obj.constructor.name !== this.constructor.name) {
       return false;
     }
-
     return this.hashCode() === obj.hashCode();
   }
 
@@ -927,7 +926,8 @@ class Vec2 {
   }
 
   /**
-   * Returns a 2D grid of vectors.
+   * Returns a 2D grid of vectors. Call the flat function with an argument of
+   * 1 to flatten to a 1D array.
    *
    * @param {number} rows rows
    * @param {number} cols columns
@@ -957,14 +957,14 @@ class Vec2 {
 
     const result = [];
     for (let i = 0; i < rval; ++i) {
-      row = [];
+      const row = [];
       const yPrc = i * iToStep;
       const y = (1.0 - yPrc) * lowerBound.y +
         yPrc * upperBound.y;
       for (let j = 0; j < cval; ++j) {
         row.push(new Vec2(xs[j], y));
       }
-      result.append(row);
+      result.push(row);
     }
 
     return result;

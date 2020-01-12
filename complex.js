@@ -62,23 +62,13 @@ class Complex {
     }
   }
 
-  /**
-   * Tests equivalence between this and another object. For rough equivalence of
-   * floating point components, use the static approx functio instead.
-   *
-   * @param {object} obj the object
-   * @returns the evaluation
-   */
   equals (obj) {
 
-    if (!obj) {
-      return false;
-    }
-
+    if (!obj) { return false; }
+    if (this === obj) { return true; }
     if (obj.constructor.name !== this.constructor.name) {
       return false;
     }
-
     return this.hashCode() === obj.hashCode();
   }
 
@@ -94,11 +84,6 @@ class Complex {
     }
   }
 
-  /**
-   * Returns a hash code for this complex number based on its real and imaginary components.
-   * 
-   * @returns the hash code
-   */
   hashCode () {
 
     /* real hash code. */

@@ -95,14 +95,11 @@ class Vec3 {
    */
   equals (obj) {
 
-    if (!obj) {
-      return false;
-    }
-
+    if (!obj) { return false; }
+    if (this === obj) { return true; }
     if (obj.constructor.name !== this.constructor.name) {
       return false;
     }
-
     return this.hashCode() === obj.hashCode();
   }
 
@@ -1132,7 +1129,8 @@ class Vec3 {
   }
 
   /**
-   * Generates a 3D array of vectors.
+   * Generates a 3D array of vectors. Call the flat function with an argument of
+   * 2 to flatten to a 1D array.
    *
    * @param {number} rows number of rows
    * @param {number} cols number of columns

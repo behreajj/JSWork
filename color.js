@@ -707,66 +707,6 @@ class Color extends Vec4 {
   }
 
   /**
-   * Returns an array of 16 values which approximate the Magma color palette
-   * used in data vizualization.
-   *
-   * @returns the array
-   */
-  static paletteMagma () {
-    return [
-      new Color(0.988235, 1.000000, 0.698039, 1.0), // 0xFFFCFFB2
-      new Color(0.987190, 0.843137, 0.562092, 1.0), // 0xFFFCD78F
-      new Color(0.984314, 0.694118, 0.446275, 1.0), // 0xFFFBB172
-      new Color(0.981176, 0.548235, 0.354510, 1.0), // 0xFFFA8C5A
-
-      new Color(0.962353, 0.412549, 0.301176, 1.0), // 0xFFF5694D
-      new Color(0.912418, 0.286275, 0.298039, 1.0), // 0xFFE9494C
-      new Color(0.824314, 0.198431, 0.334902, 1.0), // 0xFFD23355
-      new Color(0.703268, 0.142484, 0.383007, 1.0), // 0xFFB32462
-
-      new Color(0.584052, 0.110588, 0.413856, 1.0), // 0xFF951C6A
-      new Color(0.471373, 0.080784, 0.430588, 1.0), // 0xFF78156E
-      new Color(0.367320, 0.045752, 0.432680, 1.0), // 0xFF5E0C6E
-      new Color(0.267974, 0.002353, 0.416732, 1.0), // 0xFF44016A
-
-      new Color(0.174118, 0.006275, 0.357647, 1.0), // 0xFF2C025B
-      new Color(0.093856, 0.036863, 0.232941, 1.0), // 0xFF18093B
-      new Color(0.040784, 0.028758, 0.110327, 1.0), // 0xFF0A071C
-      new Color(0.000000, 0.000000, 0.019608, 1.0)  // 0xFF000005
-    ];
-  }
-
-  /**
-   * Returns an array of 16 values which approximate the Viridis color palette
-   * used in data vizualization.
-   *
-   * @returns the array
-   */
-  static paletteViridis () {
-    return [
-      new Color(0.266667, 0.003922, 0.329412, 1.0), // 0xFF440154
-      new Color(0.282353, 0.100131, 0.420654, 1.0), // 0xFF481A6B
-      new Color(0.276078, 0.184575, 0.487582, 1.0), // 0xFF462F7C
-      new Color(0.254902, 0.265882, 0.527843, 1.0), // 0xFF414487
-
-      new Color(0.221961, 0.340654, 0.549281, 1.0), // 0xFF39578C
-      new Color(0.192157, 0.405229, 0.554248, 1.0), // 0xFF31678D
-      new Color(0.164706, 0.469804, 0.556863, 1.0), // 0xFF2A788E
-      new Color(0.139869, 0.534379, 0.553464, 1.0), // 0xFF24888D
-
-      new Color(0.122092, 0.595033, 0.543007, 1.0), // 0xFF1F988A
-      new Color(0.139608, 0.658039, 0.516863, 1.0), // 0xFF24A884
-      new Color(0.210458, 0.717647, 0.471895, 1.0), // 0xFF36B778
-      new Color(0.326797, 0.773595, 0.407582, 1.0), // 0xFF53C568
-
-      new Color(0.477647, 0.821961, 0.316863, 1.0), // 0xFF7AD251
-      new Color(0.648366, 0.858039, 0.208889, 1.0), // 0xFFA5DB35
-      new Color(0.825098, 0.884967, 0.114771, 1.0), // 0xFFD2E21D
-      new Color(0.992157, 0.905882, 0.145098, 1.0)  // 0xFFFDE725
-    ];
-  }
-
-  /**
    * Multiplies the red, green and blue color channels of a color by the alpha
    * channel.
    *

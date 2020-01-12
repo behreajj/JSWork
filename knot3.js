@@ -74,6 +74,16 @@ class Knot3 {
     }
   }
 
+  equals (obj) {
+
+    if (!obj) { return false; }
+    if (this === obj) { return true; }
+    if (obj.constructor.name !== this.constructor.name) {
+      return false;
+    }
+    return this.hashCode() === obj.hashCode();
+  }
+
   get (i = -1) {
 
     switch (i) {
@@ -101,6 +111,15 @@ class Knot3 {
       default:
         return 0.0;
     }
+  }
+
+  hashCode () {
+
+    let hsh = -2128831035;
+    hsh = Math.imul(16777619, hsh) ^ this._coord.hashCode();
+    hsh = Math.imul(16777619, hsh) ^ this._foreHandle.hashCode();
+    hsh = Math.imul(16777619, hsh) ^ this._rearHandle.hashCode();
+    return hsh;
   }
 
   reset () {

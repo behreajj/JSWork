@@ -112,6 +112,22 @@ class Knot2 {
 
   // }
 
+  /**
+   * Tests equivalence between this and another object.
+   *
+   * @param {object} obj the object
+   * @returns the evaluation
+   */
+  equals (obj) {
+
+    if (!obj) { return false; }
+    if (this === obj) { return true; }
+    if (obj.constructor.name !== this.constructor.name) {
+      return false;
+    }
+    return this.hashCode() === obj.hashCode();
+  }
+
   get (i = -1) {
 
     switch (i) {
@@ -133,6 +149,20 @@ class Knot2 {
       default:
         return 0.0;
     }
+  }
+
+  /**
+   * Returns a hash code for this knot based on its coordinate, fore handle and
+   * rear handle.
+   * @returns the hash code
+   */
+  hashCode () {
+
+    let hsh = -2128831035;
+    hsh = Math.imul(16777619, hsh) ^ this._coord.hashCode();
+    hsh = Math.imul(16777619, hsh) ^ this._foreHandle.hashCode();
+    hsh = Math.imul(16777619, hsh) ^ this._rearHandle.hashCode();
+    return hsh;
   }
 
   /**
