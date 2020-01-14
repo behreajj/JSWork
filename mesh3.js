@@ -35,10 +35,4 @@ class Mesh3 {
     target.vertices = vertices;
     return target;
   }
-
-  getFaces () {
-
-    const len0 = this._faces.length;
-    const result = [];
-  }
 }

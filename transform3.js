@@ -358,7 +358,7 @@ class Transform3 {
     source = new Vec3(1.0, 0.0, 0.0),
     target = new Vec3()) {
 
-    return Quaternion.applyTo(
+    return Quaternion.mulVector(
       transform.rotation,
       source,
       target);
@@ -369,7 +369,7 @@ class Transform3 {
     source = new Vec3(),
     target = new Vec3()) {
 
-    Quaternion.applyTo(
+    Quaternion.mulVector(
       transform.rotation,
       source,
       target);
@@ -392,7 +392,7 @@ class Transform3 {
     source = new Vec3(1.0, 0.0, 0.0),
     target = new Vec3()) {
 
-    Quaternion.applyTo(
+    Quaternion.mulVector(
       transform.rotation,
       source,
       target);

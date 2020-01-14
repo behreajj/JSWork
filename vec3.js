@@ -17,11 +17,34 @@ class Vec3 {
    */
   constructor (x = 0.0, y = 0.0, z = 0.0) {
 
+    /**
+     * The x coordinate.
+     *
+     * Negative values tend to the West, or left, on the horizontal axis;
+     * positive values, toward the East, or right.
+     */
     this._x = x;
+
+    /**
+     * The y coordinate.
+     *
+     * Negative values tend to the South, or backward, on the depth axis;
+     * positive values, toward the North, or forward. 
+     */
     this._y = y;
+
+    /**
+     * The z coordinate.
+     *
+     * Negative values tend inward, or down, on the vertical axis; positive
+     * values outward, or up.
+     */
     this._z = z;
   }
 
+  /**
+   * The number of dimensions held by this vector, 3.
+   */
   get length () {
 
     return 3;
@@ -357,7 +380,7 @@ class Vec3 {
   }
 
   /**
-   * Evaluates two vectors like booleans, using the analytic definition of the
+   * Evaluates two vectors like booleans, using the
    * AND logic gate.
    *
    * @param {Vec3} a the left operand
@@ -1587,7 +1610,7 @@ class Vec3 {
   }
 
   /**
-   * Evaluates two vectors like booleans, using the analytic definition of the
+   * Evaluates two vectors like booleans, using the
    * OR logic gate.
    * 
    * @param {Vec3} a the left operand
@@ -2199,7 +2222,7 @@ class Vec3 {
   }
 
   /**
-   * Evaluates two vectors like booleans, using the analytic definition of the
+   * Evaluates two vectors like booleans, using the
    * exclusive or (XOR) logic gate.
    *
    * @param {Vec3} a the left operand

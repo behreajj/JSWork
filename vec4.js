@@ -1,10 +1,9 @@
 'use strict';
 
 /**
- * A mutable, extensible class influenced by GLSL, OSL and p5*js's p5.Vector .
- * This is intended for storing points and directions in three-dimensional
- * graphics programs. Instance methods are limited, while most static methods
- * require an explicit output variable to be provided.
+ * A mutable, extensible class influenced by GLSL. This is intended to serve as
+ * a parent class for colors. Instance methods are limited, while most static
+ * methods require an explicit output variable to be provided.
  */
 class Vec4 {
 
@@ -18,12 +17,51 @@ class Vec4 {
    */
   constructor (x = 0.0, y = 0.0, z = 0.0, w = 0.0) {
 
+    /**
+     * The x coordinate.
+     *
+     * Negative values tend to the West, or left, on the horizontal axis;
+     * positive values, toward the East, or right.
+     * 
+     * In colors, stores the red channel.
+     */
     this._x = x;
+
+    /**
+     * The y coordinate.
+     *
+     * Negative values tend to the South, or backward, on the depth axis;
+     * positive values, toward the North, or forward. 
+     * 
+     * In colors, stores the green channel.
+     */
     this._y = y;
+
+    /**
+     * The z coordinate.
+     *
+     * Negative values tend inward, or down, on the vertical axis; positive
+     * values outward, or up.
+     * 
+     * In colors, stores the blue channel.
+     */
     this._z = z;
+
+    /**
+     * The w coordinate.
+     *
+     * When transforming a three-dimensional vector through multiplication with
+     * a 4 x 4 affine transform matrix, the w component may help distinguish a
+     * point ( w === 1.0 ) from a direction ( w === 0.0 ).
+     *
+     * In colors, stores the alpha channel, which governs transparency.
+     */
     this._w = w;
   }
 
+  /**
+   * The number of dimensions held by this vector, 4.
+   */
   get length () {
 
     return 4;
@@ -406,7 +444,7 @@ class Vec4 {
   }
 
   /**
-   * Evaluates two vectors like booleans, using the analytic definition of the
+   * Evaluates two vectors like booleans, using the
    * AND logic gate.
    *
    * @param {Vec4} a the left operand
@@ -1314,7 +1352,7 @@ class Vec4 {
   }
 
   /**
-   * Evaluates two vectors like booleans, using the analytic definition of the
+   * Evaluates two vectors like booleans, using the
    * OR logic gate.
    * 
    * @param {Vec4} a the left operand
@@ -1381,22 +1419,17 @@ class Vec4 {
 
   static randomSpherical (target = new Vec4()) {
 
-    const rx = 2.0 * Math.random() - 1.0;
-    const ry = 2.0 * Math.random() - 1.0;
-    const rz = 2.0 * Math.random() - 1.0;
-    const rw = 2.0 * Math.random() - 1.0;
+    const t0 = Math.random() * 6.283185307179586;
+    const t1 = Math.random() * 6.283185307179586;
+    const r1 = Math.random();
+    const x0 = Math.sqrt(1.0 - r1);
+    const x1 = Math.sqrt(r1);
 
-    const mSq = rx * rx + ry * ry + rz * rz + rw * rw;
-    if (mSq === 0.0) {
-      return target.reset();
-    }
-
-    const mInv = 1.0 / Math.sqrt(mSq);
     return target.setComponents(
-      rx * mInv,
-      ry * mInv,
-      rz * mInv,
-      rw * mInv);
+      x0 * Math.cos(t0),
+      x1 * Math.sin(t1),
+      x1 * Math.cos(t1),
+      x0 * Math.sin(t0));
   }
 
   /**
@@ -1620,7 +1653,7 @@ class Vec4 {
   }
 
   /**
-   * Evaluates two vectors like booleans, using the analytic definition of the
+   * Evaluates two vectors like booleans, using the
    * exclusive or (XOR) logic gate.
    *
    * @param {Vec4} a the left operand

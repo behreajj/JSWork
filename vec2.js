@@ -16,10 +16,26 @@ class Vec2 {
    */
   constructor (x = 0.0, y = 0.0) {
 
+    /**
+     * The x coordinate.
+     *
+     * Negative values tend to the West, or left, on the horizontal axis;
+     * positive values, toward the East, or right.
+     */
     this._x = x;
+
+    /**
+     * The y coordinate.
+     *
+     * Negative values tend to the South, or backward, on the depth axis;
+     * positive values, toward the North, or forward. 
+     */
     this._y = y;
   }
 
+  /**
+   * The number of dimensions held by this vector, 2.
+   */
   get length () {
 
     return 2;
@@ -321,7 +337,7 @@ class Vec2 {
   }
 
   /**
-   * Evaluates two vectors like booleans, using the analytic definition of the
+   * Evaluates two vectors like booleans, using the
    * AND logic gate.
    *
    * @param {Vec2} a the left operand
@@ -1345,7 +1361,7 @@ class Vec2 {
   }
 
   /**
-   * Evaluates two vectors like booleans, using the analytic definition of the
+   * Evaluates two vectors like booleans, using the
    * OR logic gate.
    * 
    * @param {Vec2} a the left operand
@@ -1802,7 +1818,7 @@ class Vec2 {
   }
 
   /**
-   * Evaluates two vectors like booleans, using the analytic definition of the
+   * Evaluates two vectors like booleans, using the
    * exclusive or (XOR) logic gate.
    *
    * @param {Vec2} a the left operand

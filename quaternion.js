@@ -1,17 +1,35 @@
 'use strict';
 
+/**
+ * A four-dimensional complex number. The x, y and z components are coefficients
+ * of the imaginary i, j, and k. Discovered by William R. Hamilton with the
+ * formula i i = j j = k k = i j k = -1.0 . Quaternions with a magnitude of 1.0
+ * are commonly used to rotate 3D objects from one orientation to another
+ * without suffering gimbal lock.
+ */
 class Quaternion {
 
   /**
-   * Constructs a new quaternion. Defaults to the identity, where the real
-   * component is 1.0 and the imaginary component is zero.
+   * Constructs a new quaternion from a scalar real component and vector
+   * imaginary component. Defaults to the identity, where the real component is
+   * 1.0 and the imaginary component is zero, (0.0, 0.0, 0.0) .
    *
    * @param {number} real the real component
    * @param {Vec3} imag the imaginary component
    */
   constructor (real = 1.0, imag = new Vec3()) {
 
+    // TODO: Add the natural logarithm of a quaternion above this?
+    // TODO: Add separate getUp, getRight, getForward functions?
+
+    /**
+     * The real component, a scalar; also referred to as 'w'.
+     */
     this._real = real;
+
+    /**
+     * The imginary coefficient, a three dimensional vector.
+     */
     this._imag = imag;
   }
 
@@ -20,6 +38,9 @@ class Quaternion {
     return this._imag;
   }
 
+  /**
+   * The number of elements in the quaternion, 4.
+   */
   get length () {
 
     return 4;
@@ -109,6 +130,13 @@ class Quaternion {
     }
   }
 
+  /**
+   * Tests equivalence between this and another object. For rough equivalence of
+   * floating point components, use the static approx function instead.
+   *
+   * @param {object} obj the object
+   * @returns the evaluation
+   */
   equals (obj) {
 
     if (!obj) { return false; }
@@ -119,6 +147,13 @@ class Quaternion {
     return this.hashCode() === obj.hashCode();
   }
 
+  /**
+   * Gets a component of this quaternion by index. The real component, w, is
+   * assumed to be the first element.
+   *
+   * @param {number} i the index
+   * @returns the value
+   */
   get (i = -1) {
 
     switch (i) {
@@ -135,6 +170,12 @@ class Quaternion {
     }
   }
 
+  /**
+   * Returns a hash code for this vector based on its real and imaginary
+   * components.
+   *
+   * @returns the hash code
+   */
   hashCode () {
 
     const rstr = String(this._real);
@@ -151,6 +192,12 @@ class Quaternion {
     return hsh;
   }
 
+  /**
+   * Resets this quaternion to an initial state, the identity, ( 1.0, 0.0, 0.0,
+   * 0.0 ) .
+   *
+   * @returns this quaternion
+   */
   reset () {
 
     this._real = 1.0;
@@ -159,6 +206,14 @@ class Quaternion {
     return this;
   }
 
+  /**
+   * Sets a component of this quaternion by index. The real component, w, is
+   * assumed to be the first element.
+   *
+   * @param {number} i the index
+   * @param {number} v the value
+   * @returns this quaternion
+   */
   set (i = -1, v = 0.0) {
 
     switch (i) {
@@ -178,6 +233,15 @@ class Quaternion {
     return this;
   }
 
+  /**
+   * Sets the components of this quaternion.
+   *
+   * @param {number} w the real component
+   * @param {number} x the coefficient of i
+   * @param {number} y the coefficient of j
+   * @param {number} z the coefficient of k
+   * @returns this quaternion
+   */
   setComponents (w = 1.0, x = 0.0, y = 0.0, z = 0.0) {
 
     this._real = w;
@@ -186,12 +250,24 @@ class Quaternion {
     return this;
   }
 
+  /**
+   * Returns an array of length 4 containing this quaternion's components. The
+   * real component, w, is listed first.
+   *
+   * @returns the array
+   */
   toArray () {
 
     const i = this._imag;
     return [this._real, i.x, i.y, i.z];
   }
 
+  /**
+   * Returns a JSON formatted string.
+   *
+   * @param {number} precision number of decimal places
+   * @returns the string
+   */
   toJsonString (precision = 6) {
 
     return [
@@ -203,6 +279,11 @@ class Quaternion {
     ].join('');
   }
 
+  /**
+   * Returns an object literal with this quaternion's components.
+   *
+   * @returns the object
+   */
   toObject () {
 
     return {
@@ -211,6 +292,12 @@ class Quaternion {
     };
   }
 
+  /**
+   * Returns a string representation of this quaternion.
+   *
+   * @param {number} precision number of decimal places
+   * @returns the string
+   */
   toString (precision = 4) {
 
     return [
@@ -222,6 +309,14 @@ class Quaternion {
     ].join('');
   }
 
+  /**
+   * Adds to quaternions.
+   * 
+   * @param {Quaternion} a the left operand
+   * @param {Quaternion} b the right operand
+   * @param {Quaternion} target the output quaternion
+   * @returns the sum
+   */
   static add (
     a = new Quaternion(),
     b = new Quaternion(),
@@ -232,6 +327,14 @@ class Quaternion {
     return target;
   }
 
+  /**
+   * Adds two quaternions and normalizes the result.
+   * 
+   * @param {Quaternion} a the left operand
+   * @param {Quaternion} b the right operand
+   * @param {Quaternion} target the output quaternion
+   * @returns the normalized sum
+   */
   static addNorm (
     a = new Quaternion(),
     b = new Quaternion(),
@@ -254,39 +357,37 @@ class Quaternion {
       i.z * mInv);
   }
 
+  /**
+   * Tests to see if all the quaternion's components are non-zero.
+   *
+   * @param {Quaternion} q the input quaternion
+   * @returns the evaluation
+   */
   static all (q = new Quaternion()) {
 
     return q.real !== 0.0 && Vec3.all(q.imag);
   }
 
+  /**
+   * Tests to see if any of the quaternion's components are non-zero.
+   * 
+   * @param {Quaternion} q the input quaternion
+   * @returns the evaluation
+   */
   static any (q = new Quaternion()) {
 
     return q.real !== 0.0 || Vec3.any(q.imag);
   }
 
-  static applyTo (
-    q = new Quaternion(),
-    v = new Vec3(),
-    target = new Vec3()) {
-
-    const w = q.real;
-    const i = q.imag;
-
-    const qx = i.x;
-    const qy = i.y;
-    const qz = i.z;
-
-    const iw = -qx * v.x - qy * v.y - qz * v.z;
-    const ix = w * v.x + qy * v.z - qz * v.y;
-    const iy = w * v.y + qz * v.x - qx * v.z;
-    const iz = w * v.z + qx * v.y - qy * v.x;
-
-    return target.setComponents(
-      ix * w + iz * qy - iw * qx - iy * qz,
-      iy * w + ix * qz - iw * qy - iz * qx,
-      iz * w + iy * qx - iw * qz - ix * qy);
-  }
-
+  /**
+   * Evaluates whether or not two quaternions approximate each
+   * other according to a tolerance.
+   * 
+   * @param {Quaternion} a the left comparisand
+   * @param {Quaternion} b the right comparisand
+   * @param {number} tolerance the tolerance
+   * @returns the evaluation
+   */
   static approx (
     a = new Quaternion(),
     b = new Quaternion(),
@@ -296,6 +397,14 @@ class Quaternion {
       Vec3.approx(a, b, tolerance);
   }
 
+  /**
+   * Tests to see if a quaternion has, approximately, the
+   * specified magnitude.
+   * 
+   * @param {Quaternion} a the quaternion
+   * @param {number} b the magnitude
+   * @param {number} tolerance the tolerance
+   */
   static approxMag (
     a = new Quaternion(),
     b = 1.0,
@@ -304,6 +413,14 @@ class Quaternion {
     return Math.abs((b * b) - Quaternion.magSq(a)) < tolerance;
   }
 
+  /**
+   * Compares two quaternions by real component (w), then by imaginary
+   * components: z, y, then x. To be provided to array sort functions.
+   *
+   * @param {Quaternion} a the left comparisand
+   * @param {Quaternion} b the right comparisand
+   * @returns the comparison
+   */
   static compareWzyx (
     a = new Quaternion(),
     b = new Quaternion()) {
@@ -324,6 +441,16 @@ class Quaternion {
     return 0;
   }
 
+  /**
+   * Returns the conjugate of the quaternion, where the imaginary component is
+   * negated.
+   *
+   * a* = { a real, -a imag }
+   *
+   * @param {Quaternion} q the input quaternion
+   * @param {Quaternion} target the output quaternion
+   * @returns the conjugate
+   */
   static conj (
     q = new Quaternion(),
     target = new Quaternion()) {
@@ -333,6 +460,15 @@ class Quaternion {
     return target;
   }
 
+  /**
+   * Divides one quaternion by another. Equivalent to multiplying the numerator
+   * and the inverse of the denominator.
+   *
+   * @param {Quaternion} a the numerator
+   * @param {Quaternion} b the denominator 
+   * @param {Quaternion} target the output quaternion
+   * @returns the quotient 
+   */
   static div (
     a = new Quaternion(),
     b = new Quaternion(),
@@ -350,10 +486,10 @@ class Quaternion {
       return target.reset();
     }
 
-    const bwInv = bw;
-    const bxInv = -bx;
-    const byInv = -by;
-    const bzInv = -bz;
+    let bwInv = bw;
+    let bxInv = -bx;
+    let byInv = -by;
+    let bzInv = -bz;
 
     if (Math.abs(1.0 - bmSq) > 0.000001) {
       const bmSqInv = 1.0 / bmSq;
@@ -372,6 +508,19 @@ class Quaternion {
       ai.z * bwInv + aw * bzInv + ai.x * byInv - ai.y * bxInv);
   }
 
+  /**
+   * Finds the dot product of two quaternions by summing the
+   * products of their corresponding components.
+   * 
+   * dot ( a, b ) := a real * b real + dot ( a imag, b imag )
+   * 
+   * The dot product of a quaternion with itself is equal to
+   * its magnitude squared.
+   * 
+   * @param {Quaternion} a left operand
+   * @param {Quaternion} b right operand
+   * @returns the dot product
+   */
   static dot (
     a = new Quaternion(),
     b = new Quaternion()) {
@@ -379,6 +528,18 @@ class Quaternion {
     return a.real * b.real + Vec3.dot(a.imag, b.imag);
   }
 
+  /**
+   * Finds the value of Euler's number e raised to the power of the quaternion.
+   * Uses the formula:
+   *
+   * exp ( q ) := er ( { cos ( |i| ), ^i sin ( |i| ) } )
+   *
+   * where r is qreal and i is qimag.
+   *
+   * @param {Quaternion} q the input quaternion
+   * @param {Quaternion} target the output quaternion
+   * @returns the result
+   */
   static exp (
     q = new Quaternion(),
     target = new Quaternion()) {
@@ -401,6 +562,13 @@ class Quaternion {
     return target;
   }
 
+  /**
+   * Creates a quaternion from the array.
+   *
+   * @param {Array} arr the array
+   * @param {Quaternion} target the output quaternion
+   * @returns the quaternion
+   */
   static fromArray (
     arr = [1.0, 0.0, 0.0, 0.0],
     target = new Quaternion()) {
@@ -412,6 +580,18 @@ class Quaternion {
       arr[3]);
   }
 
+  /**
+   * Creates a quaternion from three axes.
+   *
+   * The axes should already be normalized; in other words, they should match a
+   * pure rotation matrix.
+   *
+   * @param {Vec3} right the right axis
+   * @param {Vec3} forward the forward axis
+   * @param {Vec3} up the up axis
+   * @param {Quaternion} target the output quaternion
+   * @returns the quaternion
+   */
   static fromAxes (
     right = Vec3.right(),
     forward = Vec3.forward(),
@@ -426,12 +606,29 @@ class Quaternion {
       target);
   }
 
+  /**
+   * Creates a quaternion from three axes - either separate vectors or the
+   * columns of a matrix. This is an internal helper function which uses only
+   * the relevant information to create a quaternion.
+   *
+   * @param {number} rightx m00 : right.x
+   * @param {number} forwardy m11 : forward.y
+   * @param {number} upz m22 : up.z
+   * @param {number} forwardz m21 : forward.z
+   * @param {number} upy m12 : up.y
+   * @param {number} upx m02 : up.x
+   * @param {number} rightz m20 : right.z
+   * @param {number} righty m10 : right.y
+   * @param {number} forwardx m01 : forward.x
+   * @param {Quaternion} target the output quaternion
+   * @returns the quaternion
+   */
   static fromAxesInternal (
     rightx = 1.0,
     forwardy = 1.0,
     upz = 1.0,
     forwardz = 0.0,
-    upy = 1.0,
+    upy = 0.0,
     upx = 0.0,
     rightz = 0.0,
     righty = 0.0,
@@ -454,6 +651,15 @@ class Quaternion {
       Math.copySign(z, righty - forwardx));
   }
 
+  /**
+   * Creates a quaternion from an axis and angle. Normalizes the axis prior to
+   * calculating the quaternion.
+   * 
+   * @param {number} radians the angle in radians
+   * @param {Vec3} axis the axis
+   * @param {Quaternion} target the output quaternion
+   * @returns the quaternion
+   */
   static fromAxisAngle (
     radians = 0.0,
     axis = new Vec3(0.0, 0.0, 1.0),
@@ -484,6 +690,13 @@ class Quaternion {
       nz * sinHalf);
   }
 
+  /**
+   * Copies a quaternion's components from a source.
+   * 
+   * @param {Quaternion} source the source quaternion
+   * @param {Quaternion} target the output quaternion
+   * @returns the quaternion
+   */
   static fromSource (
     source = new Quaternion(),
     target = new Quaternion()) {
@@ -495,11 +708,29 @@ class Quaternion {
     return target;
   }
 
+  /**
+   * Sets the target to the identity quaternion, ( 1.0, 0.0, 0.0, 0.0 ).
+   *
+   * @param {Quaternion} target the output quaternion
+   * @returns the identity
+   */
   static identity (target = new Quaternion()) {
 
     return target.setComponents(1.0, 0.0, 0.0, 0.0);
   }
 
+  /**
+   * Finds the inverse, or reciprocal, of a quaternion, which is the conjugate
+   * divided by the magnitude squared.
+   * 
+   * inverse ( a ) := conj ( a ) / dot( a, a )
+   *
+   * If a quaternion is of unit length, its inverse is equal to its conjugate.
+   *
+   * @param {Quaternion} q the input quaternion
+   * @param {Quaternion} target the output quaternion
+   * @returns the inverse
+   */
   static inverse (
     q = new Quaternion(),
     target = new Quaternion()) {
@@ -523,27 +754,84 @@ class Quaternion {
       -i.z * mSqInv);
   }
 
+  /**
+   * Tests if the quaternion is the identity, where its real component is 1.0
+   *  and its imaginary components are all zero.
+   *
+   * @param {Quaternion} q the input quaternion
+   * @returns the evaluation
+   */
+  static isIdentity (q = new Quaternion()) {
+
+    return q.real === 1.0 && Vec3.none(q.imag);
+  }
+
+  /**
+   * Tests to see if a quaternion is a pure, i.e. if its real component is zero.
+   *
+   * @param {Quaternion} q the input quaternion
+   * @returns the evaluation
+   */
   static isPure (q = new Quaternion()) {
 
     return q.real === 0.0;
   }
 
+  /**
+   * Tests if the quaternion is of unit magnitude.
+   * 
+   * @param {Quaternion} q the input quaternion
+   * @returns the evaluation
+   */
   static isUnit (q = new Quaternion()) {
 
     return Quaternion.approxMag(q, 1.0);
   }
 
+  /**
+   * Finds the length, or magnitude, of a quaternion.
+   * 
+   * mag ( a ) := sqrt ( dot ( a, a ) )
+   * 
+   * mag ( a ) := sqrt ( a conj ( a ) )
+   * 
+   * @param {Quaternion} q the input quaternion
+   * @returns the magnitude
+   */
   static mag (q = new Quaternion()) {
 
     const i = q.imag;
     return Math.hypot(q.real, i.x, i.y, i.z);
   }
 
+  /**
+   * Finds the magnitude squared of a quaternion. Equivalent to the dot product
+   * of a quaternion with itself and to the product of a quaternion with its
+   * conjugate.
+   *
+   * @param {Quaternion} q the input quaternion
+   * @returns the magnitude squared
+   */
   static magSq (q = new Quaternion()) {
 
     return q.real * q.real + Vec3.magSq(q.imag);
   }
 
+  /**
+   * Multiplies two quaternions. Also referred to as the
+   * Hamilton product. Uses the formula
+   * 
+   * a b := {
+   * areal breal - dot( aimag, bimag ),
+   * cross( aimag, bimag ) + areal bimag + breal aimag }
+   * 
+   * Quaternion multiplication is not commutative.
+   * 
+   * @param {Quaternion} a left operand
+   * @param {Quaternion} b right operand
+   * @param {Quaternion} target the output quaternion
+   * @returns the product
+   */
   static mul (
     a = new Quaternion(),
     b = new Quaternion(),
@@ -561,11 +849,69 @@ class Quaternion {
       ai.z * bw + aw * bi.z + ai.x * bi.y - ai.y * bi.x);
   }
 
+  /**
+   * Multiplies a vector by a quaternion, in effect rotating the vector by the
+   * quaternion. Equivalent to promoting the vector to a pure quaternion,
+   * multiplying the rotation quaternion and promoted vector, then dividing the
+   * product by the rotation.
+   *
+   * a b := ( a {0.0, b } ) / b
+   * 
+   * The result is then demoted to a vector, as the real
+   * component should be 0.0 . This is often denoted as P'
+   * = RPR' .
+   *
+   * @param {Quaternion} q the quaternion
+   * @param {Vec3} v the input vector
+   * @param {Vec3} target the output vector
+   * @returns the rotated vector
+   */
+  static mulVector (
+    q = new Quaternion(),
+    v = new Vec3(),
+    target = new Vec3()) {
+
+    const w = q.real;
+    const i = q.imag;
+
+    const qx = i.x;
+    const qy = i.y;
+    const qz = i.z;
+
+    const iw = -qx * v.x - qy * v.y - qz * v.z;
+    const ix = w * v.x + qy * v.z - qz * v.y;
+    const iy = w * v.y + qz * v.x - qx * v.z;
+    const iz = w * v.z + qx * v.y - qy * v.x;
+
+    return target.setComponents(
+      ix * w + iz * qy - iw * qx - iy * qz,
+      iy * w + ix * qz - iw * qy - iz * qx,
+      iz * w + iy * qx - iw * qz - ix * qy);
+  }
+
+  /**
+   * Tests if all components of the quaternion are zero.
+   *
+   * @param {Quaternion} q the quaternion
+   * @returns the evaluation
+   */
   static none (q = new Quaternion()) {
 
     return q.real === 0.0 && Vec3.none(q.imag);
   }
 
+  /**
+   * Divides a quaternion by its magnitude, such that its new magnitude is one
+   * and it lies on a 4D hypersphere. Uses the formula:
+   * 
+   * norm ( q ) := q / mag ( q )
+   * 
+   * Quaternions with zero magnitude will return the identity.
+   *
+   * @param {Quaternion} q the input quaternion 
+   * @param {Quaternion} target the output quaternion 
+   * @returns the normalized quaternion
+   */
   static normalize (
     q = Quaternion(),
     target = new Quaternion()) {
@@ -581,6 +927,15 @@ class Quaternion {
     return Quaternion.scale(q, mInv, target);
   }
 
+  /**
+   * Creates a random unit quaternion. Uses an algorithm by Ken Shoemake,
+   * reproduced at this Math Stack Exchange discussion:
+   * https://math.stackexchange.com/questions/131336/uniform-random-quaternion-in-a-restricted-angle-range
+   * .
+   *
+   *  @param {Quaternion} target the output quaternion
+   *  @returns the output quaternion
+   */
   static random (target = new Quaternion()) {
 
     const t0 = Math.random() * 6.283185307179586;
@@ -596,6 +951,15 @@ class Quaternion {
       x1 * Math.cos(t1));
   }
 
+  /**
+   * Rotates a quaternion around an arbitrary axis by an angle.
+   *
+   * @param {Quaternion} q the input quaternion
+   * @param {number} radians the angle in radians
+   * @param {Vec3} axis the axis
+   * @param {Quaternion} target the output quaternion
+   * @returns the output quaternion
+   */
   static rotate (
     q = new Quaternion(),
     radians = 0.0,
@@ -607,8 +971,11 @@ class Quaternion {
       return Quaternion.fromAxisAngle(radians, axis, target);
     }
 
-    const wNorm = (mSq === 1.0) ? q.real : (q.real / Math.sqrt());
-    const halfAngle = Math.acos(wNorm);
+    const wNorm = (mSq === 1.0) ? q.real :
+      (q.real / Math.sqrt(mSq));
+    const halfAngle = (wNorm <= -1.0) ? Math.PI :
+      (wNorm >= 1.0) ? 0.0 :
+        Math.acos(wNorm);
     const ang = halfAngle + halfAngle + radians;
     const modAngle = ang - 6.283185307179586 *
       Math.floor(ang * 0.15915494309189535);
@@ -616,6 +983,16 @@ class Quaternion {
     return Quaternion.fromAxisAngle(modAngle, axis, target);
   }
 
+  /**
+   * Rotates a quaternion about the x axis by an angle.
+   *
+   * Do not use sequences of ortho-normal rotations by Euler angles; this will
+   * result in gimbal lock, defeating the purpose behind a quaternion.
+   *
+   * @param {Quaternion} q the input quaternion
+   * @param {number} radians the angle in radians
+   * @param {Quaternion} target the output quaternion
+   */
   static rotateX (
     q = new Quaternion(),
     radians = 0.0,
@@ -629,6 +1006,17 @@ class Quaternion {
       target);
   }
 
+  /**
+   * Rotates a vector around the x axis. Accepts pre-calculated sine and cosine
+   * of half the angle so that collections of quaternions can be efficiently
+   * rotated without repeatedly calling cos and sin.
+   *
+   * @param {Quaternion} q the input quaternion
+   * @param {number} cosah the cosine of the angle
+   * @param {number} sinah the sine of the angle
+   * @param {Quaternion} target the output quaternion
+   * @returns the rotated quaternion
+   */
   static rotateXInternal (
     q = new Quaternion(),
     cosah = 1.0,
@@ -643,6 +1031,16 @@ class Quaternion {
       cosah * i.z - sinah * i.y);
   }
 
+  /**
+   * Rotates a quaternion about the y axis by an angle.
+   *
+   * Do not use sequences of ortho-normal rotations by Euler angles; this will
+   * result in gimbal lock, defeating the purpose behind a quaternion.
+   *
+   * @param {Quaternion} q the input quaternion
+   * @param {number} radians the angle in radians
+   * @param {Quaternion} target the output quaternion
+   */
   static rotateY (
     q = new Quaternion(),
     radians = 0.0,
@@ -656,6 +1054,17 @@ class Quaternion {
       target);
   }
 
+  /**
+   * Rotates a vector around the y axis. Accepts pre-calculated sine and cosine
+   * of half the angle so that collections of quaternions can be efficiently
+   * rotated without repeatedly calling cos and sin.
+   *
+   * @param {Quaternion} q the input quaternion
+   * @param {number} cosah the cosine of the angle
+   * @param {number} sinah the sine of the angle
+   * @param {Quaternion} target the output quaternion
+   * @returns the rotated quaternion
+   */
   static rotateYInternal (
     q = new Quaternion(),
     cosah = 1.0,
@@ -670,6 +1079,16 @@ class Quaternion {
       cosah * i.z + sinah * i.x);
   }
 
+  /**
+   * Rotates a quaternion about the z axis by an angle.
+   *
+   * Do not use sequences of ortho-normal rotations by Euler angles; this will
+   * result in gimbal lock, defeating the purpose behind a quaternion.
+   *
+   * @param {Quaternion} q the input quaternion
+   * @param {number} radians the angle in radians
+   * @param {Quaternion} target the output quaternion
+   */
   static rotateZ (
     q = new Quaternion(),
     radians = 0.0,
@@ -683,6 +1102,17 @@ class Quaternion {
       target);
   }
 
+  /**
+   * Rotates a vector around the z axis. Accepts pre-calculated sine and cosine
+   * of half the angle so that collections of quaternions can be efficiently
+   * rotated without repeatedly calling cos and sin.
+   *
+   * @param {Quaternion} q the input quaternion
+   * @param {number} cosah the cosine of the angle
+   * @param {number} sinah the sine of the angle
+   * @param {Quaternion} target the output quaternion
+   * @returns the rotated quaternion
+   */
   static rotateZInternal (
     q = new Quaternion(),
     cosah = 1.0,
@@ -697,6 +1127,14 @@ class Quaternion {
       cosah * i.z + sinah * q.real);
   }
 
+  /**
+   * Multiplies a quaternion, the left operand, by a scalar, the right operand.
+   *
+   * @param {Quaternion} a the quaternion
+   * @param {number} b the scalar
+   * @param {Quaternion} target the output quaternion
+   * @returns the scaled quaternion
+   */
   static scale (
     a = new Quaternion(),
     b = 1.0,
@@ -707,6 +1145,17 @@ class Quaternion {
     return target;
   }
 
+  /**
+   * Eases between two quaternions with spherical linear interpolation. Slerp
+   * chooses the shortest path between two quaternions and maintains constant
+   * speed for a step given in [0.0, 1.0] .
+   *
+   * @param {Quaternion} origin the origin quaternion
+   * @param {Quaternion} dest the destination quaternion
+   * @param {number} step the step
+   * @param {Quaternion} target the output quaternion
+   * @returns the eased quaternion
+   */
   static slerp (
     origin = new Quaternion(),
     dest = new Quaternion(),
@@ -771,6 +1220,14 @@ class Quaternion {
       cz * mInv);
   }
 
+  /**
+   * Subtracts the right quaternion from the left.
+   * 
+   * @param {Quaternion} a the left operand
+   * @param {Quaternion} b the right operand
+   * @param {Quaternion} target the output quaternion
+   * @returns the difference
+   */
   static sub (
     a = new Quaternion(),
     b = new Quaternion(),
@@ -781,6 +1238,15 @@ class Quaternion {
     return target;
   }
 
+  /**
+   * Subtracts the right quaternion from the left and
+   * normalizes the difference.
+   * 
+   * @param {Quaternion} a the left operand
+   * @param {Quaternion} b the right operand
+   * @param {Quaternion} target the output quaternion
+   * @returns the normalized difference
+   */
   static subNorm (
     a = new Quaternion(),
     b = new Quaternion(),
@@ -803,6 +1269,16 @@ class Quaternion {
       i.z * mInv);
   }
 
+  /**
+   * Converts a quaternion to three axes, which in turn may constitute a
+   * rotation matrix. Returns an object containing all three axes.
+   *
+   * @param {Quaternion} q the quaternion
+   * @param {Vec3} right the right axis
+   * @param {Vec3} forward the forward axis
+   * @param {Vec3} up the up axis
+   * @returns the three axes
+   */
   static toAxes (
     q = new Quaternion(),
     right = new Vec3(),
@@ -853,6 +1329,15 @@ class Quaternion {
     };
   }
 
+  /**
+   * Converts a quaternion to an axis and angle. The axis is assigned to an
+   * output vector. The function returns an object containing both the axis and
+   * angle.
+   *
+   * @param {Quaternion} q the quaternion
+   * @param {Vec3} axis the output axis
+   * @returns an object containing axis and angle
+   */
   static toAxisAngle (
     q = new Quaternion(),
     axis = new Vec3()) {
@@ -883,8 +1368,7 @@ class Quaternion {
       // zNorm = i.z;
     }
 
-    const angle = (wNorm <= -1.0) ?
-      6.283185307179586 :
+    const angle = (wNorm <= -1.0) ? 6.283185307179586 :
       (wNorm >= 1.0) ? 0.0 :
         2.0 * Math.acos(wNorm);
     const wAsin = 6.283185307179586 - angle;

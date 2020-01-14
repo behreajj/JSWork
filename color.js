@@ -9,9 +9,9 @@ class Color extends Vec4 {
    * @param {number} r the red channel
    * @param {number} g the green channel
    * @param {number} b the blue channel
-   * @param {number} a the alpha channel
+   * @param {number} a the alpha channel (transparency)
    */
-  constructor (r = 0.0, g = 0.0, b = 0.0, a = 1.0) {
+  constructor (r = 1.0, g = 1.0, b = 1.0, a = 1.0) {
 
     super(r, g, b, a);
   }
@@ -84,9 +84,9 @@ class Color extends Vec4 {
    */
   reset () {
 
-    this._x = 0.0;
-    this._y = 0.0;
-    this._z = 0.0;
+    this._x = 1.0;
+    this._y = 1.0;
+    this._z = 1.0;
     this._w = 1.0;
 
     return this;
@@ -101,7 +101,7 @@ class Color extends Vec4 {
    * @param {number} a alpha
    * @returns this color
    */
-  setComponents (r = 0.0, g = 0.0, b = 0.0, a = 1.0) {
+  setComponents (r = 1.0, g = 1.0, b = 1.0, a = 1.0) {
     this._x = r;
     this._y = g;
     this._z = b;
@@ -165,6 +165,32 @@ class Color extends Vec4 {
       this._w.toFixed(precision),
       ' }'
     ].join('');
+  }
+
+  /**
+   * Tests to see if all color channels are greater than zero.
+   *
+   * @param {Color} c the color
+   * @returns the evaluation
+   */
+  static all (c = new Color()) {
+
+    return (c._w > 0.0) &&
+      (c._x > 0.0) &&
+      (c._y > 0.0) &&
+      (c._z > 0.0);
+  }
+
+  /**
+   * Tests to see if the alpha channel of this color is greater than zero, i.e.,
+   * if it has some opacity.
+   * 
+   * @param {Color} c the color
+   * @returns the evaluation
+   */
+  static any (c = new Color()) {
+
+    return c._w > 0.0;
   }
 
   /**
@@ -494,7 +520,7 @@ class Color extends Vec4 {
    * @returns the color
    */
   static fromHexInt (
-    c = 0xff000000,
+    c = 0xffffffff,
     target = new Color()) {
 
     return target.setComponents(
@@ -505,6 +531,93 @@ class Color extends Vec4 {
   }
 
   /**
+   * Attempts to convert a hexadecimal String to a color. Recognized formats
+   * include:
+   *
+   * "abc" - RGB, one digit per channel.
+   *
+   * "#abc" - hash tag, RGB, one digit per channel.
+   *
+   * "aabbcc" - RRGGBB, two digits per channel.
+   *
+   * "#aabbcc" - hash tag, RRGGBB, two digits per channel.
+   *
+   * "aabbccdd" - AARRGGBB, two digits per channel.
+   *
+   * "0xaabbccdd" - '0x' prefix, AARRGGBB, two digits per channel.
+   *
+   * The output color will be reset if no suitable format is recognized.
+   *
+   * @param {string} c the color string
+   * @param {Color} target the output color
+   * @returns the color
+   */
+  static fromHexString (
+    c = '0xffffffff',
+    target = new Color()) {
+
+    const len = c.length;
+    let parsed = 0xffffffff;
+
+    switch (len) {
+
+      case 3:
+
+        /* Example: "abc" */
+
+        parsed = parseInt(
+          ['0xff',
+            c[0], c[0],
+            c[1], c[1],
+            c[2], c[2]].join(''), 16);
+        break;
+
+      case 4:
+
+        /* Example: "#abc" */
+
+        parsed = parseInt(
+          ['0xff',
+            c[1], c[1],
+            c[2], c[2],
+            c[3], c[3]].join(''), 16);
+        break;
+
+      case 6:
+
+        /* Example: "aabbcc" */
+
+        parsed = parseInt('0xff' + c, 16);
+        break;
+
+      case 7:
+
+        /* Example: "#aabbcc" */
+
+        parsed = parseInt(c.replace('#', '0xff'), 16);
+        break;
+
+      case 8:
+
+        /* Example: "aabbccdd" */
+
+        parsed = parseInt(c, 16);
+        break;
+
+      case 10:
+
+        /* Example: "0xaabbccdd" */
+
+        parsed = parseInt(c, 16);
+        break;
+    }
+
+    return Number.isNaN(parsed) ?
+      target.reset() :
+      Color.fromHexInt(parsed, target);
+  }
+
+  /**
    * Creates a color from the array.
    *
    * @param {Array} arr the array
@@ -512,7 +625,7 @@ class Color extends Vec4 {
    * @returns the color
    */
   static fromArray (
-    arr = [0.0, 0.0, 0.0, 1.0],
+    arr = [1.0, 1.0, 1.0, 1.0],
     target = new Color()) {
 
     const len = arr.length;
@@ -559,7 +672,7 @@ class Color extends Vec4 {
    * @returns the color
    */
   static fromSource (
-    source = new Vec4(),
+    source = new Vec4(1.0, 1.0, 1.0, 1.0),
     target = new Color()) {
 
     return target.setComponents(
@@ -589,7 +702,7 @@ class Color extends Vec4 {
    * @returns the color
    */
   static hsbaToRgba (
-    v = new Vec4(0.0, 0.0, 0.0, 1.0),
+    v = new Vec4(0.0, 0.0, 1.0, 1.0),
     target = new Color()) {
 
     if (v.y <= 0.0) {
@@ -616,7 +729,7 @@ class Color extends Vec4 {
       case 5:
         return target.setComponents(v.z, tint1, tint2, v.w);
       default:
-        return Color.black(target);
+        return Color.white(target);
     }
   }
 
@@ -704,6 +817,18 @@ class Color extends Vec4 {
   static magenta (target = new Color()) {
 
     return target.setComponents(1.0, 0.0, 1.0, 1.0);
+  }
+
+  /**
+   * Tests to see if the alpha channel of this color is less than or equal to
+   * zero, i.e., if it is completely transparent.
+   *
+   * @param {Color} c the color
+   * @returns the evaluation
+   */
+  static none (c = new Color()) {
+
+    return c._w <= 0.0;
   }
 
   /**
