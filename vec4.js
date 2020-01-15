@@ -1417,13 +1417,28 @@ class Vec4 {
       (1.0 - wFac) * lb.w + wFac * ub.w);
   }
 
-  static randomSpherical (target = new Vec4()) {
+  /**
+   * Creates a vector at a random position on a 4D sphere.
+   *
+   * @param {number} rhoMin the minimum radius
+   * @param {number} rhoMax the maximum radius
+   * @param {Vec4} target the output vector
+   * @returns the random vector
+   */
+  static randomSpherical (
+    rhoMin = 1.0,
+    rhoMax = 1.0,
+    target = new Vec4()) {
+
+    const rFac = Math.random();
+    const rho = (1.0 - rFac) * rhoMin + rFac * rhoMax;
 
     const t0 = Math.random() * 6.283185307179586;
     const t1 = Math.random() * 6.283185307179586;
     const r1 = Math.random();
-    const x0 = Math.sqrt(1.0 - r1);
-    const x1 = Math.sqrt(r1);
+
+    const x0 = rho * Math.sqrt(1.0 - r1);
+    const x1 = rho * Math.sqrt(r1);
 
     return target.setComponents(
       x0 * Math.cos(t0),
@@ -1673,3 +1688,7 @@ class Vec4 {
       Boolean(a.w) ^ Boolean(b.w));
   }
 }
+
+Vec4.compare = Vec4.compareWzyx;
+Vec4.dist = Vec4.distEuclidean;
+Vec4.random = Vec4.randomSpherical;

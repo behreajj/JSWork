@@ -142,7 +142,7 @@ class Knot3 {
 
   rotate (
     radians = 0.0,
-    axis = new Vec3(0.0, 0.0, 1.0)) {
+    axis = Vec3.forward()) {
 
     return this.rotateInternal(
       Math.cos(radians),
@@ -153,7 +153,7 @@ class Knot3 {
   rotateInternal (
     cosa = 1.0,
     sina = 0.0,
-    axis = new Vec3(0.0, 0.0, 1.0)) {
+    axis = Vec3.forward()) {
 
     Vec3.rotateInternal(
       this._coord,
@@ -260,7 +260,7 @@ class Knot3 {
     return this;
   }
 
-  scale (v = new Vec3(1.0, 1.0, 1.0)) {
+  scale (v = Vec3.one()) {
 
     Vec3.mul(this._coord, v, this._coord);
     Vec3.mul(this._foreHandle, v, this._foreHandle);

@@ -266,7 +266,7 @@ class Knot2 {
     return this;
   }
 
-  scale (v = new Vec2(1.0, 1.0)) {
+  scale (v = Vec2.one()) {
 
     Vec2.mul(this._coord, v, this._coord);
     Vec2.mul(this._foreHandle, v, this._foreHandle);

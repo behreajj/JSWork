@@ -17,29 +17,7 @@ class Vec3 {
    */
   constructor (x = 0.0, y = 0.0, z = 0.0) {
 
-    /**
-     * The x coordinate.
-     *
-     * Negative values tend to the West, or left, on the horizontal axis;
-     * positive values, toward the East, or right.
-     */
-    this._x = x;
-
-    /**
-     * The y coordinate.
-     *
-     * Negative values tend to the South, or backward, on the depth axis;
-     * positive values, toward the North, or forward. 
-     */
-    this._y = y;
-
-    /**
-     * The z coordinate.
-     *
-     * Negative values tend inward, or down, on the vertical axis; positive
-     * values outward, or up.
-     */
-    this._z = z;
+    this._elms = new Float32Array([x, y, z]);
   }
 
   /**
@@ -47,22 +25,22 @@ class Vec3 {
    */
   get length () {
 
-    return 3;
+    return this._elms.length;
   }
 
   get x () {
 
-    return this._x;
+    return this._elms[0];
   }
 
   get y () {
 
-    return this._y;
+    return this._elms[1];
   }
 
   get z () {
 
-    return this._z;
+    return this._elms[2];
   }
 
   get [Symbol.toStringTag] () {
@@ -72,30 +50,22 @@ class Vec3 {
 
   set x (v) {
 
-    this._x = v;
+    this._elms[0] = v;
   }
 
   set y (v) {
 
-    this._y = v;
+    this._elms[1] = v;
   }
 
   set z (v) {
 
-    this._z = v;
+    this._elms[2] = v;
   }
 
   [Symbol.iterator] () {
 
-    let index = 0;
-    return {
-      next: () => {
-        return {
-          value: this.get(index++),
-          done: index > this.length
-        };
-      }
-    };
+    return this._elms.entries();
   }
 
   [Symbol.toPrimitive] (hint) {
@@ -132,18 +102,9 @@ class Vec3 {
    * @param {number} i the index
    * @returns the value
    */
-  get (i = -1) {
+  get (i = 0) {
 
-    switch (i) {
-      case 0: case -3:
-        return this._x;
-      case 1: case -2:
-        return this._y;
-      case 2: case -1:
-        return this._z;
-      default:
-        return 0.0;
-    }
+    return this._elms[i];
   }
 
   /**
@@ -154,7 +115,7 @@ class Vec3 {
   hashCode () {
 
     /* x hash code. */
-    const xstr = String(this._x);
+    const xstr = String(this._elms[0]);
     const len0 = xstr.length;
     let xhsh = 0;
     for (let i = 0; i < len0; ++i) {
@@ -163,7 +124,7 @@ class Vec3 {
     xhsh >>>= 0;
 
     /* y hash code. */
-    const ystr = String(this._y);
+    const ystr = String(this._elms[1]);
     const len1 = ystr.length;
     let yhsh = 0;
     for (let j = 0; j < len1; ++j) {
@@ -172,7 +133,7 @@ class Vec3 {
     yhsh >>>= 0;
 
     /* z hash code. */
-    const zstr = String(this._z);
+    const zstr = String(this._elms[2]);
     const len2 = zstr.length;
     let zhsh = 0;
     for (let k = 0; k < len2; ++k) {
@@ -195,9 +156,9 @@ class Vec3 {
    */
   reset () {
 
-    this._x = 0.0;
-    this._y = 0.0;
-    this._z = 0.0;
+    this._elms[0] = 0.0;
+    this._elms[1] = 0.0;
+    this._elms[2] = 0.0;
 
     return this;
   }
@@ -211,17 +172,7 @@ class Vec3 {
    */
   set (i = -1, v = 0.0) {
 
-    switch (i) {
-      case 0: case -3:
-        this._x = v;
-        break;
-      case 1: case -2:
-        this._y = v;
-        break;
-      case 2: case -1:
-        this._z = v;
-        break;
-    }
+    this._elms[i] = v;
     return this;
   }
 
@@ -235,9 +186,9 @@ class Vec3 {
    */
   setComponents (x = 0.0, y = 0.0, z = 0.0) {
 
-    this._x = x;
-    this._y = y;
-    this._z = z;
+    this._elms[0] = x;
+    this._elms[1] = y;
+    this._elms[2] = z;
 
     return this;
   }
@@ -249,7 +200,7 @@ class Vec3 {
    */
   toArray () {
 
-    return [this._x, this._y, this._z];
+    return [this._elms[0], this._elms[1], this._elms[2]];
   }
 
   /**
@@ -262,11 +213,11 @@ class Vec3 {
 
     return [
       '{\"x\":',
-      this._x.toFixed(precision),
+      this._elms[0].toFixed(precision),
       ',\"y\":',
-      this._y.toFixed(precision),
+      this._elms[1].toFixed(precision),
       ',\"z\":',
-      this._z.toFixed(precision),
+      this._elms[2].toFixed(precision),
       '}'
     ].join('');
   }
@@ -278,7 +229,7 @@ class Vec3 {
    */
   toObject () {
 
-    return { x: this._x, y: this._y, z: this._z };
+    return { x: this._elms[0], y: this._elms[1], z: this._elms[2] };
   }
 
   /**
@@ -291,11 +242,11 @@ class Vec3 {
 
     return [
       '{ x: ',
-      this._x.toFixed(precision),
+      this._elms[0].toFixed(precision),
       ', y: ',
-      this._y.toFixed(precision),
+      this._elms[1].toFixed(precision),
       ', z: ',
-      this._z.toFixed(precision),
+      this._elms[2].toFixed(precision),
       ' }'
     ].join('');
   }
@@ -709,12 +660,23 @@ class Vec3 {
     a = new Vec3(),
     b = new Vec3()) {
 
-    if (a.z > b.z) { return 1; }
-    if (a.z < b.z) { return -1; }
-    if (a.y > b.y) { return 1; }
-    if (a.y < b.y) { return -1; }
-    if (a.x > b.x) { return 1; }
-    if (a.x < b.x) { return -1; }
+    const az = a.z;
+    const bz = b.z;
+
+    if (az > bz) { return 1; }
+    if (az < bz) { return -1; }
+
+    const ay = a.y;
+    const by = b.y;
+
+    if (ay > by) { return 1; }
+    if (ay < by) { return -1; }
+
+    const ax = a.x;
+    const bx = b.x;
+
+    if (ax > bx) { return 1; }
+    if (ax < bx) { return -1; }
 
     return 0;
   }
@@ -773,10 +735,18 @@ class Vec3 {
     b = new Vec3(),
     target = new Vec3()) {
 
+    const ax = a.x;
+    const ay = a.y;
+    const az = a.z;
+
+    const bx = b.x;
+    const by = b.y;
+    const bz = b.z;
+
     return target.setComponents(
-      a.y * b.z - a.z * b.y,
-      a.z * b.x - a.x * b.z,
-      a.x * b.y - a.y * b.x);
+      ay * bz - az * by,
+      az * bx - ax * bz,
+      ax * by - ay * bx);
   }
 
   /**
@@ -793,9 +763,17 @@ class Vec3 {
     b = new Vec3(),
     target = new Vec3()) {
 
-    const cx = a.y * b.z - a.z * b.y;
-    const cy = a.z * b.x - a.x * b.z;
-    const cz = a.x * b.y - a.y * b.x;
+    const ax = a.x;
+    const ay = a.y;
+    const az = a.z;
+
+    const bx = b.x;
+    const by = b.y;
+    const bz = b.z;
+
+    const cx = ay * bz - az * by;
+    const cy = az * bx - ax * bz;
+    const cz = ax * by - ay * bx;
 
     const mSq = cx * cx + cy * cy + cz * cz;
     if (mSq === 0.0) { return target.reset(); }
@@ -1047,10 +1025,14 @@ class Vec3 {
     v = new Vec3(),
     target = new Vec3()) {
 
+    const vx = v.x;
+    const vy = v.y;
+    const vz = v.z;
+
     return target.setComponents(
-      v.x - Math.trunc(v.x),
-      v.y - Math.trunc(v.y),
-      v.z - Math.trunc(v.z));
+      vx - Math.trunc(vx),
+      vy - Math.trunc(vy),
+      vz - Math.trunc(vz));
   }
 
   /**
@@ -1357,9 +1339,11 @@ class Vec3 {
    */
   static magSq (v = new Vec3()) {
 
-    return v.x * v.x +
-      v.y * v.y +
-      v.z * v.z;
+    const vx = v.x;
+    const vy = v.y;
+    const vz = v.z;
+
+    return vx * vx + vy * vy + vz * vz;
   }
 
   /**
@@ -1491,10 +1475,14 @@ class Vec3 {
     v = new Vec3(),
     target = new Vec3()) {
 
+    const vx = v.x;
+    const vy = v.y;
+    const vz = v.z;
+
     return target.setComponents(
-      v.x - Math.floor(v.x),
-      v.y - Math.floor(v.y),
-      v.z - Math.floor(v.z));
+      vx - Math.floor(vx),
+      vy - Math.floor(vy),
+      vz - Math.floor(vz));
   }
 
   /**

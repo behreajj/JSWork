@@ -21,6 +21,7 @@ class Quaternion {
 
     // TODO: Add the natural logarithm of a quaternion above this?
     // TODO: Add separate getUp, getRight, getForward functions?
+    // TODO: fromTo function.
 
     /**
      * The real component, a scalar; also referred to as 'w'.
@@ -636,19 +637,19 @@ class Quaternion {
     target = new Quaternion()) {
 
     const w = 0.5 * Math.sqrt(
-      Utils.max(0.0, 1.0 + rightx + forwardy + upz));
+      Math.max(0.0, 1.0 + rightx + forwardy + upz));
 
     const x = 0.5 * Math.sqrt(
-      Utils.max(0.0, 1.0 + rightx - forwardy - upz));
+      Math.max(0.0, 1.0 + rightx - forwardy - upz));
     const y = 0.5 * Math.sqrt(
-      Utils.max(0.0, 1.0 - rightx + forwardy - upz));
+      Math.max(0.0, 1.0 - rightx + forwardy - upz));
     const z = 0.5 * Math.sqrt(
-      Utils.max(0.0, 1.0 - rightx - forwardy + upz));
+      Math.max(0.0, 1.0 - rightx - forwardy + upz));
 
-    return target.set(w,
-      Math.copySign(x, forwardz - upy),
-      Math.copySign(y, upx - rightz),
-      Math.copySign(z, righty - forwardx));
+    return target.setComponents(w,
+      Math.abs(x) * Math.sign(forwardz - upy),
+      Math.abs(y) * Math.sign(upx - rightz),
+      Math.abs(z) * Math.sign(righty - forwardx));
   }
 
   /**
@@ -709,6 +710,59 @@ class Quaternion {
   }
 
   /**
+   * Creates a quaternion with reference to two vectors. This function creates
+   * normalized copies of the vectors. Uses the formula:
+   *
+   * fromTo (a, b) := { dot ( a, b ), cross ( a, b ) }
+   *
+   * @param {Vec3} origin the origin vector
+   * @param {Vec3} dest the destination vector
+   * @param {Quaternion} target the output quaternion
+   * @returns the quaternion
+   */
+  static fromTo (
+    origin = Vec3.right(),
+    dest = Vec3.right(),
+    target = new Quaternion()) {
+
+    let anx = origin.x;
+    let any = origin.y;
+    let anz = origin.z;
+    const amsq = anx * anx + any * any + anz * anz;
+    if (amsq === 0.0) {
+      return target.reset();
+    }
+
+    let bnx = dest.x;
+    let bny = dest.y;
+    let bnz = dest.z;
+    const bmsq = bnx * bnx + bny * bny + bnz * bnz;
+    if (bmsq === 0.0) {
+      return target.reset();
+    }
+
+    if (Math.abs(1.0 - amsq) > 0.000001) {
+      const aminv = 1.0 / Math.sqrt(amsq);
+      anx *= aminv;
+      any *= aminv;
+      anz *= aminv;
+    }
+
+    if (Math.abs(1.0 - bmsq) > 0.000001) {
+      const bminv = 1.0 / Math.sqrt(bmsq);
+      bnx *= bminv;
+      bny *= bminv;
+      bnz *= bminv;
+    }
+
+    return target.setComponents(
+      anx * bnx + any * bny + anz * bnz,
+      any * bnz - anz * bny,
+      anz * bnx - anx * bnz,
+      anx * bny - any * bnx);
+  }
+
+  /**
    * Sets the target to the identity quaternion, ( 1.0, 0.0, 0.0, 0.0 ).
    *
    * @param {Quaternion} target the output quaternion
@@ -741,7 +795,7 @@ class Quaternion {
     }
 
     const i = quat.imag;
-    if (mSq === 1.0) {
+    if (Math.abs(1.0 - mSq) < 0.000001) {
       return target.setComponents(
         q.real, -i.x, -i.y, -i.z);
     }
@@ -917,12 +971,15 @@ class Quaternion {
     target = new Quaternion()) {
 
     const mSq = Quaternion.magSq(q);
+
     if (mSq === 0.0) {
       return Quaternion.identity(target);
     }
-    if (mSq === 1.0) {
+
+    if (Math.abs(1.0 - mSq) < 0.000001) {
       return Quaternion.fromSource(q, target);
     }
+
     const mInv = 1.0 / Math.sqrt(mSq);
     return Quaternion.scale(q, mInv, target);
   }
@@ -1405,3 +1462,6 @@ class Quaternion {
     return { angle: angle, axis: axis };
   }
 }
+
+/* Aliases. */
+Quaternion.compare = Quaternion.compareWzyx;

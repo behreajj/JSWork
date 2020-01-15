@@ -381,20 +381,18 @@ class Complex {
       r * Math.sin(phi));
   }
 
-  static random (target = new Complex()) {
+  static random (
+    rMin = 1.0,
+    rMax = 1.0,
+    target = new Complex()) {
 
-    const real = 2.0 * Math.random() - 1.0;
-    const imag = 2.0 * Math.random() - 1.0;
+    const pFac = Math.random();
+    const rFac = Math.random();
 
-    const absSq = real * real + imag * imag;
-    if (absSq === 0.0) {
-      return target.reset();
-    }
-
-    const absInv = 1.0 / Math.sqrt(absSq);
-    return target.setComponents(
-      real * absInv,
-      imag * absInv);
+    return Complex.rect(
+      (1.0 - rFac) * rMin + rFac * rMax,
+      (1.0 - pFac) * -3.141592653589793 + pFac * 3.141592653589793,
+      target);
   }
 
   static rect (
@@ -437,6 +435,10 @@ class Complex {
   }
 
   static zero (target = new Complex()) {
+
     return target.setComponents(0.0, 0.0);
   }
 }
+
+/* Aliases. */
+Complex.compare = Complex.compareImagReal;
