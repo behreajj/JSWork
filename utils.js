@@ -2,6 +2,11 @@
 
 class Utils {
 
+  constructor() {
+    Object.freeze(this);
+    Object.seal(this);
+  }
+
   /**
    * A quick approximation test. Tests to see if the absolute of the difference
    * between two values is less than a tolerance. Does not handle edge cases.
@@ -362,6 +367,22 @@ class Utils {
   static get ONE_360 () {
 
     return 0.002777777777777778;
+  }
+
+  /**
+   * An approximation of 1.0 / ( SQRT( 2.0 ) ), 0.70710677 .
+   */
+  static get ONE_SQRT_2 () {
+
+    return 0.7071067811865475;
+  }
+
+  /**
+   * An approximation of 1.0 / ( SQRT( 3.0 ) ), 0.57735026 .
+   */
+  static get ONE_SQRT_3 () {
+
+    return 0.5773502691896258;
   }
 
   /**

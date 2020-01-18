@@ -8,10 +8,7 @@ class Mat4 {
     m20 = 0.0, m21 = 0.0, m22 = 1.0, m23 = 0.0,
     m30 = 0.0, m31 = 0.0, m32 = 0.0, m33 = 1.0) {
 
-    // this._elms[0] = m00; this._elms[1] = m01; this._elms[2] = m02; this._elms[3] = m03;
-    // this._elms[4] = m10; this._elms[5] = m11; this._elms[6] = m12; this._elms[7] = m13;
-    // this._elms[8] = m20; this._elms[9] = m21; this._elms[10] = m22; this._elms[11] = m23;
-    // this._elms[12] = m30; this._elms[13] = m31; this._elms[14] = m32; this._elms[15] = m33;
+    // TODO: Refactor static methods to limit number of float array accesses.
 
     this._elms = new Float32Array([
       m00, m01, m02, m03,

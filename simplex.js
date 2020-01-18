@@ -15,6 +15,11 @@
  */
 class Simplex {
 
+  constructor () {
+    Object.freeze(this);
+    Object.seal(this);
+  }
+
   /**
    * Hashes the indices i and j with the seed, then returns a
    * vector from the look up table.

@@ -21,7 +21,6 @@ class Quaternion {
 
     // TODO: Add the natural logarithm of a quaternion above this?
     // TODO: Add separate getUp, getRight, getForward functions?
-    // TODO: fromTo function.
 
     /**
      * The real component, a scalar; also referred to as 'w'.
@@ -1338,9 +1337,9 @@ class Quaternion {
    */
   static toAxes (
     q = new Quaternion(),
-    right = new Vec3(),
-    forward = new Vec3(),
-    up = new Vec3()) {
+    right = Vec3.right(),
+    forward = Vec3.forward(),
+    up = Vec3.up()) {
 
     const w = q.real;
     const i = q.imag;

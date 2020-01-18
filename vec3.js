@@ -1646,6 +1646,18 @@ class Vec3 {
   }
 
   /**
+   * Promotes a 2D vector to a 3D vector.
+   * 
+   * @param {Vec2} v the 2D vector
+   * @param {Vec3} target the output vector
+   * @returns the promoted vector
+   */
+  static promote2 (v = new Vec2(), target = new Vec3()) {
+
+    return target.setComponents(v.x, v.y, 0.0);
+  }
+
+  /**
    * Returns the scalar projection of a onto b .
    *
    * @param {Vec3} a the left operand
@@ -2262,4 +2274,5 @@ Vec3.dist = Vec3.distEuclidean;
 Vec3.azimuth = Vec3.azimuthSigned;
 Vec3.inclination = Vec3.inclinationSigned;
 Vec3.project = Vec3.projectVector;
+Vec3.promote = Vec3.promote2;
 Vec3.random = Vec3.randomSpherical;

@@ -505,7 +505,7 @@ class Color extends Vec4 {
       const mInv = 0.5 / Math.sqrt(mSq);
       r = v.x * mInv + 0.5;
       g = v.y * mInv + 0.5;
-      b = v.y * mInv + 0.5;
+      b = v.z * mInv + 0.5;
     }
 
     return target.setComponents(r, g, b, 1.0);
@@ -1101,3 +1101,6 @@ class Color extends Vec4 {
     return target.setComponents(1.0, 1.0, 0.0, 1.0);
   }
 }
+
+/* Aliases. */
+Color.random = Color.randomRgba;

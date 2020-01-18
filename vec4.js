@@ -969,6 +969,84 @@ class Vec4 {
   }
 
   /**
+   * Generates a 4D array of vectors. Call the flat function with an argument of
+   * 4s to flatten to a 1D array.
+   *
+   * @param {number} rows number of rows
+   * @param {number} cols number of columns
+   * @param {number} layers number of layers
+   * @param {Vec4} lowerBound the lower bound
+   * @param {Vec4} upperBound the upper bound
+   * @return the array
+   */
+  static grid (
+    rows = 3,
+    cols = 3,
+    layers = 3,
+    time = 3,
+    lowerBound = new Vec4(0.0, 0.0, 0.0, 0.0),
+    upperBound = new Vec4(1.0, 1.0, 1.0, 1.0)) {
+
+    const rval = rows < 3 ? 3 : rows;
+    const cval = cols < 3 ? 3 : cols;
+    const lval = layers < 3 ? 3 : layers;
+    const tval = time < 3 ? 3 : time;
+
+    const gToStep = 1.0 / (tval - 1.0);
+    const hToStep = 1.0 / (lval - 1.0);
+    const iToStep = 1.0 / (rval - 1.0);
+    const jToStep = 1.0 / (cval - 1.0);
+
+    const xs = [];
+    for (let j = 0; j < cval; ++j) {
+      const xPrc = j * jToStep;
+      const x = (1.0 - xPrc) * lowerBound.x +
+        xPrc * upperBound.x;
+      xs.push(x);
+    }
+
+    const ys = [];
+    for (let i = 0; i < rval; ++i) {
+      const yPrc = i * iToStep;
+      const y = (1.0 - yPrc) * lowerBound.y +
+        yPrc * upperBound.y;
+      ys.push(y);
+    }
+
+    const zs = [];
+    for (let h = 0; h < lval; ++h) {
+      const zPrc = h * hToStep;
+      const z = (1.0 - zPrc) * lowerBound.z +
+        zPrc * upperBound.z;
+      zs.push(z);
+    }
+
+    const result = [];
+    for (let g = 0; g < tval; ++g) {
+      const step = [];
+      const wPrc = g * gToStep;
+      const w = (1.0 - wPrc) * lowerBound.w +
+        wPrc * upperBound.w;
+      for (let h = 0; h < lval; ++h) {
+        const layer = [];
+        const z = zs[h];
+        for (let i = 0; i < rval; ++i) {
+          const row = [];
+          const y = ys[i];
+          for (let j = 0; j < cval; ++j) {
+            row.push(new Vec4(xs[j], y, z, w));
+          }
+          layer.push(row);
+        }
+        step.push(layer);
+      }
+      result.push(step);
+    }
+
+    return result;
+  }
+
+  /**
    * Tests to see if the vector is on the unit sphere, i.e., has a magnitude of
    * approximately 1.0.
    *
@@ -1392,6 +1470,30 @@ class Vec4 {
   }
 
   /**
+   * Promotes a 2D vector to a 4D vector.
+   * 
+   * @param {Vec2} v the 2D vector
+   * @param {Vec4} target the output vector
+   * @returns the promoted vector
+   */
+  static promote2 (v = new Vec2(), target = new Vec4()) {
+
+    return target.setComponents(v.x, v.y, 0.0, 0.0);
+  }
+
+  /**
+   * Promotes a 3D vector to a 4D vector.
+   * 
+   * @param {Vec3} v the 2D vector
+   * @param {Vec4} target the output vector
+   * @returns the promoted vector
+   */
+  static promote3 (v = new Vec3(), target = new Vec4()) {
+
+    return target.setComponents(v.x, v.y, v.z, 0.0);
+  }
+
+  /**
    * Creates a random point in the Cartesian coordinate system given a lower and
    * an upper bound.
    *
@@ -1689,6 +1791,8 @@ class Vec4 {
   }
 }
 
+/* Aliases. */
 Vec4.compare = Vec4.compareWzyx;
 Vec4.dist = Vec4.distEuclidean;
+Vec4.promote = Vec4.promote3;
 Vec4.random = Vec4.randomSpherical;

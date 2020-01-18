@@ -191,7 +191,7 @@ class Transform2 {
   }
 
   scaleTo (
-    scale = new Vec2(1.0, 1.0),
+    scale = Vec2.one(),
     step = 1.0,
     easingFunc = Vec2.smoothStep) {
 
@@ -293,7 +293,7 @@ class Transform2 {
 
   static mulDir (
     transform = new Transform2(),
-    source = new Vec2(1.0, 0.0),
+    source = Vec2.right(),
     target = new Vec2()) {
 
     return Vec2.rotateZ(
@@ -327,7 +327,7 @@ class Transform2 {
 
   static mulVector (
     transform = new Transform2(),
-    source = new Vec2(1.0, 0.0),
+    source = Vec2.right(),
     target = new Vec2()) {
 
     Vec2.rotateZ(

@@ -205,7 +205,7 @@ class Transform3 {
   }
 
   scaleTo (
-    scale = new Vec3(1.0, 1.0, 1.0),
+    scale = Vec3.one(),
     step = 1.0,
     easingFunc = Vec3.smoothStep) {
 
@@ -355,7 +355,7 @@ class Transform3 {
 
   static mulDir (
     transform = new Transform3(),
-    source = new Vec3(1.0, 0.0, 0.0),
+    source = Vec3.right(),
     target = new Vec3()) {
 
     return Quaternion.mulVector(
@@ -389,7 +389,7 @@ class Transform3 {
 
   static mulVector (
     transform = new Transform3(),
-    source = new Vec3(1.0, 0.0, 0.0),
+    source = Vec3.right(),
     target = new Vec3()) {
 
     Quaternion.mulVector(
