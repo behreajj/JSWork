@@ -600,15 +600,17 @@ class Mat3 {
 
     const det = m.m00 * b01 + m.m01 * b11 + m.m02 * b21;
     if (det === 0.0) { return target.reset(); }
-    const detInv = 1.0 / det;
 
+    const detInv = 1.0 / det;
     return target.setComponents(
       b01 * detInv,
       (m.m02 * m.m21 - m.m22 * m.m01) * detInv,
       (m.m12 * m.m01 - m.m02 * m.m11) * detInv,
+
       b11 * detInv,
       (m.m22 * m.m00 - m.m02 * m.m20) * detInv,
       (m.m02 * m.m10 - m.m12 * m.m00) * detInv,
+      
       b21 * detInv,
       (m.m01 * m.m20 - m.m21 * m.m00) * detInv,
       (m.m11 * m.m00 - m.m01 * m.m10) * detInv);

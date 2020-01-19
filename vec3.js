@@ -1694,6 +1694,31 @@ class Vec3 {
   }
 
   /**
+   * Reduces the signal, or granularity, of a vector's components. Any level
+   * less than 2 returns sets the target to the input.
+   *
+   * @param {Vec3} a the input vector
+   * @param {number} b the levels
+   * @param {Vec3} target the output vector
+   * @returns the quantized vector
+   */
+  static quantize (
+    a = new Vec3(),
+    b = 2,
+    target = new Vec3()) {
+
+    if (b < 2) {
+      return Vec3.fromSource(a, target);
+    }
+
+    const delta = 1.0 / b;
+    return target.setComponents(
+      delta * Math.floor(0.5 + a.x * b),
+      delta * Math.floor(0.5 + a.y * b),
+      delta * Math.floor(0.5 + a.z * b));
+  }
+
+  /**
    * Creates a random point in the Cartesian coordinate system given a lower and
    * an upper bound.
    *

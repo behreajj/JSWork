@@ -2,7 +2,7 @@
 
 class Utils {
 
-  constructor() {
+  constructor () {
     Object.freeze(this);
     Object.seal(this);
   }
@@ -230,7 +230,7 @@ class Utils {
    */
   static mod (a = 0.0, b = 1.0) {
 
-    return b !== 0.0 ? a - b * Math.floor(a / b) : a;
+    return b !== 0.0 ? Utils.modUnchecked(a, b) : a;
   }
 
   /**
@@ -268,6 +268,38 @@ class Utils {
   static modRadians (radians = 0.0) {
 
     return radians - Utils.TAU * Math.floor(radians * Utils.ONE_TAU);
+  }
+
+  /**
+   * Applies floorMod to the operands, and therefore uses the formula mod ( a,
+   * b) := a - b * floor ( a / b ) . Does not check to see if b is zero.
+   *
+   * If the right operand is one, use mod1(a) or a - floor(a) instead.
+   *
+   * @param {number} a the left operand
+   * @param {number} b the right operand
+   * @returns the result
+   */
+  static modUnchecked (a = 0.0, b = 1.0) {
+
+    return a - b * Math.floor(a / b);
+  }
+
+  /**
+   * Reduces the signal, or granularity, of a value. Applied to a color, this
+   * yields the 'posterization' effect. Applied to a vector, this yields a
+   * pixellated, or crenelated effect.
+   *
+   * Any level less than 2 returns the value unaltered.
+   *
+   * @param {number} a the value
+   * @param {number} b the levels
+   * @returns the quantized value
+   */
+  static quantize (a = 0.0, b = 8) {
+
+    if (b < 2) { return a; }
+    return Math.floor(0.5 + a * b) / b;
   }
 
   /**
@@ -370,7 +402,7 @@ class Utils {
   }
 
   /**
-   * An approximation of 1.0 / ( SQRT( 2.0 ) ), 0.70710677 .
+   * An approximation of 1.0 / ( SQRT ( 2.0 ) ), 0.70710677 .
    */
   static get ONE_SQRT_2 () {
 
@@ -378,7 +410,7 @@ class Utils {
   }
 
   /**
-   * An approximation of 1.0 / ( SQRT( 3.0 ) ), 0.57735026 .
+   * An approximation of 1.0 / ( SQRT ( 3.0 ) ), 0.57735026 .
    */
   static get ONE_SQRT_3 () {
 

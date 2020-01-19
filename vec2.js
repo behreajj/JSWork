@@ -1482,6 +1482,30 @@ class Vec2 {
   }
 
   /**
+   * Reduces the signal, or granularity, of a vector's components. Any level
+   * less than 2 returns sets the target to the input.
+   *
+   * @param {Vec2} a the input vector
+   * @param {number} b the levels
+   * @param {Vec2} target the output vector
+   * @returns the quantized vector
+   */
+  static quantize (
+    a = new Vec2(),
+    b = 2,
+    target = new Vec2()) {
+
+    if (b < 2) {
+      return Vec2.fromSource(a, target);
+    }
+
+    const delta = 1.0 / b;
+    return target.setComponents(
+      delta * Math.floor(0.5 + a.x * b),
+      delta * Math.floor(0.5 + a.y * b));
+  }
+
+  /**
    * Creates a random point in the Cartesian coordinate system given a lower and
    * an upper bound.
    *

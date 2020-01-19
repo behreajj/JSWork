@@ -114,11 +114,27 @@ class Sdf {
       px1 - Utils.clamp(px1, -limit, limit), py2), py2);
   }
 
+  /**
+   * Finds the intersection between two shapes as represented by factors.
+   *
+   * @param {number} a the left factor
+   * @param {number} b the right factor
+   * @returns the intersection
+   */
   static intersect (a = 0.0, b = 0.0) {
 
     return Math.max(a, b);
   }
 
+  /**
+   * Finds the rounded intersection between two shapes as represented by
+   * factors.
+   *
+   * @param {number} a the left factor
+   * @param {number} b the right factor
+   * @param {number} radius the radius
+   * @returns the intersection
+   */
   static intersectRound (a = 0.0, b = 0.0, radius = 0.0) {
 
     return Math.hypot(Math.max(0.0, a + radius),
@@ -126,6 +142,16 @@ class Sdf {
       + Math.min(Math.max(a, b), -radius);
   }
 
+  /**
+   * Draws a line from the origin to the destination, where the distance field
+   * is characterized by a third point's distance from the line.
+   *
+   *     @param {Vec2} point the point
+   *     @param {Vec2} origin the origin
+   *     @param {Vec2} dest the destination
+   *     @param {number} rounding the rounding factor
+   *     @returns the signed distance
+   */
   static line2 (
     point = new Vec2(),
     origin = new Vec2(-0.5, -0.5),
@@ -156,6 +182,16 @@ class Sdf {
       pay - h * bay) - rounding;
   }
 
+  /**
+   * Draws a line from the origin to the destination, where the distance field
+   * is characterized by a third point's distance from the line.
+   *
+   *     @param {Vec3} point the point
+   *     @param {Vec3} origin the origin
+   *     @param {Vec3} dest the destination
+   *     @param {number} rounding the rounding factor
+   *     @returns the signed distance
+   */
   static line3 (
     point = new Vec3(),
     origin = new Vec3(-0.5, -0.5, -0.5),
@@ -189,7 +225,16 @@ class Sdf {
       paz - h * baz) - rounding;
   }
 
-  static polygon2 (
+  /**
+   * Draws a polygon from a series of vertices. The number of vertices is
+   * assumed to be greater than three. With reference to
+   * https://www.shadertoy.com/view/wdBXRW .
+   *
+   * @param {Vec2} point the point
+   * @param {Vec2[]} vertices the array of vertices
+   * @param {number} rounding the rounding
+   */
+  static polygon (
     point = new Vec2(),
     vertices = [
       new Vec2(-0.5, -0.5),
@@ -241,38 +286,61 @@ class Sdf {
     return s * Math.sqrt(d) - rounding;
   }
 
-  static sphere3 (
-    point = new Vec3(),
-    bounds = 0.5) {
-
-    return Vec3.mag(point) - bounds;
-  }
-
-  static subtract (a = 0.0, b = 0.0) {
-
-    return Math.max(-a, b);
-  }
-
-  static subtractRound (a = 0.0, b = 0.0, radius = 0.0) {
-
-    return Sdf.intersectRound(a, -b, radius);
-  }
-
   /**
-   * Draws a torus, or donut.
+   * Draws a ring.
    *
    * @param {Vec2} point the point
    * @param {number} radius the radius
    * @param {number} thickness the thickness
    * @returns the signed distance
    */
-  static torus2 (
+  static ring (
     point = new Vec2(),
     radius = 0.5,
     thickness = 0.125) {
 
     const n = Vec2.mag(point) - radius;
     return Math.sqrt(n * n) - thickness;
+  }
+
+  /**
+   * Draws a sphere.
+   * 
+   * @param {Vec3} point the point
+   * @param {number} bounds the bounds
+   * @returns the signed distance
+   */
+  static sphere (
+    point = new Vec3(),
+    bounds = 0.5) {
+
+    return Vec3.mag(point) - bounds;
+  }
+
+  /**
+   * Finds the subtraction of two shapes as represented by factors.
+   * 
+   * @param {number} a the left factor
+   * @param {number} b the right factor
+   * @param the subtraction
+   */
+  static subtract (a = 0.0, b = 0.0) {
+
+    return Math.max(-a, b);
+  }
+
+  /**
+   * Finds the rounded subtraction of two shapes as
+   * represented by factors.
+   * 
+   * @param {number} a the left factor
+   * @param {number} b the right factor
+   * @param {number} radius the radius
+   * @param the subtraction
+   */
+  static subtractRound (a = 0.0, b = 0.0, radius = 0.0) {
+
+    return Sdf.intersectRound(a, -b, radius);
   }
 
   /**
@@ -283,7 +351,7 @@ class Sdf {
    * @param {number} thickness the thickness
    * @returns the signed distance
    */
-  static torus3 (
+  static torus (
     point = new Vec3(),
     radius = 0.5,
     thickness = 0.125) {
