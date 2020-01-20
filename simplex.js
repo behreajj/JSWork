@@ -193,10 +193,8 @@ class Simplex {
     const x0 = x - (i - t);
     const y0 = y - (j - t);
 
-    let i1 = 0;
-    let j1 = 0;
-    if (x0 > y0) { i1 = 1; }
-    else { j1 = 1; }
+    let i1 = 0; let j1 = 0;
+    if (x0 > y0) { i1 = 1; } else { j1 = 1; }
 
     const x1 = x0 - i1 + Simplex.G2;
     const y1 = y0 - j1 + Simplex.G2;
@@ -204,17 +202,9 @@ class Simplex {
     const x2 = x0 - 1.0 + Simplex.G2_2;
     const y2 = y0 - 1.0 + Simplex.G2_2;
 
-    let t20 = 0.0;
-    let t21 = 0.0;
-    let t22 = 0.0;
-
-    let t40 = 0.0;
-    let t41 = 0.0;
-    let t42 = 0.0;
-
-    let n0 = 0.0;
-    let n1 = 0.0;
-    let n2 = 0.0;
+    let t20 = 0.0; let t21 = 0.0; let t22 = 0.0;
+    let t40 = 0.0; let t41 = 0.0; let t42 = 0.0;
+    let n0 = 0.0; let n1 = 0.0; let n2 = 0.0;
 
     let g0 = Simplex.ZERO_2;
     let g1 = Simplex.ZERO_2;
@@ -299,13 +289,8 @@ class Simplex {
     const y0 = y - (j - t);
     const z0 = z - (k - t);
 
-    let i1 = 0;
-    let j1 = 0;
-    let k1 = 0;
-
-    let i2 = 0;
-    let j2 = 0;
-    let k2 = 0;
+    let i1 = 0; let j1 = 0; let k1 = 0;
+    let i2 = 0; let j2 = 0; let k2 = 0;
 
     if (x0 >= y0) {
       if (y0 >= z0) {
@@ -337,20 +322,9 @@ class Simplex {
     const y3 = y0 - 1.0 + Simplex.G3_3;
     const z3 = z0 - 1.0 + Simplex.G3_3;
 
-    let t20 = 0.0;
-    let t21 = 0.0;
-    let t22 = 0.0;
-    let t23 = 0.0;
-
-    let t40 = 0.0;
-    let t41 = 0.0;
-    let t42 = 0.0;
-    let t43 = 0.0;
-
-    let n0 = 0.0;
-    let n1 = 0.0;
-    let n2 = 0.0;
-    let n3 = 0.0;
+    let t20 = 0.0; let t21 = 0.0; let t22 = 0.0; let t23 = 0.0;
+    let t40 = 0.0; let t41 = 0.0; let t42 = 0.0; let t43 = 0.0;
+    let n0 = 0.0; let n1 = 0.0; let n2 = 0.0; let n3 = 0.0;
 
     let g0 = Simplex.ZERO_3;
     let g1 = Simplex.ZERO_3;
@@ -472,20 +446,20 @@ class Simplex {
     const sc2 = sc[2];
     const sc3 = sc[3];
 
-    const i1 = sc0 >= 3 ? 1 : 0;
-    const j1 = sc1 >= 3 ? 1 : 0;
-    const k1 = sc2 >= 3 ? 1 : 0;
-    const l1 = sc3 >= 3 ? 1 : 0;
+    const i1 = sc0 > 2 ? 1 : 0; // const i1 = sc0 >= 3 ? 1 : 0;
+    const j1 = sc1 > 2 ? 1 : 0; // const j1 = sc1 >= 3 ? 1 : 0;
+    const k1 = sc2 > 2 ? 1 : 0; // const k1 = sc2 >= 3 ? 1 : 0;
+    const l1 = sc3 > 2 ? 1 : 0; // const l1 = sc3 >= 3 ? 1 : 0;
 
-    const i2 = sc0 >= 2 ? 1 : 0;
-    const j2 = sc1 >= 2 ? 1 : 0;
-    const k2 = sc2 >= 2 ? 1 : 0;
-    const l2 = sc3 >= 2 ? 1 : 0;
+    const i2 = sc0 > 1 ? 1 : 0; // const i2 = sc0 >= 2 ? 1 : 0;
+    const j2 = sc1 > 1 ? 1 : 0; // const j2 = sc1 >= 2 ? 1 : 0;
+    const k2 = sc2 > 1 ? 1 : 0; // const k2 = sc2 >= 2 ? 1 : 0;
+    const l2 = sc3 > 1 ? 1 : 0; // const l2 = sc3 >= 2 ? 1 : 0;
 
-    const i3 = sc0 >= 1 ? 1 : 0;
-    const j3 = sc1 >= 1 ? 1 : 0;
-    const k3 = sc2 >= 1 ? 1 : 0;
-    const l3 = sc3 >= 1 ? 1 : 0;
+    const i3 = sc0 > 0 ? 1 : 0; // const i3 = sc0 >= 1 ? 1 : 0;
+    const j3 = sc1 > 0 ? 1 : 0; // const j3 = sc1 >= 1 ? 1 : 0;
+    const k3 = sc2 > 0 ? 1 : 0; // const k3 = sc2 >= 1 ? 1 : 0;
+    const l3 = sc3 > 0 ? 1 : 0; // const l3 = sc3 >= 1 ? 1 : 0;
 
     const x1 = x0 - i1 + Simplex.G4;
     const y1 = y0 - j1 + Simplex.G4;
@@ -800,10 +774,8 @@ class Simplex {
     const x0 = x - (i - t);
     const y0 = y - (j - t);
 
-    let i1 = 0;
-    let j1 = 0;
-    if (x0 > y0) { i1 = 1; }
-    else { j1 = 1; }
+    let i1 = 0; let j1 = 0;
+    if (x0 > y0) { i1 = 1; } else { j1 = 1; }
 
     const x1 = x0 - i1 + Simplex.G2;
     const y1 = y0 - j1 + Simplex.G2;
@@ -811,17 +783,9 @@ class Simplex {
     const x2 = x0 - 1.0 + Simplex.G2_2;
     const y2 = y0 - 1.0 + Simplex.G2_2;
 
-    let t20 = 0.0;
-    let t21 = 0.0;
-    let t22 = 0.0;
-
-    let t40 = 0.0;
-    let t41 = 0.0;
-    let t42 = 0.0;
-
-    let n0 = 0.0;
-    let n1 = 0.0;
-    let n2 = 0.0;
+    let t20 = 0.0; let t21 = 0.0; let t22 = 0.0;
+    let t40 = 0.0; let t41 = 0.0; let t42 = 0.0;
+    let n0 = 0.0; let n1 = 0.0; let n2 = 0.0;
 
     let g0 = Simplex.ZERO_2;
     let g1 = Simplex.ZERO_2;
@@ -923,13 +887,8 @@ class Simplex {
     const y0 = y - (j - t);
     const z0 = z - (k - t);
 
-    let i1 = 0;
-    let j1 = 0;
-    let k1 = 0;
-
-    let i2 = 0;
-    let j2 = 0;
-    let k2 = 0;
+    let i1 = 0; let j1 = 0; let k1 = 0;
+    let i2 = 0; let j2 = 0; let k2 = 0;
 
     if (x0 >= y0) {
       if (y0 >= z0) {
@@ -961,20 +920,9 @@ class Simplex {
     const y3 = y0 - 1.0 + Simplex.G3_3;
     const z3 = z0 - 1.0 + Simplex.G3_3;
 
-    let t20 = 0.0;
-    let t21 = 0.0;
-    let t22 = 0.0;
-    let t23 = 0.0;
-
-    let t40 = 0.0;
-    let t41 = 0.0;
-    let t42 = 0.0;
-    let t43 = 0.0;
-
-    let n0 = 0.0;
-    let n1 = 0.0;
-    let n2 = 0.0;
-    let n3 = 0.0;
+    let t20 = 0.0; let t21 = 0.0; let t22 = 0.0; let t23 = 0.0;
+    let t40 = 0.0; let t41 = 0.0; let t42 = 0.0; let t43 = 0.0;
+    let n0 = 0.0; let n1 = 0.0; let n2 = 0.0; let n3 = 0.0;
 
     let g0 = Simplex.ZERO_3;
     let g1 = Simplex.ZERO_3;
@@ -1165,121 +1113,178 @@ class Simplex {
       Simplex.eval4(x, y, z + st, w, seed, zDeriv),
       Simplex.eval4(x, y, z, w + st, seed, wDeriv));
   }
+
+  /**
+   * A default seed.
+   */
+  static get DEFAULT_SEED () {
+
+    return 123456789;
+  }
+
+  /**
+   * Squish constant 2D (Math.sqrt(3.0) - 1.0) / 2.0;
+   * approximately 0.36602542 .
+   */
+  static get F2 () {
+
+    return 0.3660254037844386;
+  }
+
+  /**
+   * Squish constant 3D (Math.sqrt(4.0) - 1.0) / 3.0;
+   * approximately 0.33333333 .
+   */
+  static get F3 () {
+
+    return 0.3333333333333333;
+  }
+
+  /**
+   * Squish constant 4D (Math.sqrt(5.0) - 1.0) / 4.0;
+   * approximately 0.309017 .
+   */
+  static get F4 () {
+
+    return 0.30901699437494745;
+  }
+
+  /**
+   * Stretch constant 2D (1.0 / Math.sqrt(3.0) - 1.0) /
+   * 2.0d; approximately 0.21132487 .
+   */
+  static get G2 () {
+
+    return 0.21132486540518708;
+  }
+
+  /**
+   * 2x stretch constant 2D. Approximately 0.42264974 .
+   */
+  static get G2_2 () {
+
+    return 0.42264973081037416;
+  }
+
+  /**
+   * Stretch constant 3D. Approximately 0.16666667 .
+   */
+  static get G3 () {
+
+    return 0.16666666666666667;
+  }
+
+  /**
+   * 2x stretch constant 3D. Approximately 0.33333333 .
+   */
+  static get G3_2 () {
+
+    return 0.33333333333333333;
+  }
+
+  /**
+   * 3x stretch constant 3D. 0.5 .
+   */
+  static get G3_3 () {
+
+    return 0.5;
+  }
+
+  /**
+   * Stretch constant 4D (1.0 / Math.sqrt(5.0) - 1.0) /
+   * 4.0 ; approximately 0.1381966 .
+   */
+  static get G4 () {
+
+    return 0.13819660112501053;
+  }
+
+  /**
+   * 2x stretch constant 4D. Approximately 0.2763932 .
+   */
+  static get G4_2 () {
+
+    return 0.27639320225002106;
+  }
+
+  /**
+   * 3x stretch constant 4D. Approximately 0.4145898 .
+   */
+  static get G4_3 () {
+
+    return 0.41458980337503159;
+  }
+
+  /**
+   * 4x stretch constant 4D. Approximately 0.5527864 .
+   */
+  static get G4_4 () {
+
+    return 0.55278640450004212;
+  }
+
+  /**
+   * Math.sqrt(2.0) / Math.sqrt(3.0) Used by rotation look up
+   * tables. Approximately 0.8164966 .
+   */
+  static get RT2_RT3 () {
+
+    return 0.816496580927726;
+  }
+
+  /**
+   * Factor by which 2D noise is scaled prior to return.
+   */
+  static get SCALE_2 () {
+    return 64.0;
+  }
+
+  /**
+   * Factor by which 3D noise is scaled prior to return.
+   */
+  static get SCALE_3 () {
+    return 68.0;
+  }
+
+  /**
+   * Factor by which 4D noise is scaled prior to return.
+   */
+  static get SCALE_4 () {
+    return 54.0;
+  }
+
+  /**
+   * Factor added to 2D noise when returning a Vec2. 1.0 /
+   * Math.sqrt(2.0) . Approximately 0.70710677 .
+   */
+  static get STEP_2 () {
+
+    return 0.7071067811865475;
+  }
+
+  /**
+   * Factor added to 3D noise when returning a Vec3. 1.0 /
+   * Math.sqrt(3.0). Approximately 0.57735026 .
+   */
+  static get STEP_3 () {
+
+    return 0.5773502691896258;
+  }
+
+  /**
+   * Factor added to 4D noise when returning a Vec4. 1.0 /
+   * Math.sqrt(4.0); 0.5 .
+   */
+  static get STEP_4 () {
+
+    return 0.5;
+  }
 }
-
-/**
- * A default seed set to Date.now .
- */
-Simplex.DEFAULT_SEED = Object.freeze(Date.now());
-
-/**
- * Squish constant 2D (Math.sqrt(3.0) - 1.0) / 2.0;
- * approximately 0.36602542 .
- */
-Simplex.F2 = Object.freeze(0.3660254037844386);
-
-/**
- * Squish constant 3D (Math.sqrt(4.0) - 1.0) / 3.0;
- * approximately 0.33333333 .
- */
-Simplex.F3 = Object.freeze(0.3333333333333333);
-
-/**
- * Squish constant 4D (Math.sqrt(5.0) - 1.0) / 4.0;
- * approximately 0.309017 .
- */
-Simplex.F4 = Object.freeze(0.30901699437494745);
-
-/**
- * Stretch constant 2D (1.0 / Math.sqrt(3.0) - 1.0) /
- * 2.0d; approximately 0.21132487 .
- */
-Simplex.G2 = Object.freeze(0.21132486540518708);
-
-/**
- * 2x stretch constant 2D. Approximately 0.42264974 .
- */
-Simplex.G2_2 = Object.freeze(0.42264973081037416);
-
-/**
- * Stretch constant 3D. Approximately 0.16666667 .
- */
-Simplex.G3 = Object.freeze(0.16666666666666667);
-
-/**
- * 2x stretch constant 3D. Approximately 0.33333333 .
- */
-Simplex.G3_2 = Object.freeze(0.33333333333333333);
-
-/**
- * 3x stretch constant 3D. 0.5 .
- */
-Simplex.G3_3 = Object.freeze(0.5);
-
-/**
- * Stretch constant 4D (1.0 / Math.sqrt(5.0) - 1.0) /
- * 4.0 ; approximately 0.1381966 .
- */
-Simplex.G4 = Object.freeze(0.13819660112501053);
-
-/**
- * 2x stretch constant 4D. Approximately 0.2763932 .
- */
-Simplex.G4_2 = Object.freeze(0.27639320225002106);
-
-/**
- * 3x stretch constant 4D. Approximately 0.4145898 .
- */
-Simplex.G4_3 = Object.freeze(0.41458980337503159);
-
-/**
- * 4x stretch constant 4D. Approximately 0.5527864 .
- */
-Simplex.G4_4 = Object.freeze(0.55278640450004212);
-
-/**
- * sqrt(2.0) / Math.sqrt(3.0) Used by rotation look up
- * tables. Approximately 0.8164966 .
- */
-Simplex.RT2_RT3 = Object.freeze(0.816496580927726);
-
-/**
- * Factor by which 2D noise is scaled prior to return.
- */
-Simplex.SCALE_2 = Object.freeze(64.0);
-
-/**
- * Factor by which 3D noise is scaled prior to return.
- */
-Simplex.SCALE_3 = Object.freeze(68.0);
-
-/**
- * Factor by which 4D noise is scaled prior to return.
- */
-Simplex.SCALE_4 = Object.freeze(54.0);
-
-/**
- * Factor added to 2D noise when returning a Vec2. 1.0 /
- * Math.sqrt(2.0); approximately 0.70710677 .
- */
-Simplex.STEP_2 = Object.freeze(0.7071067811865475);
-
-/**
- * Factor added to 3D noise when returning a Vec3. 1.0 /
- * Math.sqrt(3.0); approximately 0.57735026 .
- */
-Simplex.STEP_3 = Object.freeze(0.5773502691896258);
-
-/**
- * Factor added to 4D noise when returning a Vec4. 1.0 /
- * Math.sqrt(4.0); 0.5 .
- */
-Simplex.STEP_4 = Object.freeze(0.5);
 
 /**
  * 2D simplex gradient look-up table.
  */
-Simplex.GRAD_2_LUT = Object.freeze([
+Simplex.GRAD_2_LUT = [
   Object.freeze(new Vec2(-1.0, -1.0)),
   Object.freeze(new Vec2(1.0, 0.0)),
   Object.freeze(new Vec2(-1.0, 0.0)),
@@ -1287,12 +1292,12 @@ Simplex.GRAD_2_LUT = Object.freeze([
   Object.freeze(new Vec2(-1.0, 1.0)),
   Object.freeze(new Vec2(0.0, -1.0)),
   Object.freeze(new Vec2(0.0, 1.0)),
-  Object.freeze(new Vec2(1.0, -1.0))]);
+  Object.freeze(new Vec2(1.0, -1.0))];
 
 /**
 * 3D simplex gradient look-up table.
 */
-Simplex.GRAD_3_LUT = Object.freeze([
+Simplex.GRAD_3_LUT = [
   Object.freeze(new Vec3(1.0, 0.0, 1.0)),
   Object.freeze(new Vec3(0.0, 1.0, 1.0)),
   Object.freeze(new Vec3(-1.0, 0.0, 1.0)),
@@ -1308,12 +1313,12 @@ Simplex.GRAD_3_LUT = Object.freeze([
   Object.freeze(new Vec3(1.0, 0.0, 1.0)),
   Object.freeze(new Vec3(-1.0, 0.0, 1.0)),
   Object.freeze(new Vec3(0.0, 1.0, -1.0)),
-  Object.freeze(new Vec3(0.0, -1.0, -1.0))]);
+  Object.freeze(new Vec3(0.0, -1.0, -1.0))];
 
 /**
 * 4D simplex gradient look-up table.
 */
-Simplex.GRAD_4_LUT = Object.freeze([
+Simplex.GRAD_4_LUT = [
   Object.freeze(new Vec4(0.0, 1.0, 1.0, 1.0)),
   Object.freeze(new Vec4(0.0, 1.0, 1.0, -1.0)),
   Object.freeze(new Vec4(0.0, 1.0, -1.0, 1.0)),
@@ -1345,13 +1350,13 @@ Simplex.GRAD_4_LUT = Object.freeze([
   Object.freeze(new Vec4(-1.0, 1.0, 1.0, 0.0)),
   Object.freeze(new Vec4(-1.0, 1.0, -1.0, 0.0)),
   Object.freeze(new Vec4(-1.0, -1.0, 1.0, 0.0)),
-  Object.freeze(new Vec4(-1.0, -1.0, -1.0, 0.0))]);
+  Object.freeze(new Vec4(-1.0, -1.0, -1.0, 0.0))];
 
 /**
 * Table for 3D rotations, u. Multiplied by the cosine of an
 * angle in 3D gradient rotations.
 */
-Simplex.GRAD3_U = Object.freeze([
+Simplex.GRAD3_U = [
   Object.freeze(new Vec3(1.0, 0.0, 1.0)),
   Object.freeze(new Vec3(0.0, 1.0, 1.0)),
   Object.freeze(new Vec3(-1.0, 0.0, 1.0)),
@@ -1367,13 +1372,13 @@ Simplex.GRAD3_U = Object.freeze([
   Object.freeze(new Vec3(-Simplex.RT2_RT3, Simplex.RT2_RT3, Simplex.RT2_RT3)),
   Object.freeze(new Vec3(Simplex.RT2_RT3, -Simplex.RT2_RT3, Simplex.RT2_RT3)),
   Object.freeze(new Vec3(Simplex.RT2_RT3, -Simplex.RT2_RT3, -Simplex.RT2_RT3)),
-  Object.freeze(new Vec3(-Simplex.RT2_RT3, Simplex.RT2_RT3, -Simplex.RT2_RT3))]);
+  Object.freeze(new Vec3(-Simplex.RT2_RT3, Simplex.RT2_RT3, -Simplex.RT2_RT3))];
 
 /**
 * Table for 3D rotations, v. Multiplied by the sine of an
 * angle in 3D gradient rotations.
 */
-Simplex.GRAD3_V = Object.freeze([
+Simplex.GRAD3_V = [
   Object.freeze(new Vec3(-Simplex.RT2_RT3, Simplex.RT2_RT3, Simplex.RT2_RT3)),
   Object.freeze(new Vec3(-Simplex.RT2_RT3, -Simplex.RT2_RT3, Simplex.RT2_RT3)),
   Object.freeze(new Vec3(Simplex.RT2_RT3, -Simplex.RT2_RT3, Simplex.RT2_RT3)),
@@ -1389,12 +1394,12 @@ Simplex.GRAD3_V = Object.freeze([
   Object.freeze(new Vec3(1.0, 0.0, 1.0)),
   Object.freeze(new Vec3(-1.0, 0.0, 1.0)),
   Object.freeze(new Vec3(0.0, 1.0, -1.0)),
-  Object.freeze(new Vec3(0.0, -1.0, -1.0))]);
+  Object.freeze(new Vec3(0.0, -1.0, -1.0))];
 
 /**
 * Permutation table for 4D noise.
 */
-Simplex.PERMUTE = Object.freeze([
+Simplex.PERMUTE = [
   Object.freeze([0, 1, 2, 3]),
   Object.freeze([0, 1, 3, 2]),
   Object.freeze([0, 0, 0, 0]),
@@ -1458,7 +1463,7 @@ Simplex.PERMUTE = Object.freeze([
   Object.freeze([3, 1, 0, 2]),
   Object.freeze([0, 0, 0, 0]),
   Object.freeze([3, 2, 0, 1]),
-  Object.freeze([3, 2, 1, 0])]);
+  Object.freeze([3, 2, 1, 0])];
 
 /**
 * Temporary vector used by gradRot2.
@@ -1475,18 +1480,28 @@ Simplex.ROT_3 = new Vec3();
 * Prevents compiler complaint that variables may not have
 * been initialized.
 */
-Simplex.ZERO_2 = Object.freeze(Vec2.zero());
+Simplex.ZERO_2 = Vec2.zero();
 
 /**
  * Initial state to which a 3D noise contribution is set.
  * Prevents compiler complaint that variables may not have
  * been initialized.
  */
-Simplex.ZERO_3 = Object.freeze(Vec3.zero());
+Simplex.ZERO_3 = Vec3.zero();
 
 /**
  * Initial state to which a 4D noise contribution is set.
  * Prevents compiler complaint that variables may not have
  * been initialized.
  */
-Simplex.ZERO_4 = Object.freeze(Vec4.zero());
+Simplex.ZERO_4 = Vec4.zero();
+
+Object.freeze(Simplex.GRAD_2_LUT);
+Object.freeze(Simplex.GRAD_3_LUT);
+Object.freeze(Simplex.GRAD_4_LUT);
+Object.freeze(Simplex.GRAD3_U);
+Object.freeze(Simplex.GRAD3_V);
+Object.freeze(Simplex.PERMUTE);
+Object.freeze(Simplex.ZERO_2);
+Object.freeze(Simplex.ZERO_3);
+Object.freeze(Simplex.ZERO_4);

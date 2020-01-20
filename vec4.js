@@ -1495,28 +1495,28 @@ class Vec4 {
 
   /**
    * Reduces the signal, or granularity, of a vector's components. Any level
-   * less than 2 returns sets the target to the input.
+   * less than 2 returns the target set to the input.
    *
-   * @param {Vec4} a the input vector
-   * @param {number} b the levels
+   * @param {Vec4} v the input vector
+   * @param {number} levels the levels
    * @param {Vec4} target the output vector
    * @returns the quantized vector
    */
   static quantize (
-    a = new Vec4(),
-    b = 2,
+    v = new Vec4(),
+    levels = 8,
     target = new Vec4()) {
 
-    if (b < 2) {
-      return Vec4.fromSource(a, target);
+    if (levels < 2) {
+      return Vec4.fromSource(v, target);
     }
 
-    const delta = 1.0 / b;
+    const delta = 1.0 / levels;
     return target.setComponents(
-      delta * Math.floor(0.5 + a.x * b),
-      delta * Math.floor(0.5 + a.y * b),
-      delta * Math.floor(0.5 + a.z * b),
-      delta * Math.floor(0.5 + a.w * b));
+      delta * Math.floor(0.5 + v.x * levels),
+      delta * Math.floor(0.5 + v.y * levels),
+      delta * Math.floor(0.5 + v.z * levels),
+      delta * Math.floor(0.5 + v.w * levels));
   }
 
   /**

@@ -859,6 +859,32 @@ class Color extends Vec4 {
   }
 
   /**
+   * Reduces the signal, or granularity, of a color's components. Any level less
+   * than 2 or greater than 255 returns the target set to the input.
+   *
+   * @param {Color} c the input vector
+   * @param {number} levels the levels
+   * @param {Color} target the output vector
+   * @returns the quantized vector
+   */
+  static quantize (
+    c = new Color(),
+    levels = 127,
+    target = new Color()) {
+
+    if (levels < 2 || levels > 255) {
+      return Color.fromSource(c, target);
+    }
+
+    const delta = 1.0 / levels;
+    return target.setComponents(
+      delta * Math.floor(0.5 + c.r * levels),
+      delta * Math.floor(0.5 + c.g * levels),
+      delta * Math.floor(0.5 + c.b * levels),
+      delta * Math.floor(0.5 + c.a * levels));
+  }
+
+  /**
    * Creates a random HSBA vector, then converts it to an RGBA color.
    *
    * @param {Vec4} lb the lower bound

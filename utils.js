@@ -292,14 +292,14 @@ class Utils {
    *
    * Any level less than 2 returns the value unaltered.
    *
-   * @param {number} a the value
-   * @param {number} b the levels
+   * @param {number} v the value
+   * @param {number} levels the levels
    * @returns the quantized value
    */
-  static quantize (a = 0.0, b = 8) {
+  static quantize (v = 0.0, levels = 8) {
 
-    if (b < 2) { return a; }
-    return Math.floor(0.5 + a * b) / b;
+    if (levels < 2) { return v; }
+    return Math.floor(0.5 + v * levels) / levels;
   }
 
   /**

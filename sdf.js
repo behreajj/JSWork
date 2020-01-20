@@ -146,11 +146,11 @@ class Sdf {
    * Draws a line from the origin to the destination, where the distance field
    * is characterized by a third point's distance from the line.
    *
-   *     @param {Vec2} point the point
-   *     @param {Vec2} origin the origin
-   *     @param {Vec2} dest the destination
-   *     @param {number} rounding the rounding factor
-   *     @returns the signed distance
+   * @param {Vec2} point the point
+   * @param {Vec2} origin the origin
+   * @param {Vec2} dest the destination
+   * @param {number} rounding the rounding factor
+   * @returns the signed distance
    */
   static line2 (
     point = new Vec2(),
@@ -186,11 +186,11 @@ class Sdf {
    * Draws a line from the origin to the destination, where the distance field
    * is characterized by a third point's distance from the line.
    *
-   *     @param {Vec3} point the point
-   *     @param {Vec3} origin the origin
-   *     @param {Vec3} dest the destination
-   *     @param {number} rounding the rounding factor
-   *     @returns the signed distance
+   * @param {Vec3} point the point
+   * @param {Vec3} origin the origin
+   * @param {Vec3} dest the destination
+   * @param {number} rounding the rounding factor
+   * @returns the signed distance
    */
   static line3 (
     point = new Vec3(),

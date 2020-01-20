@@ -1695,27 +1695,27 @@ class Vec3 {
 
   /**
    * Reduces the signal, or granularity, of a vector's components. Any level
-   * less than 2 returns sets the target to the input.
+   * less than 2 returns the target set to the input.
    *
-   * @param {Vec3} a the input vector
-   * @param {number} b the levels
+   * @param {Vec3} v the input vector
+   * @param {number} levels the levels
    * @param {Vec3} target the output vector
    * @returns the quantized vector
    */
   static quantize (
-    a = new Vec3(),
-    b = 2,
+    v = new Vec3(),
+    levels = 8,
     target = new Vec3()) {
 
-    if (b < 2) {
-      return Vec3.fromSource(a, target);
+    if (levels < 2) {
+      return Vec3.fromSource(v, target);
     }
 
-    const delta = 1.0 / b;
+    const delta = 1.0 / levels;
     return target.setComponents(
-      delta * Math.floor(0.5 + a.x * b),
-      delta * Math.floor(0.5 + a.y * b),
-      delta * Math.floor(0.5 + a.z * b));
+      delta * Math.floor(0.5 + v.x * levels),
+      delta * Math.floor(0.5 + v.y * levels),
+      delta * Math.floor(0.5 + v.z * levels));
   }
 
   /**
