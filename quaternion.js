@@ -563,6 +563,29 @@ class Quaternion {
   }
 
   /**
+   * Sets a quaternion from an angle. The axis is assumed to
+   * be up, (0.0, 0.0, 1.0) . Sets the real component of the
+   * quaternion to cosine of the angle; the imaginary z
+   * component, to the sine.
+   *
+   * Useful when working in 2.5D, where a two-dimensional
+   * angle may need to be transferred to a three-dimensional
+   * transform.
+   * 
+   * @param {number} radians the angle in radians
+   * @param {Quaternion} target the output quaternion
+   * @returns the quaternion
+   */
+  static fromAngle(
+    radians = 0.0, 
+    target = new Quaternion()) {
+
+    const halfRad = radians * 0.5;
+    return target.setComponents(
+      Math.cos(halfRad), 0.0, 0.0, Math.sin(halfRad));
+  }
+
+  /**
    * Creates a quaternion from the array.
    *
    * @param {Array} arr the array
@@ -662,7 +685,7 @@ class Quaternion {
    */
   static fromAxisAngle (
     radians = 0.0,
-    axis = new Vec3(0.0, 0.0, 1.0),
+    axis = Vec3.up(),
     target = new Quaternion()) {
 
     const amSq = Vec3.magSq(axis);

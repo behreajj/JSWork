@@ -993,7 +993,7 @@ class Vec2 {
    * @returns the angle in radians
    */
   static headingSigned (v = new Vec2(1.0, 0.0)) {
-
+    
     return Math.atan2(v.y, v.z);
   }
 
@@ -1882,7 +1882,7 @@ class Vec2 {
 /* Aliases. */
 Vec2.compare = Vec2.compareYx;
 Vec2.dist = Vec2.distEuclidean;
-Vec2.heading = Vec2.headingUnsigned;
+Vec2.heading = Vec2.headingSigned;
 Vec2.perpendicular = Vec2.perpendicularCCW;
 Vec2.project = Vec2.projectVector;
 Vec2.random = Vec2.randomPolar;

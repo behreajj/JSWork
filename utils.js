@@ -36,7 +36,6 @@ class Utils {
         Math.acos(v);
   }
 
-
   /**
    * A clamped version of arc-sine.
    *
@@ -340,6 +339,17 @@ class Utils {
     if (t >= 1.0) { return b; }
     return Utils.lerpUnclamped(a, b,
       t * t * (3.0 - (t + t)));
+  }
+
+  /**
+   * A clamped version of sqrt . Returns zero when the input value is less than
+   * zero.
+   *
+   * @param {number} a the value
+   */
+  static sqrt (a = 0.0) {
+
+    return a <= 0.0 ? 0.0 : Math.sqrt(a);
   }
 
   /**
