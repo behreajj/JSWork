@@ -402,8 +402,19 @@ class Knot2 {
     handleMag = 1.3333333333333333,
     target = new Knot2()) {
 
-    const cosa = Math.cos(angle);
-    const sina = Math.sin(angle);
+    return Knot2.fromPolarInternal(
+      Math.cos(angle),
+      Math.sin(angle),
+      radius, handleMag,
+      target);
+  }
+
+  static fromPolarInternal (
+    cosa = 1.0,
+    sina = 0.0,
+    radius = 1.0,
+    handleMag = 1.3333333333333333,
+    target = new Knot2()) {
 
     const co = target.coord;
     co.setComponents(
@@ -416,6 +427,7 @@ class Knot2 {
     target.foreHandle.setComponents(
       co.x - hmsina,
       co.y + hmcosa);
+
     target.rearHandle.setComponents(
       co.x + hmsina,
       co.y - hmcosa);

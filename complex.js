@@ -335,7 +335,7 @@ class Complex {
     const czdi = c.real * z.imag + c.imag * z.real + d.imag;
     const mSq = czdr * czdr + czdi * czdi;
 
-    if (Math.abs(mSq) < 0.000001) {
+    if (mSq < 0.000001) {
       return target.reset();
     }
 
@@ -376,9 +376,7 @@ class Complex {
     const phi = b.real * logImag + b.imag * logReal;
     const r = Math.exp(b.real * logReal - b.imag * logImag);
 
-    return target.setComponents(
-      r * Math.cos(phi),
-      r * Math.sin(phi));
+    return Complex.rect(r, phi, target);
   }
 
   static random (

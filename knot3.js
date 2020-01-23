@@ -420,6 +420,48 @@ class Knot3 {
     return target;
   }
 
+  static fromPolar (
+    angle = 0.0,
+    radius = 1.0,
+    handleMag = 1.3333333333333333,
+    target = new Knot3()) {
+
+    return Knot3.fromPolarInternal(
+      Math.cos(angle),
+      Math.sin(angle),
+      radius, handleMag,
+      target);
+  }
+
+  static fromPolarInternal (
+    cosa = 1.0,
+    sina = 0.0,
+    radius = 1.0,
+    handleMag = 1.3333333333333333,
+    target = new Knot3()) {
+
+    const co = target.coord;
+    co.setComponents(
+      cosa * radius,
+      sina * radius,
+      0.0);
+
+    const hmsina = sina * handleMag;
+    const hmcosa = cosa * handleMag;
+
+    target.foreHandle.setComponents(
+      co.x - hmsina,
+      co.y + hmcosa,
+      0.0);
+
+    target.rearHandle.setComponents(
+      co.x + hmsina,
+      co.y - hmcosa,
+      0.0);
+
+    return target;
+  }
+
   static fromSource (
     source = new Knot3(),
     target = new Knot3()) {

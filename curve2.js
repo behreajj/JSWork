@@ -131,6 +131,16 @@ class Curve2 {
     return this._knots[this._knots.length - 1];
   }
 
+  insert (i = -1, knot = new Knot2()) {
+
+    const kn = this._knots;
+    const len = kn.length;
+    const index = this._closedLoop ?
+      i - Math.imul(len, Math.floor(i / len)) : i;
+    kn.splice(index, 0, knot);
+    return this;
+  }
+
   hashCode () {
 
     const bhsh = this._closedLoop ? 1231 : 1237;
@@ -149,7 +159,7 @@ class Curve2 {
     return hsh;
   }
 
-  removeAt(i = 0) {
+  removeAt (i = 0) {
 
     return this._knots.splice(i, 1)[0];
   }

@@ -8,23 +8,6 @@ class Utils {
   }
 
   /**
-   * A quick approximation test. Tests to see if the absolute of the difference
-   * between two values is less than a tolerance. Does not handle edge cases.
-   *
-   * @param {number} a the left operand
-   * @param {number} b the right operand
-   * @param {number} tolerance the tolerance
-   * @returns the evaluation
-   */
-  static approx (
-    a = 0.0,
-    b = 0.0,
-    tolerance = 0.000001) {
-
-    return Math.abs(b - a) < tolerance;
-  }
-
-  /**
    * A clamped version of arc-cosine.
    *
    * @param {number} v the input value
@@ -34,6 +17,35 @@ class Utils {
     return (v <= -1.0) ? Math.PI :
       (v >= 1.0) ? 0.0 :
         Math.acos(v);
+  }
+
+  /**
+   * Evaluates two numbers as booleans using the and logic gate.
+   *
+   * @param {number} a the left operand
+   * @param {number} b the right operand
+   * @returns the evaluation
+   */
+  static and (a = 0.0, b = 0.0) {
+
+    return Boolean(a) & Boolean(b);
+  }
+
+  /**
+    * A quick approximation test. Tests to see if the absolute of the difference
+    * between two values is less than a tolerance. Does not handle edge cases.
+    *
+    * @param {number} a the left operand
+    * @param {number} b the right operand
+    * @param {number} tolerance the tolerance
+    * @returns the evaluation
+    */
+  static approx (
+    a = 0.0,
+    b = 0.0,
+    tolerance = 0.000001) {
+
+    return Math.abs(b - a) < tolerance;
   }
 
   /**
@@ -285,6 +297,28 @@ class Utils {
   }
 
   /**
+   * Evaluates a number as a boolean using the not logic gate.
+   *
+   * @param {number} a the operand
+   * @returns the evaluation
+   */
+  static not (a = 1.0) {
+    return ~Boolean(a);
+  }
+
+  /**
+   * Evaluates two numbers as booleans using the inclusive-or logic gate.
+   *
+   * @param {number} a the left operand
+   * @param {number} b the right operand
+   * @returns the evaluation
+   */
+  static or (a = 0.0, b = 0.0) {
+
+    return Boolean(a) | Boolean(b);
+  }
+
+  /**
    * Reduces the signal, or granularity, of a value. Applied to a color, this
    * yields the 'posterization' effect. Applied to a vector, this yields a
    * pixellated, or crenelated effect.
@@ -362,6 +396,18 @@ class Utils {
   static uniform (a = 0.0, b = 1.0) {
 
     return Utils.lerpUnclamped(a, b, Math.random());
+  }
+
+  /**
+   * Evaluates two numbers as booleans using the exclusive-or logic gate.
+   *
+   * @param {number} a the left operand
+   * @param {number} b the right operand
+   * @returns the evaluation
+   */
+  static xor (a = 0.0, b = 0.0) {
+
+    return Boolean(a) ^ Boolean(b);
   }
 
   /**
