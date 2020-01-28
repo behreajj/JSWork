@@ -972,16 +972,16 @@ class Vec4 {
    * Generates a 4D array of vectors. Call the flat function with an argument of
    * 4s to flatten to a 1D array.
    *
-   * @param {number} rows number of rows
    * @param {number} cols number of columns
+   * @param {number} rows number of rows
    * @param {number} layers number of layers
    * @param {Vec4} lowerBound the lower bound
    * @param {Vec4} upperBound the upper bound
    * @return the array
    */
   static grid (
-    rows = 3,
     cols = 3,
+    rows = 3,
     layers = 3,
     time = 3,
     lowerBound = new Vec4(0.0, 0.0, 0.0, 0.0),

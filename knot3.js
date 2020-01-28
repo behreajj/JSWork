@@ -269,6 +269,67 @@ class Knot3 {
     return this;
   }
 
+  scaleForeHandleBy (scalar = 1.0) {
+
+    this._foreHandle.x = this._coord.x + scalar * (this._foreHandle.x - this._coord.x);
+    this._foreHandle.y = this._coord.y + scalar * (this._foreHandle.y - this._coord.y);
+    this._foreHandle.z = this._coord.z + scalar * (this._foreHandle.z - this._coord.z);
+
+    return this;
+  }
+
+  scaleForeHandleTo (magnitude = 1.0) {
+
+    Vec3.subNorm(this._foreHandle, this._coord,
+      this._foreHandle);
+    Vec3.scale(this._foreHandle, magnitude,
+      this._foreHandle);
+    Vec3.add(this._foreHandle, this._coord,
+      this._foreHandle);
+
+    return this;
+  }
+
+  scaleHandlesBy (scalar = 1.0) {
+
+    this.scaleForeHandleBy(scalar);
+    this.scaleRearHandleBy(scalar);
+
+    return this;
+  }
+
+  scaleHandlesTo (magnitude = 1.0) {
+
+    this.scaleForeHandleTo(magnitude);
+    this.scaleRearHandleTo(magnitude);
+
+    return this;
+  }
+
+  scaleRearHandleBy (scalar = 1.0) {
+
+    this._rearHandle.x = this._coord.x + scalar * (this._rearHandle.x - this._coord.x);
+    this._rearHandle.y = this._coord.y + scalar * (this._rearHandle.y - this._coord.y);
+    this._rearHandle.z = this._coord.z + scalar * (this._rearHandle.z - this._coord.z);
+
+    return this;
+  }
+
+  scaleRearHandleTo (magnitude = 1.0) {
+
+    Vec3.subNorm(
+      this._rearHandle, this._coord,
+      this._rearHandle);
+    Vec3.scale(
+      this._rearHandle, magnitude,
+      this._rearHandle);
+    Vec3.add(
+      this._rearHandle, this._coord,
+      this._rearHandle);
+
+    return this;
+  }
+
   set (i = -1, v = 0.0) {
 
     switch (i) {
@@ -388,36 +449,6 @@ class Knot3 {
       arr[0], arr[1], arr[2],
       arr[3], arr[4], arr[5],
       arr[6], arr[7], arr[8]);
-  }
-
-  static fromPolar (
-    angle = 0.0,
-    radius = 1.0,
-    handleMag = 1.3333333333333333,
-    target = new Knot3()) {
-
-    const cosa = Math.cos(angle);
-    const sina = Math.sin(angle);
-
-    const co = target.coord;
-    co.setComponents(
-      cosa * radius,
-      sina * radius,
-      0.0);
-
-    const hmsina = sina * handleMag;
-    const hmcosa = cosa * handleMag;
-
-    target.foreHandle.setComponents(
-      co.x - hmsina,
-      co.y + hmcosa,
-      0.0);
-    target.rearHandle.setComponents(
-      co.x + hmsina,
-      co.y - hmcosa,
-      0.0);
-
-    return target;
   }
 
   static fromPolar (

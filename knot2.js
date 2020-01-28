@@ -275,6 +275,65 @@ class Knot2 {
     return this;
   }
 
+  scaleForeHandleBy (scalar = 1.0) {
+
+    this._foreHandle.x = this._coord.x + scalar * (this._foreHandle.x - this._coord.x);
+    this._foreHandle.y = this._coord.y + scalar * (this._foreHandle.y - this._coord.y);
+
+    return this;
+  }
+
+  scaleForeHandleTo (magnitude = 1.0) {
+
+    Vec2.subNorm(this._foreHandle, this._coord,
+      this._foreHandle);
+    Vec2.scale(this._foreHandle, magnitude,
+      this._foreHandle);
+    Vec2.add(this._foreHandle, this._coord,
+      this._foreHandle);
+
+    return this;
+  }
+
+  scaleHandlesBy (scalar = 1.0) {
+
+    this.scaleForeHandleBy(scalar);
+    this.scaleRearHandleBy(scalar);
+
+    return this;
+  }
+
+  scaleHandlesTo (magnitude = 1.0) {
+
+    this.scaleForeHandleTo(magnitude);
+    this.scaleRearHandleTo(magnitude);
+
+    return this;
+  }
+
+  scaleRearHandleBy (scalar = 1.0) {
+
+    this._rearHandle.x = this._coord.x + scalar * (this._rearHandle.x - this._coord.x);
+    this._rearHandle.y = this._coord.y + scalar * (this._rearHandle.y - this._coord.y);
+
+    return this;
+  }
+
+  scaleRearHandleTo (magnitude = 1.0) {
+
+    Vec2.subNorm(
+      this._rearHandle, this._coord,
+      this._rearHandle);
+    Vec2.scale(
+      this._rearHandle, magnitude,
+      this._rearHandle);
+    Vec2.add(
+      this._rearHandle, this._coord,
+      this._rearHandle);
+
+    return this;
+  }
+
   set (i = -1, v = 0.0) {
 
     switch (i) {
@@ -385,10 +444,6 @@ class Knot2 {
   }
 
   /**
-   * Groups together vectors which shape a Bezier curve into a
-   * coordinate (or anchor point), fore handle (the following
-   * control point) and rear handle (the preceding control
-   * point).
    * 
    * @param {number} angle the angle in radians
    * @param {number} radius the radius
@@ -409,6 +464,15 @@ class Knot2 {
       target);
   }
 
+  /**
+   * 
+   * @param {number} cosa cosine of the angle
+   * @param {number} sina sine of the angle
+   * @param {number} radius the radius
+   * @param {number} handleMag the magnitude of the handles
+   * @param {Knot2} target the output knot
+   * @returns the knot
+   */
   static fromPolarInternal (
     cosa = 1.0,
     sina = 0.0,

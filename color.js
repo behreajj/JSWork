@@ -167,6 +167,18 @@ class Color extends Vec4 {
     ].join('');
   }
 
+  static add (
+    a = new Color(),
+    b = new Color(),
+    target = new Color()) {
+
+    return target.setComponents(
+      Math.min(Math.max(a.r + b.r, 0.0), 1.0),
+      Math.min(Math.max(a.g + b.g, 0.0), 1.0),
+      Math.min(Math.max(a.b + b.b, 0.0), 1.0),
+      Math.min(Math.max(a.a, 0.0), 1.0));
+  }
+
   /**
    * Tests to see if all color channels are greater than zero.
    *
@@ -175,10 +187,10 @@ class Color extends Vec4 {
    */
   static all (c = new Color()) {
 
-    return (c._w > 0.0) &&
-      (c._x > 0.0) &&
-      (c._y > 0.0) &&
-      (c._z > 0.0);
+    return (c.a > 0.0) &&
+      (c.r > 0.0) &&
+      (c.g > 0.0) &&
+      (c.b > 0.0);
   }
 
   /**
@@ -190,7 +202,7 @@ class Color extends Vec4 {
    */
   static any (c = new Color()) {
 
-    return c._w > 0.0;
+    return c.a > 0.0;
   }
 
   /**
@@ -385,10 +397,10 @@ class Color extends Vec4 {
     target = new Color()) {
 
     return target.setComponents(
-      Math.min(Math.max(c.x, 0.0), 1.0),
-      Math.min(Math.max(c.y, 0.0), 1.0),
-      Math.min(Math.max(c.z, 0.0), 1.0),
-      Math.min(Math.max(c.w, 0.0), 1.0));
+      Math.min(Math.max(c.r, 0.0), 1.0),
+      Math.min(Math.max(c.g, 0.0), 1.0),
+      Math.min(Math.max(c.b, 0.0), 1.0),
+      Math.min(Math.max(c.a, 0.0), 1.0));
   }
 
   /**
@@ -442,6 +454,18 @@ class Color extends Vec4 {
   static cyan (target = new Color()) {
 
     return target.setComponents(0.0, 1.0, 1.0, 1.0);
+  }
+
+  static div (
+    a = new Color(),
+    b = new Color(),
+    target = new Color()) {
+
+    return target.setComponents(
+      b.r === 0.0 ? 0.0 : Math.min(Math.max(a.r / b.r, 0.0), 1.0),
+      b.g === 0.0 ? 0.0 : Math.min(Math.max(a.g / b.g, 0.0), 1.0),
+      b.b === 0.0 ? 0.0 : Math.min(Math.max(a.b / b.b, 0.0), 1.0),
+      Math.min(Math.max(a.a, 0.0), 1.0));
   }
 
   /**
@@ -765,38 +789,6 @@ class Color extends Vec4 {
   }
 
   /**
-   * Eases between an origin and destination color with hermite interpolation.
-   *
-   * @param {Color} origin the origin color
-   * @param {Color} dest the destination color
-   * @param {number} step the step
-   * @param {Color} target the output color
-   * @returns the eased color
-   */
-  static smoothStepRgba (
-    origin = new Color(0.0, 0.0, 0.0, 1.0),
-    dest = new Color(1.0, 1.0, 1.0, 1.0),
-    step = 0.5,
-    target = new Color()) {
-
-    if (step <= 0.0) {
-      return Color.fromSource(origin, target);
-    }
-
-    if (step >= 1.0) {
-      return Color.fromSource(dest, target);
-    }
-
-    const t = step * step * (3.0 - (step + step));
-    const u = 1.0 - t;
-    return target.setComponents(
-      u * origin.x + t * dest.x,
-      u * origin.y + t * dest.y,
-      u * origin.z + t * dest.z,
-      u * origin.w + t * dest.w);
-  }
-
-  /**
    * Returns the relative luminance of the color, based on
    * https://en.wikipedia.org/wiki/Relative_luminance .
    *
@@ -819,6 +811,18 @@ class Color extends Vec4 {
     return target.setComponents(1.0, 0.0, 1.0, 1.0);
   }
 
+  static mul (
+    a = new Color(),
+    b = new Color(),
+    target = new Color()) {
+
+    return target.setComponents(
+      Math.min(Math.max(a.r * b.r, 0.0), 1.0),
+      Math.min(Math.max(a.g * b.g, 0.0), 1.0),
+      Math.min(Math.max(a.b * b.b, 0.0), 1.0),
+      Math.min(Math.max(a.a, 0.0), 1.0));
+  }
+
   /**
    * Tests to see if the alpha channel of this color is less than or equal to
    * zero, i.e., if it is completely transparent.
@@ -828,7 +832,7 @@ class Color extends Vec4 {
    */
   static none (c = new Color()) {
 
-    return c._w <= 0.0;
+    return c.a <= 0.0;
   }
 
   /**
@@ -1015,6 +1019,62 @@ class Color extends Vec4 {
       0.212671 * c.r + 0.715160 * c.g + 0.072169 * c.b,
       0.019334 * c.r + 0.119193 * c.g + 0.950227 * c.b,
       c.a);
+  }
+
+  static scale (
+    a = new Color(),
+    b = 1.0,
+    target = new Color()) {
+
+    return target.setComponents(
+      Math.min(Math.max(a.r * b, 0.0), 1.0),
+      Math.min(Math.max(a.g * b, 0.0), 1.0),
+      Math.min(Math.max(a.b * b, 0.0), 1.0),
+      Math.min(Math.max(a.a, 0.0), 1.0));
+  }
+
+  /**
+   * Eases between an origin and destination color with hermite interpolation.
+   *
+   * @param {Color} origin the origin color
+   * @param {Color} dest the destination color
+   * @param {number} step the step
+   * @param {Color} target the output color
+   * @returns the eased color
+   */
+  static smoothStepRgba (
+    origin = new Color(0.0, 0.0, 0.0, 1.0),
+    dest = new Color(1.0, 1.0, 1.0, 1.0),
+    step = 0.5,
+    target = new Color()) {
+
+    if (step <= 0.0) {
+      return Color.fromSource(origin, target);
+    }
+
+    if (step >= 1.0) {
+      return Color.fromSource(dest, target);
+    }
+
+    const t = step * step * (3.0 - (step + step));
+    const u = 1.0 - t;
+    return target.setComponents(
+      u * origin.x + t * dest.x,
+      u * origin.y + t * dest.y,
+      u * origin.z + t * dest.z,
+      u * origin.w + t * dest.w);
+  }
+
+  static sub (
+    a = new Color(),
+    b = new Color(),
+    target = new Color()) {
+
+    return target.setComponents(
+      Math.min(Math.max(a.r - b.r, 0.0), 1.0),
+      Math.min(Math.max(a.g - b.g, 0.0), 1.0),
+      Math.min(Math.max(a.b - b.b, 0.0), 1.0),
+      Math.min(Math.max(a.a, 0.0), 1.0));
   }
 
   /**

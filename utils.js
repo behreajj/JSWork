@@ -399,6 +399,36 @@ class Utils {
   }
 
   /**
+   * Wraps a value around a periodic range as defined by an upper and lower
+   * bound: lower bounds inclusive; upper bounds exclusive. Due to single
+   * precision accuracy, results will be inexact.
+   *
+   * In cases where the lower bound is greater than the upper bound, the two
+   * will be swapped. In cases where the range is 0.0, 0.0 will be returned.
+   *
+   * @param {number} v the value
+   * @param {number} lb the lower bound
+   * @param {number} ub the upper bound
+   */
+  static wrap (v = 0.0, lb = -1.0, ub = 1.0) {
+
+    let lbc = 0.0;
+    let ubc = 0.0;
+    const span = ub - lb;
+
+    if (span < 0.0) { lbc = ub; ubc = lb; }
+    else if (span > 0.0) { lbc = lb; ubc = ub; }
+    else { return 0.0; }
+
+    if (v < lbc) {
+      return ubc - (lbc - v) % span;
+    } else if (v >= ubc) {
+      return lbc + (v - lbc) % span;
+    }
+    return v;
+  }
+
+  /**
    * Evaluates two numbers as booleans using the exclusive-or logic gate.
    *
    * @param {number} a the left operand

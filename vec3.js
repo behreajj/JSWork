@@ -1153,17 +1153,17 @@ class Vec3 {
   /**
    * Generates a 3D array of vectors. Call the flat function with an argument of
    * 2 to flatten to a 1D array.
-   *
-   * @param {number} rows number of rows
+   * 
    * @param {number} cols number of columns
+   * @param {number} rows number of rows
    * @param {number} layers number of layers
    * @param {Vec3} lowerBound the lower bound
    * @param {Vec3} upperBound the upper bound
    * @return the array
    */
   static grid (
-    rows = 3,
     cols = 3,
+    rows = 3,
     layers = 3,
     lowerBound = new Vec3(0.0, 0.0, 0.0),
     upperBound = new Vec3(1.0, 1.0, 1.0)) {

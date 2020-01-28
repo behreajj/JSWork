@@ -945,15 +945,15 @@ class Vec2 {
    * Returns a 2D grid of vectors. Call the flat function with an argument of
    * 1 to flatten to a 1D array.
    *
-   * @param {number} rows rows
    * @param {number} cols columns
+   * @param {number} rows rows
    * @param {Vec2} lowerBound the lower bound
    * @param {Vec2} upperBound the upper bound
    * @returns the grid
    */
   static grid (
-    rows = 3,
     cols = 3,
+    rows = 3,
     lowerBound = new Vec2(0.0, 0.0),
     upperBound = new Vec2(1.0, 1.0)) {
 
