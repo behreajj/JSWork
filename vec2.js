@@ -814,6 +814,28 @@ class Vec2 {
   }
 
   /**
+   * Filters each component of the input vector against a lower and upper bound.
+   * If the component is within the range, its value is retained; otherwise, it
+   * is set to 0.0 .
+   *
+   * @param {Vec2} v the input vector
+   * @param {Vec2} lb the lower bound
+   * @param {Vec2} ub the upper bound
+   * @param {Vec2} target the output vector
+   * @returns the filtered vector
+   */
+  static filter (
+    v = new Vec2(),
+    lb = new Vec2(0.0, 0.0),
+    ub = new Vec2(1.0, 1.0),
+    target = new Vec2()) {
+
+    return target.setComponents(
+      v.x >= lb.x && v.x < ub.x ? v.x : 0.0,
+      v.y >= lb.y && v.y < ub.y ? v.y : 0.0);
+  }
+
+  /**
    * Floors each component of the vector.
    *
    * @param {Vec2} v the input vector
@@ -993,7 +1015,7 @@ class Vec2 {
    * @returns the angle in radians
    */
   static headingSigned (v = new Vec2(1.0, 0.0)) {
-    
+
     return Math.atan2(v.y, v.z);
   }
 

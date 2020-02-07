@@ -271,9 +271,12 @@ class Knot3 {
 
   scaleForeHandleBy (scalar = 1.0) {
 
-    this._foreHandle.x = this._coord.x + scalar * (this._foreHandle.x - this._coord.x);
-    this._foreHandle.y = this._coord.y + scalar * (this._foreHandle.y - this._coord.y);
-    this._foreHandle.z = this._coord.z + scalar * (this._foreHandle.z - this._coord.z);
+    this._foreHandle.x = this._coord.x + scalar *
+      (this._foreHandle.x - this._coord.x);
+    this._foreHandle.y = this._coord.y + scalar *
+      (this._foreHandle.y - this._coord.y);
+    this._foreHandle.z = this._coord.z + scalar *
+      (this._foreHandle.z - this._coord.z);
 
     return this;
   }
@@ -308,9 +311,12 @@ class Knot3 {
 
   scaleRearHandleBy (scalar = 1.0) {
 
-    this._rearHandle.x = this._coord.x + scalar * (this._rearHandle.x - this._coord.x);
-    this._rearHandle.y = this._coord.y + scalar * (this._rearHandle.y - this._coord.y);
-    this._rearHandle.z = this._coord.z + scalar * (this._rearHandle.z - this._coord.z);
+    this._rearHandle.x = this._coord.x + scalar *
+      (this._rearHandle.x - this._coord.x);
+    this._rearHandle.y = this._coord.y + scalar *
+      (this._rearHandle.y - this._coord.y);
+    this._rearHandle.z = this._coord.z + scalar *
+      (this._rearHandle.z - this._coord.z);
 
     return this;
   }

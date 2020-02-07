@@ -576,8 +576,8 @@ class Quaternion {
    * @param {Quaternion} target the output quaternion
    * @returns the quaternion
    */
-  static fromAngle(
-    radians = 0.0, 
+  static fromAngle (
+    radians = 0.0,
     target = new Quaternion()) {
 
     const halfRad = radians * 0.5;
@@ -1435,16 +1435,16 @@ class Quaternion {
     const i = q.imag;
 
     if (Math.abs(1.0 - mSq) < 0.000001) {
+      wNorm = q.real;
+      // xNorm = i.x;
+      // yNorm = i.y;
+      // zNorm = i.z;
+    } else {
       const mInv = 1.0 / Math.sqrt(mSq);
       wNorm = q.real * mInv;
       // xNorm = i.x * mInv;
       // yNorm = i.y * mInv;
       // zNorm = i.z * mInv;
-    } else {
-      wNorm = q.real;
-      // xNorm = i.x;
-      // yNorm = i.y;
-      // zNorm = i.z;
     }
 
     const angle = (wNorm <= -1.0) ? 6.283185307179586 :

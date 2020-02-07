@@ -167,16 +167,27 @@ class Color extends Vec4 {
     ].join('');
   }
 
+  /**
+   * Adds the left and right operand, except for the alpha channel, then clamps
+   * the sum to [0.0, 1.0] . The left operand's alpha channel is retained.
+   *
+   * For that reason, color addition is _not_ commutative.
+   *
+   * @param {Color} a left operand
+   * @param {Color} b right operand
+   * @param {Color} target output vector
+   * @returns the sum
+   */
   static add (
     a = new Color(),
     b = new Color(),
     target = new Color()) {
 
     return target.setComponents(
-      Math.min(Math.max(a.r + b.r, 0.0), 1.0),
-      Math.min(Math.max(a.g + b.g, 0.0), 1.0),
-      Math.min(Math.max(a.b + b.b, 0.0), 1.0),
-      Math.min(Math.max(a.a, 0.0), 1.0));
+      Math.min(Math.max(a.x + b.x, 0.0), 1.0),
+      Math.min(Math.max(a.y + b.y, 0.0), 1.0),
+      Math.min(Math.max(a.z + b.z, 0.0), 1.0),
+      Math.min(Math.max(a.w, 0.0), 1.0));
   }
 
   /**
@@ -187,10 +198,10 @@ class Color extends Vec4 {
    */
   static all (c = new Color()) {
 
-    return (c.a > 0.0) &&
-      (c.r > 0.0) &&
-      (c.g > 0.0) &&
-      (c.b > 0.0);
+    return (c.w > 0.0) &&
+      (c.x > 0.0) &&
+      (c.y > 0.0) &&
+      (c.z > 0.0);
   }
 
   /**
@@ -261,10 +272,10 @@ class Color extends Vec4 {
   }
 
   /**
-   * Converts a color to an integer, performs a bitwise left
-   * shift operation, then converts the result to a color. The
-   * number of places is multiplied by 0x08.
-   * 
+   * Converts a color to an integer, performs a bitwise left shift operation,
+   * then converts the result to a color. The number of places is multiplied by
+   * 0x08.
+   *
    * @param {Color} c the color
    * @param {number} places the number of places
    * @param {Color} target the output color
@@ -281,10 +292,10 @@ class Color extends Vec4 {
   }
 
   /**
-   * Converts a color to an integer, performs a bitwise right
-   * shift operation, then converts the result to a color. The
-   * number of places is multiplied by 0x08.
-   * 
+   * Converts a color to an integer, performs a bitwise right shift operation,
+   * then converts the result to a color. The number of places is multiplied by
+   * 0x08.
+   *
    * @param {Color} c the color
    * @param {number} places the number of places
    * @param {Color} target the output color
@@ -301,10 +312,10 @@ class Color extends Vec4 {
   }
 
   /**
-   * Converts a color to an integer, performs an unsigned
-   * bitwise right shift operation, then converts the result
-   * to a color. The number of places is multiplied by 0x08.
-   * 
+   * Converts a color to an integer, performs an unsigned bitwise right shift
+   * operation, then converts the result to a color. The number of places is
+   * multiplied by 0x08.
+   *
    * @param {Color} c the color
    * @param {number} places the number of places
    * @param {Color} target the output color
@@ -321,10 +332,9 @@ class Color extends Vec4 {
   }
 
   /**
-   * Converts two colors to integers, performs the bitwise XOR
-   * operation (exclusive or) on them, then converts the
-   * result to a color.
-   * 
+   * Converts two colors to integers, performs the bitwise XOR operation
+   * (exclusive or) on them, then converts the result to a color.
+   *
    * @param {Color} a the left operand
    * @param {Color} b the right operand
    * @param {Color} target the output color
@@ -378,16 +388,15 @@ class Color extends Vec4 {
     target = new Color()) {
 
     return target.setComponents(
-      Math.min(Math.max(c.r, lb.x), ub.x),
-      Math.min(Math.max(c.g, lb.y), ub.y),
-      Math.min(Math.max(c.b, lb.z), ub.z),
-      Math.min(Math.max(c.a, lb.w), ub.w));
+      Math.min(Math.max(c.x, lb.x), ub.x),
+      Math.min(Math.max(c.y, lb.y), ub.y),
+      Math.min(Math.max(c.z, lb.z), ub.z),
+      Math.min(Math.max(c.w, lb.w), ub.w));
   }
 
   /**
-   * Ensures that the values of the color are clamped to the
-   * range [0.0, 1.0].
-   * 
+   * Ensures that the values of the color are clamped to the range [0.0, 1.0].
+   *
    * @param {Color} c the color
    * @param {Color} target the output color
    * @returns the clamped color
@@ -397,10 +406,10 @@ class Color extends Vec4 {
     target = new Color()) {
 
     return target.setComponents(
-      Math.min(Math.max(c.r, 0.0), 1.0),
-      Math.min(Math.max(c.g, 0.0), 1.0),
-      Math.min(Math.max(c.b, 0.0), 1.0),
-      Math.min(Math.max(c.a, 0.0), 1.0));
+      Math.min(Math.max(c.x, 0.0), 1.0),
+      Math.min(Math.max(c.y, 0.0), 1.0),
+      Math.min(Math.max(c.z, 0.0), 1.0),
+      Math.min(Math.max(c.w, 0.0), 1.0));
   }
 
   /**
@@ -456,22 +465,32 @@ class Color extends Vec4 {
     return target.setComponents(0.0, 1.0, 1.0, 1.0);
   }
 
+  /**
+   * Divides the left operand by the right, except for the alpha channel, then
+   * clamps the product to [0.0, 1.0] . The left operand's alpha channel is
+   * retained.
+   *
+   * @param {Color} a left operand
+   * @param {Color} b right operand
+   * @param {Color} target the output color
+   * @returns the quotient
+   */
   static div (
     a = new Color(),
     b = new Color(),
     target = new Color()) {
 
     return target.setComponents(
-      b.r === 0.0 ? 0.0 : Math.min(Math.max(a.r / b.r, 0.0), 1.0),
-      b.g === 0.0 ? 0.0 : Math.min(Math.max(a.g / b.g, 0.0), 1.0),
-      b.b === 0.0 ? 0.0 : Math.min(Math.max(a.b / b.b, 0.0), 1.0),
-      Math.min(Math.max(a.a, 0.0), 1.0));
+      b.x === 0.0 ? 0.0 : Math.min(Math.max(a.x / b.x, 0.0), 1.0),
+      b.y === 0.0 ? 0.0 : Math.min(Math.max(a.y / b.y, 0.0), 1.0),
+      b.z === 0.0 ? 0.0 : Math.min(Math.max(a.z / b.z, 0.0), 1.0),
+      Math.min(Math.max(a.w, 0.0), 1.0));
   }
 
   /**
-   * Converts a 2D direction to a color. Normalizes the
-   * direction, multiplies it by 0.5, then adds 0.5 .
-   * 
+   * Converts a 2D direction to a color. Normalizes the direction, multiplies it
+   * by 0.5, then adds 0.5 .
+   *
    * @param {Vec2} v the 2D direction
    * @param {Color} target the output color
    * @returns the color 
@@ -758,6 +777,26 @@ class Color extends Vec4 {
   }
 
   /**
+   * Inverts the color's red, green and blue channels by subtracting them from
+   * 1.0 . Clamps the alpha channel to [0.0, 1.0]. Similar to to using the '~'
+   * operator except for the alpha channel.
+   *
+   * @param {Color} source source color
+   * @param {Color} target the output color
+   * @returns the inverse
+   */
+  static inverse (
+    source = new Color(),
+    target = new Color()) {
+
+    return target.setComponents(
+      Math.max(0.0, 1.0 - source.r),
+      Math.max(0.0, 1.0 - source.g),
+      Math.max(0.0, 1.0 - source.b),
+      Math.min(Math.max(source.a, 0.0), 1.0));
+  }
+
+  /**
    * Eases between an origin and destination color with linear interpolation.
    * 
    * @param {Color} origin the origin color
@@ -797,7 +836,7 @@ class Color extends Vec4 {
    */
   static luminance (c = new Color()) {
 
-    return 0.2126 * c.r + 0.7152 * c.g + 0.0722 * c.b;
+    return 0.2126 * c.x + 0.7152 * c.y + 0.0722 * c.z;
   }
 
   /**
@@ -811,16 +850,26 @@ class Color extends Vec4 {
     return target.setComponents(1.0, 0.0, 1.0, 1.0);
   }
 
+  /**
+   * Multiplies the left and right operand, except for the alpha channel, then
+   * clamps the product to [0.0, 1.0] . The left operand's alpha channel is
+   * retained.
+   *
+   * @param {Color} a left operand
+   * @param {Color} b right operand
+   * @param {Color} target the product
+   * @returns the product
+   */
   static mul (
     a = new Color(),
     b = new Color(),
     target = new Color()) {
 
     return target.setComponents(
-      Math.min(Math.max(a.r * b.r, 0.0), 1.0),
-      Math.min(Math.max(a.g * b.g, 0.0), 1.0),
-      Math.min(Math.max(a.b * b.b, 0.0), 1.0),
-      Math.min(Math.max(a.a, 0.0), 1.0));
+      Math.min(Math.max(a.x * b.x, 0.0), 1.0),
+      Math.min(Math.max(a.y * b.y, 0.0), 1.0),
+      Math.min(Math.max(a.z * b.z, 0.0), 1.0),
+      Math.min(Math.max(a.w, 0.0), 1.0));
   }
 
   /**
@@ -852,14 +901,14 @@ class Color extends Vec4 {
     }
 
     if (c.a >= 1.0) {
-      return target.setComponents(c.r, c.g, c.b, 1.0);
+      return target.setComponents(c.x, c.y, c.z, 1.0);
     }
 
     return target.setComponents(
-      c.r * c.a,
-      c.g * c.a,
-      c.b * c.a,
-      c.a);
+      c.x * c.w,
+      c.y * c.w,
+      c.z * c.w,
+      c.w);
   }
 
   /**
@@ -882,10 +931,10 @@ class Color extends Vec4 {
 
     const delta = 1.0 / levels;
     return target.setComponents(
-      delta * Math.floor(0.5 + c.r * levels),
-      delta * Math.floor(0.5 + c.g * levels),
-      delta * Math.floor(0.5 + c.b * levels),
-      delta * Math.floor(0.5 + c.a * levels));
+      delta * Math.floor(0.5 + c.x * levels),
+      delta * Math.floor(0.5 + c.y * levels),
+      delta * Math.floor(0.5 + c.z * levels),
+      delta * Math.floor(0.5 + c.w * levels));
   }
 
   /**
@@ -1015,22 +1064,31 @@ class Color extends Vec4 {
     target = new Vec4()) {
 
     return target.setComponents(
-      0.412453 * c.r + 0.357580 * c.g + 0.180423 * c.b,
-      0.212671 * c.r + 0.715160 * c.g + 0.072169 * c.b,
-      0.019334 * c.r + 0.119193 * c.g + 0.950227 * c.b,
-      c.a);
+      0.412453 * c.x + 0.357580 * c.y + 0.180423 * c.z,
+      0.212671 * c.x + 0.715160 * c.y + 0.072169 * c.z,
+      0.019334 * c.x + 0.119193 * c.y + 0.950227 * c.z,
+      c.w);
   }
 
+  /**
+   * Multiplies a color by a scalar, except for the alpha, then clamps the
+   * result.
+   *
+   * @param {Color} a left operand, the color
+   * @param {number} b right operand, the scalar
+   * @param {Color} target the output color
+   * @returns the product
+   */
   static scale (
     a = new Color(),
     b = 1.0,
     target = new Color()) {
 
     return target.setComponents(
-      Math.min(Math.max(a.r * b, 0.0), 1.0),
-      Math.min(Math.max(a.g * b, 0.0), 1.0),
-      Math.min(Math.max(a.b * b, 0.0), 1.0),
-      Math.min(Math.max(a.a, 0.0), 1.0));
+      Math.min(Math.max(a.x * b, 0.0), 1.0),
+      Math.min(Math.max(a.y * b, 0.0), 1.0),
+      Math.min(Math.max(a.z * b, 0.0), 1.0),
+      Math.min(Math.max(a.w, 0.0), 1.0));
   }
 
   /**
@@ -1065,16 +1123,26 @@ class Color extends Vec4 {
       u * origin.w + t * dest.w);
   }
 
+  /**
+   * Subtracts the right operand from the left operand, except for the alpha
+   * channel, then clamps the difference to [0.0, 1.0] . The left operand's
+   * alpha channel is retained.
+   *
+   * @param {Color} a left operand
+   * @param {Color} b right operand
+   * @param {Color} target output color
+   * @returns the difference
+   */
   static sub (
     a = new Color(),
     b = new Color(),
     target = new Color()) {
 
     return target.setComponents(
-      Math.min(Math.max(a.r - b.r, 0.0), 1.0),
-      Math.min(Math.max(a.g - b.g, 0.0), 1.0),
-      Math.min(Math.max(a.b - b.b, 0.0), 1.0),
-      Math.min(Math.max(a.a, 0.0), 1.0));
+      Math.min(Math.max(a.x - b.x, 0.0), 1.0),
+      Math.min(Math.max(a.y - b.y, 0.0), 1.0),
+      Math.min(Math.max(a.z - b.z, 0.0), 1.0),
+      Math.min(Math.max(a.w, 0.0), 1.0));
   }
 
   /**
@@ -1086,10 +1154,10 @@ class Color extends Vec4 {
    */
   static toHexInt (c = new Color()) {
 
-    return Math.trunc(c.a * 0xff + 0.5) << 0x18
-      | Math.trunc(c.r * 0xff + 0.5) << 0x10
-      | Math.trunc(c.g * 0xff + 0.5) << 0x8
-      | Math.trunc(c.b * 0xff + 0.5);
+    return Math.trunc(c.w * 0xff + 0.5) << 0x18
+      | Math.trunc(c.x * 0xff + 0.5) << 0x10
+      | Math.trunc(c.y * 0xff + 0.5) << 0x8
+      | Math.trunc(c.z * 0xff + 0.5);
   }
 
   /**

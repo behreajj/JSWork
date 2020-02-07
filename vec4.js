@@ -845,6 +845,30 @@ class Vec4 {
   }
 
   /**
+   * Filters each component of the input vector against a lower and upper bound.
+   * If the component is within the range, its value is retained; otherwise, it
+   * is set to 0.0 .
+   *
+   * @param {Vec4} v the input vector
+   * @param {Vec4} lb the lower bound
+   * @param {Vec4} ub the upper bound
+   * @param {Vec4} target the output vector
+   * @returns the filtered vector
+   */
+  static filter (
+    v = new Vec4(),
+    lb = new Vec4(0.0, 0.0, 0.0, 0.0),
+    ub = new Vec4(1.0, 1.0, 1.0, 1.0),
+    target = new Vec4()) {
+
+    return target.setComponents(
+      v.x >= lb.x && v.x < ub.x ? v.x : 0.0,
+      v.y >= lb.y && v.y < ub.y ? v.y : 0.0,
+      v.z >= lb.z && v.z < ub.z ? v.z : 0.0,
+      v.w >= lb.w && v.w < ub.w ? v.w : 0.0);
+  }
+
+  /**
    * Floors each component of the vector.
    *
    * @param {Vec4} v the input vector

@@ -124,6 +124,19 @@ class Utils {
   }
 
   /**
+   * Returns the value if it is within the lower and upper bounds.
+   * Otherwise, returns 0.0 .
+   * 
+   * @param {number} a the input value
+   * @param {number} lb the lower bound
+   * @param {number} ub the upper bound
+   */
+  static filter (v, lb = 0.0, ub = 1.0) {
+
+    return v >= lb && v < ub ? v : 0.0;
+  }
+
+  /**
    * Applies the modulo operator (%) to the operands, which implicitly uses the
    * formula fmod ( a, b ) := a - b trunc ( a / b ) .
    *
@@ -400,8 +413,7 @@ class Utils {
 
   /**
    * Wraps a value around a periodic range as defined by an upper and lower
-   * bound: lower bounds inclusive; upper bounds exclusive. Due to single
-   * precision accuracy, results will be inexact.
+   * bound: lower bounds inclusive; upper bounds exclusive.
    *
    * In cases where the lower bound is greater than the upper bound, the two
    * will be swapped. In cases where the range is 0.0, 0.0 will be returned.
