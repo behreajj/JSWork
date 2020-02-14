@@ -588,6 +588,34 @@ class Gradient {
   }
 
   /**
+   * Returns a gradient simulating the red-yellow-green color wheel. Red is
+   * repeated so the gradient is periodic.
+   *
+   * @param {Gradient} target the output gradient
+   * @returns the gradient
+   */
+  static paletteRyb (target = new Gradient()) {
+
+    target._keys = [
+      new ColorKey(0.0, Color.red()),
+      new ColorKey(0.083333, new Color(1.0, 0.25, 0.0)),
+      new ColorKey(0.166667, new Color(1.0, 0.50, 0.0)),
+      new ColorKey(0.25, new Color(1.0, 0.75, 0.0)),
+      new ColorKey(0.333333, Color.yellow()),
+      new ColorKey(0.416667, new Color(0.5058824, 0.8313726, 0.1019608)),
+      new ColorKey(0.5, new Color(0.0, 0.6627451, 0.2)),
+      new ColorKey(0.583333, new Color(0.0823529, 0.5176471, 0.4)),
+      new ColorKey(0.666667, new Color(0.1647059, 0.3764706, 0.6)),
+      new ColorKey(0.75, new Color(0.3333333, 0.1882353, 0.5529412)),
+      new ColorKey(0.833333, new Color(0.50, 0.0, 0.50)),
+      new ColorKey(0.916667, new Color(0.75, 0.0, 0.25)),
+      new ColorKey(1.0, Color.red())
+    ];
+
+    return target;
+  }
+
+  /**
    * Returns the Viridis color palette, consisting of 16 keys.
    * 
    * @param {Gradient} target the output gradient

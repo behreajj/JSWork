@@ -1092,6 +1092,123 @@ class Color extends Vec4 {
   }
 
   /**
+   * Shifts a color's brightness by a factor. The brightness
+   * is clamped to the range [0.0, 1.0] .
+   * 
+   * @param {Color} c the input color
+   * @param {number} shift the brightness shift
+   * @param {Color} target the output color
+   * @param {Vec4} hsba the color in HSB
+   * @returns the shifted color
+   */
+  static shiftBri (
+    c = new Color(),
+    shift = 0.0,
+    target = new Color(),
+    hsba = new Vec4()) {
+
+    Color.rgbaToHsba(c, hsba);
+    hsba.z = Math.min(Math.max(
+      hsba.z + shift, 0.0), 1.0);
+    return Color.hsbaToRgba(hsba, target);
+  }
+
+  /**
+   * Shifts a color's hue, saturation and brightness
+   * by a vector. The color's alpha remains unaffected.
+   *
+   * @param {Color} c the input color
+   * @param {Vec4} shift the shift
+   * @param {Color} target the output color
+   * @param {Vec4} hsba the color in HSB
+   * @returns the shifted color
+   */
+  static shiftHsb (
+    c = new Color(),
+    shift = new Vec4(),
+    target = new Color(),
+    hsba = new Color()) {
+
+    Color.rgbaToHsba(c, hsba);
+    hsba.x += shift.x;
+    hsba.y = Math.min(Math.max(
+      hsba.y + shift.y, 0.0), 1.0);
+    hsba.z = Math.min(Math.max(
+      hsba.z + shift.z, 0.0), 1.0);
+    return Color.hsbaToRgba(hsba, target);
+  }
+
+  /** 
+   * Shifts a color's hue, saturation and brightness by a
+   * vector.
+   * 
+   * @param {Color} c the input color
+   * @param {Vec4} shift the shift
+   * @param {Color} target the output color
+   * @param {Vec4} hsba the color in HSB
+   * @returns the shifted color
+   */
+  static shiftHsba (
+    c = new Color(),
+    shift = new Vec4(),
+    target = new Color(),
+    hsba = new Color()) {
+
+    Color.rgbaToHsba(c, hsba);
+    hsba.x += shift.x;
+    hsba.y = Math.min(Math.max(
+      hsba.y + shift.y, 0.0), 1.0);
+    hsba.z = Math.min(Math.max(
+      hsba.z + shift.z, 0.0), 1.0);
+    hsba.w = Math.min(Math.max(
+      hsba.w + shift.w, 0.0), 1.0);
+    return Color.hsbaToRgba(hsba, target);
+  }
+
+  /**
+   * Shifts a color's hue by a factor. The hue wraps around
+   * the range [0.0, 1.0] .
+   * 
+   * @param {Color} c the input color
+   * @param {number} shift the hue shift
+   * @param {Color} target the output color
+   * @param {Vec4} hsba the color in HSB
+   * @returns the shifted color
+   */
+  static shiftHue (
+    c = new Color(),
+    shift = 0.0,
+    target = new Color(),
+    hsba = new Vec4()) {
+
+    Color.rgbaToHsba(c, hsba);
+    hsba.x += shift;
+    return Color.hsbaToRgba(hsba, target);
+  }
+
+  /**
+   * Shifts a color's saturation by a factor. The saturation
+   * is clamped to the range [0.0, 1.0] .
+   *
+   * @param {Color} c the input color
+   * @param {number} shift the saturation shift
+   * @param {Color} target the output color
+   * @param {Vec4} hsba the color in HSB
+   * @returns the shifted color
+   */
+  static shiftSat (
+    c = new Color(),
+    shift = 0.0,
+    target = new Color(),
+    hsba = new Vec4()) {
+
+    Color.rgbaToHsba(c, hsba);
+    hsba.y = Math.min(Math.max(
+      hsba.y + shift, 0.0), 1.0);
+    return Color.hsbaToRgba(hsba, target);
+  }
+
+  /**
    * Eases between an origin and destination color with hermite interpolation.
    *
    * @param {Color} origin the origin color
