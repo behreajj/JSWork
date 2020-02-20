@@ -27,7 +27,7 @@ class Gradient {
           Color.white()));
     } else {
       for (let i = 0; i < len; ++i) {
-        this.appendKey(keys[i]);
+        this.insertKey(keys[i]);
       }
     }
   }
@@ -68,11 +68,10 @@ class Gradient {
    * Appends a color to the gradient. Pre-existing color keys are shifted to the
    * left by one.
    *
-   *
    * @param {Color} color the color
    * @returns this gradient
    */
-  appendColor (color = new Color()) {
+  appendColor (color = Color.clearBlack()) {
 
     this.shiftKeysLeft(1);
     const key = new ColorKey(1.0, color);
@@ -97,41 +96,6 @@ class Gradient {
       const step = (oldLen + i) * denom;
       const key = new ColorKey(step, colors[i]);
       this._keys.push(key);
-    }
-
-    return this;
-  }
-
-  /**
-   * Appends a color key to the gradient. If a color key at the insertion key's
-   * step already exist, the old key is replaced with the new.
-   *
-   * @param {ColorKey} key the color key
-   * @returns this gradient
-   */
-  appendKey (key = new ColorKey()) {
-
-    const query = this.containsKey(key);
-    if (query !== -1) {
-      this._keys.splice(query, 1, key);
-    } else {
-      this.insortRight(key);
-    }
-
-    return this;
-  }
-
-  /**
-   * Appends a series of color keys to the gradient.
-   * 
-   * @param  {...ColorKey} keys color keys
-   * @returns this gradient
-   */
-  appendKeys (...keys) {
-
-    const len = keys.length;
-    for (let i = 0; i < len; ++i) {
-      this.appendKey(keys[i]);
     }
 
     return this;
@@ -338,6 +302,41 @@ class Gradient {
   }
 
   /**
+   * Inserts a color key to the gradient. If a color key at the insertion key's
+   * step already exist, the old key is replaced with the new.
+   *
+   * @param {ColorKey} key the color key
+   * @returns this gradient
+   */
+  insertKey (key = new ColorKey()) {
+
+    const query = this.containsKey(key);
+    if (query !== -1) {
+      this._keys.splice(query, 1, key);
+    } else {
+      this.insortRight(key);
+    }
+
+    return this;
+  }
+
+  /**
+   * Inserts a series of color keys to the gradient.
+   * 
+   * @param  {...ColorKey} keys color keys
+   * @returns this gradient
+   */
+  insertKeys (...keys) {
+
+    const len = keys.length;
+    for (let i = 0; i < len; ++i) {
+      this.insertKey(keys[i]);
+    }
+
+    return this;
+  }
+
+  /**
    * Inserts a color key into the keys array based on the index returned from
    * bisectLeft .
    *
@@ -362,6 +361,42 @@ class Gradient {
 
     const i = this.bisectRight(key.step);
     this._keys.splice(i, 0, key);
+    return this;
+  }
+
+  /**
+   * Prepends a color to the gradient. Pre-existing color keys are shifted to the
+   * right by one.
+   *
+   * @param {Color} color the color
+   * @returns this gradient
+   */
+  prependColor (color = Color.white()) {
+
+    this.shiftKeysRight(1);
+    const key = new ColorKey(0.0, color);
+    this._keys.splice(0, 0, key);
+    return this;
+  }
+
+  /**
+   * Prepends a series of colors to the gradient. Pre-existing color keys are
+   * shifted to the right.
+   *
+   * @param  {...Color} colors the colors
+   * @returns this gradient
+   */
+  prependColors (...colors) {
+
+    const len = colors.length;
+    this.shiftKeysRight(len);
+    const oldLen = this._keys.length;
+    const denom = 1.0 / (oldLen + len - 1.0);
+    for (let i = 0; i < len; ++i) {
+      const step = i * denom;
+      const key = new ColorKey(step, colors[i]);
+      this._keys.splice(i, 0, key);
+    }
     return this;
   }
 
@@ -433,9 +468,11 @@ class Gradient {
   }
 
   /**
-   * Squishes present color keys to accomodate a newly inserted color.
+   * Helper function that shifts existing keys to the left when a new color is
+   * added to the gradient without a key.
    *
    * @param {number} added number of new colors
+   * @returns this gradient
    */
   shiftKeysLeft (added = 1) {
 
@@ -445,7 +482,25 @@ class Gradient {
       const key = this._keys[i];
       key.step = key.step * i * scalar;
     }
+    return this;
+  }
 
+  /**
+   * Helper function that shifts existing keys to the right when a new color is
+   * added to the gradient without a key.
+   *
+   * @param {number} added number of new colors
+   * @returns this gradient
+   */
+  shiftKeysRight (added = 1) {
+
+    const len = this._keys.length;
+    const scalar = added / (len + added - 1.0);
+    const coeff = 1.0 - scalar;
+    for (let i = 0; i < len; ++i) {
+      const key = this._keys[i];
+      key.step = scalar + coeff * key.step;
+    }
     return this;
   }
 
@@ -565,10 +620,9 @@ class Gradient {
   }
 
   /**
-   * Returns seven primary and secondary colors: red, yellow,
-   * green, cyan, blue, magenta and red. Red is repeated so
-   * the gradient is periodic.
-   * 
+   * Returns seven primary and secondary colors: red, yellow, green, cyan, blue,
+   * magenta and red. Red is repeated so that the gradient is periodic.
+   *
    * @param {Gradient} target the output gradient
    * @returns the gradient
    */
@@ -588,8 +642,8 @@ class Gradient {
   }
 
   /**
-   * Returns a gradient simulating the red-yellow-green color wheel. Red is
-   * repeated so the gradient is periodic.
+   * Returns thirteen colors in the red yellow blue color wheel. Red is repeated
+   * so that the gradient is periodic.
    *
    * @param {Gradient} target the output gradient
    * @returns the gradient
@@ -597,19 +651,19 @@ class Gradient {
   static paletteRyb (target = new Gradient()) {
 
     target._keys = [
-      new ColorKey(0.0, Color.red()),
+      new ColorKey(0.000000, Color.red()),
       new ColorKey(0.083333, new Color(1.0, 0.25, 0.0)),
       new ColorKey(0.166667, new Color(1.0, 0.50, 0.0)),
-      new ColorKey(0.25, new Color(1.0, 0.75, 0.0)),
+      new ColorKey(0.250000, new Color(1.0, 0.75, 0.0)),
       new ColorKey(0.333333, Color.yellow()),
       new ColorKey(0.416667, new Color(0.5058824, 0.8313726, 0.1019608)),
-      new ColorKey(0.5, new Color(0.0, 0.6627451, 0.2)),
+      new ColorKey(0.500000, new Color(0.0, 0.6627451, 0.2)),
       new ColorKey(0.583333, new Color(0.0823529, 0.5176471, 0.4)),
       new ColorKey(0.666667, new Color(0.1647059, 0.3764706, 0.6)),
-      new ColorKey(0.75, new Color(0.3333333, 0.1882353, 0.5529412)),
+      new ColorKey(0.750000, new Color(0.3333333, 0.1882353, 0.5529412)),
       new ColorKey(0.833333, new Color(0.50, 0.0, 0.50)),
       new ColorKey(0.916667, new Color(0.75, 0.0, 0.25)),
-      new ColorKey(1.0, Color.red())
+      new ColorKey(1.000000, Color.red())
     ];
 
     return target;

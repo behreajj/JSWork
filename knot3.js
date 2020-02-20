@@ -1,14 +1,39 @@
 'use strict';
 
+/**
+ * Groups together vectors which shape a Bezier curve into a coordinate (or
+ * anchor point), fore handle (the following control point) and rear handle (the
+ * preceding control point).
+ */
 class Knot3 {
 
+  /**
+   * Creates a knot from a series of vectors.
+   * 
+   * @param {Vec3} coord the coordinate
+   * @param {Vec3} foreHandle the fore handle
+   * @param {Vec3} rearHandle the rear handle
+   */
   constructor (
-    coord,
-    foreHandle,
-    rearHandle) {
+    coord = new Vec3(),
+    foreHandle = new Vec3(),
+    rearHandle = new Vec3()) {
 
+    /**
+     * The spatial coordinate of the knot.
+     */
     this._coord = coord;
+
+    /**
+     * The handle which warps the curve segment heading away from the knot along
+     * the direction of the curve.
+     */
     this._foreHandle = foreHandle;
+
+    /**
+     * The handle which warps the curve segment heading towards the knot along
+     * the direction of the curve.
+     */
     this._rearHandle = rearHandle;
   }
 
@@ -74,6 +99,12 @@ class Knot3 {
     }
   }
 
+  /**
+   * Tests equivalence between this and another object.
+   *
+   * @param {object} obj the object
+   * @returns the evaluation
+   */
   equals (obj) {
 
     if (!obj) { return false; }
@@ -84,6 +115,12 @@ class Knot3 {
     return this.hashCode() === obj.hashCode();
   }
 
+  /**
+   * Gets a component of this knot by index.
+   *
+   * @param {number} i the index
+   * @returns the value
+   */
   get (i = -1) {
 
     switch (i) {
@@ -113,6 +150,12 @@ class Knot3 {
     }
   }
 
+  /**
+   * Returns a hash code for this knot based on its coordinate, fore handle and
+   * rear handle.
+   * 
+   * @returns the hash code
+   */
   hashCode () {
 
     let hsh = -2128831035;
@@ -122,6 +165,11 @@ class Knot3 {
     return hsh;
   }
 
+  /**
+   * Resets this knot to an initial state.
+   * 
+   * @returns this knot
+   */
   reset () {
 
     Vec3.forward(this._foreHandle);
@@ -131,6 +179,12 @@ class Knot3 {
     return this;
   }
 
+  /**
+   * Reverses the knot's direction by swapping the fore- and
+   * rear-handles.
+   * 
+   * @returns this knot
+   */
   reverse () {
 
     const temp = this._foreHandle;
@@ -140,6 +194,13 @@ class Knot3 {
     return this;
   }
 
+  /**
+   * Rotates this knot around an axis by an angle in radians.
+   *
+   * @param {number} radians the angle
+   * @param {Vec3} axis the axis
+   * @returns this knot
+   */
   rotate (
     radians = 0.0,
     axis = Vec3.forward()) {
@@ -150,6 +211,16 @@ class Knot3 {
       axis);
   }
 
+  /**
+   * Rotates this knot around an axis by an angle in radians. Accepts
+   * pre-calculated sine and cosine of an angle, so that collections of knots
+   * can be efficiently rotated without repeatedly calling cos and sin.
+   *
+   * @param {number} cosa cosine of the angle
+   * @param {number} sina sine of the angle
+   * @param {Vec3} axis the axis
+   * @returns this knot
+   */
   rotateInternal (
     cosa = 1.0,
     sina = 0.0,
@@ -173,6 +244,12 @@ class Knot3 {
     return this;
   }
 
+  /**
+   * Rotates this knot around the x axis by an angle in radians.
+   *
+   * @param {number} radians the angle
+   * @returns this knot
+   */
   rotateX (radians = 0.0) {
 
     return this.rotateXInternal(
@@ -180,6 +257,15 @@ class Knot3 {
       Math.sin(radians));
   }
 
+  /**
+   * Rotates a knot around the x axis. Accepts pre-calculated sine and cosine of
+   * an angle, so that collections of knots can be efficiently rotated without
+   * repeatedly calling cos and sin.
+   *
+   * @param {number} cosa cosine of the angle
+   * @param {number} sina sine of the angle
+   * @returns this knot
+   */
   rotateXInternal (
     cosa = 1.0,
     sina = 0.0) {
@@ -202,6 +288,12 @@ class Knot3 {
     return this;
   }
 
+  /**
+   * Rotates this knot around the y axis by an angle in radians.
+   *
+   * @param {number} radians the angle
+   * @returns this knot
+   */
   rotateY (radians = 0.0) {
 
     return this.rotateYInternal(
@@ -209,6 +301,15 @@ class Knot3 {
       Math.sin(radians));
   }
 
+  /**
+   * Rotates a knot around the y axis. Accepts pre-calculated sine and cosine of
+   * an angle, so that collections of knots can be efficiently rotated without
+   * repeatedly calling cos and sin.
+   *
+   * @param {number} cosa cosine of the angle
+   * @param {number} sina sine of the angle
+   * @returns this knot
+   */
   rotateYInternal (
     cosa = 1.0,
     sina = 0.0) {
@@ -231,6 +332,12 @@ class Knot3 {
     return this;
   }
 
+  /**
+   * Rotates this knot around the z axis by an angle in radians.
+   *
+   * @param {number} radians the angle
+   * @returns this knot
+   */
   rotateZ (radians = 0.0) {
 
     return this.rotateZInternal(
@@ -238,6 +345,15 @@ class Knot3 {
       Math.sin(radians));
   }
 
+  /**
+   * Rotates a knot around the z axis. Accepts pre-calculated sine and cosine of
+   * an angle, so that collections of knots can be efficiently rotated without
+   * repeatedly calling cos and sin.
+   *
+   * @param {number} cosa cosine of the angle
+   * @param {number} sina sine of the angle
+   * @returns this knot
+   */
   rotateZInternal (
     cosa = 1.0,
     sina = 0.0) {
@@ -260,6 +376,12 @@ class Knot3 {
     return this;
   }
 
+  /**
+   * Scales this knot by a non uniform scalar.
+   * 
+   * @param {Vec3} v the non uniform scalar
+   * @returns this knot
+   */
   scale (v = Vec3.one()) {
 
     Vec3.mul(this._coord, v, this._coord);
@@ -269,6 +391,12 @@ class Knot3 {
     return this;
   }
 
+  /**
+   * Scales the fore handle by a factor.
+   *
+   * @param {number} scalar the scalar
+   * @returns this knot
+   */
   scaleForeHandleBy (scalar = 1.0) {
 
     this._foreHandle.x = this._coord.x + scalar *
@@ -281,6 +409,12 @@ class Knot3 {
     return this;
   }
 
+  /**
+   * Scales the fore handle to a magnitude.
+   *
+   * @param {number} magnitude the magnitude
+   * @returns this knot
+   */
   scaleForeHandleTo (magnitude = 1.0) {
 
     Vec3.subNorm(this._foreHandle, this._coord,
@@ -293,6 +427,12 @@ class Knot3 {
     return this;
   }
 
+  /**
+   * Scales both the fore and rear handle by a factor.
+   *
+   * @param {number} scalar the scalar
+   * @returns this knot
+   */
   scaleHandlesBy (scalar = 1.0) {
 
     this.scaleForeHandleBy(scalar);
@@ -301,6 +441,12 @@ class Knot3 {
     return this;
   }
 
+  /**
+   * Scales both the fore and rear handle to a magnitude.
+   *
+   * @param {number} magnitude the magnitude
+   * @returns this knot
+   */
   scaleHandlesTo (magnitude = 1.0) {
 
     this.scaleForeHandleTo(magnitude);
@@ -309,6 +455,12 @@ class Knot3 {
     return this;
   }
 
+  /**
+   * Scales the rear handle by a factor.
+   *
+   * @param {number} scalar the scalar
+   * @returns this knot
+   */
   scaleRearHandleBy (scalar = 1.0) {
 
     this._rearHandle.x = this._coord.x + scalar *
@@ -321,6 +473,12 @@ class Knot3 {
     return this;
   }
 
+  /**
+   * Scales the rear handle to a magnitude.
+   *
+   * @param {number} magnitude the magnitude
+   * @returns this knot
+   */
   scaleRearHandleTo (magnitude = 1.0) {
 
     Vec3.subNorm(
@@ -336,6 +494,13 @@ class Knot3 {
     return this;
   }
 
+  /**
+   * Sets a component of this knot by index.
+   *
+   * @param {number} i the index
+   * @param {number} v the value
+   * @returns this knot
+   */
   set (i = -1, v = 0.0) {
 
     switch (i) {
@@ -373,6 +538,20 @@ class Knot3 {
     return this;
   }
 
+  /**
+   * Sets the components of this knot.
+   *
+   * @param {number} xCo the coordinate x
+   * @param {number} yCo the coordinate y
+   * @param {number} zCo the coordinate z
+   * @param {number} xFh the fore handle x
+   * @param {number} yFh the fore handle y
+   * @param {number} zFh the fore handle z
+   * @param {number} xRh the rear handle x
+   * @param {number} yRh the rear handle y
+   * @param {number} zRh the rear handle z
+   * @returns this knot
+   */
   setComponents (
     xCo = 0.0, yCo = 0.0, zCo = 0.0,
     xFh = 0.0, yFh = 0.0, zFh = 0.0,
@@ -385,19 +564,11 @@ class Knot3 {
     return this;
   }
 
-  toJsonString (precision = 6) {
-
-    return [
-      '{\"coord\":',
-      this._coord.toJsonString(precision),
-      ',\"foreHandle\":',
-      this._foreHandle.toJsonString(precision),
-      ',\"rearHandle\":',
-      this._rearHandle.toJsonString(precision),
-      '}'
-    ].join('');
-  }
-
+  /**
+   * Returns an array of length 6 containing this knot's components.
+   *
+   * @returns the array
+   */
   toArray () {
 
     return [
@@ -414,6 +585,30 @@ class Knot3 {
       this._rearHandle.z];
   }
 
+  /**
+   * Returns a JSON formatted string.
+   * 
+   * @param {number} precision number of decimal places
+   * @returns the string
+   */
+  toJsonString (precision = 6) {
+
+    return [
+      '{\"coord\":',
+      this._coord.toJsonString(precision),
+      ',\"foreHandle\":',
+      this._foreHandle.toJsonString(precision),
+      ',\"rearHandle\":',
+      this._rearHandle.toJsonString(precision),
+      '}'
+    ].join('');
+  }
+
+  /**
+   * Returns an object literal with this knot's components.
+   *
+   * @returns the object
+   */
   toObject () {
 
     return {
@@ -423,6 +618,12 @@ class Knot3 {
     };
   }
 
+  /**
+   * Returns a string representation of this knot.
+   * 
+   * @param {number} precision the print precision
+   * @returns the string
+   */
   toString (precision = 4) {
 
     return [
@@ -436,6 +637,12 @@ class Knot3 {
     ].join('');
   }
 
+  /**
+   * Translates this knot by a vector.
+   * 
+   * @param {Vec3} v the vector
+   * @returns this knot
+   */
   translate (v = new Vec3()) {
 
     Vec3.add(this._coord, v, this._coord);
@@ -445,6 +652,13 @@ class Knot3 {
     return this;
   }
 
+  /**
+   * Creates a knot from the array.
+   * 
+   * @param {Array} arr the array
+   * @param {Knot3} target the output knot
+   * @returns the knot
+   */
   static fromArray (
     arr = [0.0, 0.0, 0.0,
       0.0, 0.0, 0.0,
@@ -457,6 +671,16 @@ class Knot3 {
       arr[6], arr[7], arr[8]);
   }
 
+  /**
+   * Creates a knot from polar coordinates, where the knot's fore handle is
+   * tangent to the radius.
+   *
+   * @param {number} angle the angle in radians
+   * @param {number} radius the radius
+   * @param {number} handleMag the magnitude of the handles
+   * @param {Knot3} target the output knot
+   * @returns the knot
+   */
   static fromPolar (
     angle = 0.0,
     radius = 1.0,
@@ -470,6 +694,17 @@ class Knot3 {
       target);
   }
 
+  /**
+   * Creates a knot from polar coordinates, where the knot's fore handle is
+   * tangent to the radius.
+   *
+   * @param {number} cosa cosine of the angle
+   * @param {number} sina sine of the angle
+   * @param {number} radius the radius
+   * @param {number} handleMag the magnitude of the handles
+   * @param {Knot3} target the output knot
+   * @returns the knot
+   */
   static fromPolarInternal (
     cosa = 1.0,
     sina = 0.0,
@@ -499,6 +734,13 @@ class Knot3 {
     return target;
   }
 
+  /**
+   * Copies a knots's coord, fore handle and rear handle from a source.
+   *
+   * @param {Knot3} source the source knot
+   * @param {Knot3} target the output knot
+   * @returns the knot
+   */
   static fromSource (
     source = new Knot3(),
     target = new Knot3()) {

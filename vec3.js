@@ -1191,9 +1191,9 @@ class Vec3 {
     lowerBound = new Vec3(0.0, 0.0, 0.0),
     upperBound = new Vec3(1.0, 1.0, 1.0)) {
 
-    const rval = rows < 3 ? 3 : rows;
-    const cval = cols < 3 ? 3 : cols;
-    const lval = layers < 3 ? 3 : layers;
+    const rval = rows < 2 ? 2 : rows;
+    const cval = cols < 2 ? 2 : cols;
+    const lval = layers < 2 ? 2 : layers;
 
     const hToStep = 1.0 / (lval - 1.0);
     const iToStep = 1.0 / (rval - 1.0);

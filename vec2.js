@@ -99,8 +99,6 @@ class Vec2 {
    */
   equals (obj) {
 
-    // TODO: Forgot to add this === obj condition to equals.
-
     if (!obj) { return false; }
     if (this === obj) { return true; }
     if (obj.constructor.name !== this.constructor.name) {
@@ -979,8 +977,8 @@ class Vec2 {
     lowerBound = new Vec2(0.0, 0.0),
     upperBound = new Vec2(1.0, 1.0)) {
 
-    const rval = rows < 3 ? 3 : rows;
-    const cval = cols < 3 ? 3 : cols;
+    const rval = rows < 2 ? 2 : rows;
+    const cval = cols < 2 ? 2 : cols;
 
     const iToStep = 1.0 / (rval - 1.0);
     const jToStep = 1.0 / (cval - 1.0);

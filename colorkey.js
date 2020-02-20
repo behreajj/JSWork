@@ -136,7 +136,7 @@ class ColorKey {
   reset () {
 
     this._step = 0.0;
-    this._color.reset();
+    this._color.setComponents(0.0, 0.0, 0.0, 0.0);
 
     return this;
   }
