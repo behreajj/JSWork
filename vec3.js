@@ -1236,6 +1236,46 @@ class Vec3 {
   }
 
   /**
+   * Evaluates whether the left comparisand is greater than the right
+   * comparisand.
+   * 
+   * @param {Vec3} a left comparisand
+   * @param {Vec3} b right comparisand
+   * @param {Vec3} target output vector
+   * @returns the evaluation
+   */
+  static gt (
+    a = new Vec3(),
+    b = new Vec3(),
+    target = new Vec3()) {
+
+    return target.setComponents(
+      a.x > b.x ? 1.0 : 0.0,
+      a.y > b.y ? 1.0 : 0.0,
+      a.z > b.z ? 1.0 : 0.0);
+  }
+
+  /**
+   * Evaluates whether the left comparisand is greater than or equal to the right
+   * comparisand.
+   * 
+   * @param {Vec3} a left comparisand
+   * @param {Vec3} b right comparisand
+   * @param {Vec3} target output vector
+   * @returns the evaluation
+   */
+  static gtEq (
+    a = new Vec3(),
+    b = new Vec3(),
+    target = new Vec3()) {
+
+    return target.setComponents(
+      a.x >= b.x ? 1.0 : 0.0,
+      a.y >= b.y ? 1.0 : 0.0,
+      a.z >= b.z ? 1.0 : 0.0);
+  }
+
+  /**
    * Finds the vector's inclination in the range [-PI / 2.0, PI / 2.0]. It is
    * necessary to calculate the vector's magnitude in order to find its
    * inclination.
@@ -1355,6 +1395,46 @@ class Vec3 {
       return Vec3.rescale(v, limit, target);
     }
     return Vec3.fromSource(v, target);
+  }
+
+  /**
+   * Evaluates whether the left comparisand is less than the right
+   * comparisand.
+   * 
+   * @param {Vec3} a left comparisand
+   * @param {Vec3} b right comparisand
+   * @param {Vec3} target output vector
+   * @returns the evaluation
+   */
+  static lt (
+    a = new Vec3(),
+    b = new Vec3(),
+    target = new Vec3()) {
+
+    return target.setComponents(
+      a.x < b.x ? 1.0 : 0.0,
+      a.y < b.y ? 1.0 : 0.0,
+      a.z < b.z ? 1.0 : 0.0);
+  }
+
+  /**
+   * Evaluates whether the left comparisand is less than or equal to the right
+   * comparisand.
+   * 
+   * @param {Vec3} a left comparisand
+   * @param {Vec3} b right comparisand
+   * @param {Vec3} target output vector
+   * @returns the evaluation
+   */
+  static ltEq (
+    a = new Vec3(),
+    b = new Vec3(),
+    target = new Vec3()) {
+
+    return target.setComponents(
+      a.x <= b.x ? 1.0 : 0.0,
+      a.y <= b.y ? 1.0 : 0.0,
+      a.z <= b.z ? 1.0 : 0.0);
   }
 
   /**
@@ -1831,7 +1911,7 @@ class Vec3 {
         ny * incident.y +
         nz * incident.z);
 
-    return target.set(
+    return target.setComponents(
       incident.x - scalar * nx,
       incident.y - scalar * ny,
       incident.z - scalar * nz);

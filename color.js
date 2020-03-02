@@ -287,7 +287,7 @@ class Color extends Vec4 {
     target = new Color()) {
 
     return Color.fromHexInt(
-      Color.toHexInt(c) << (places * 0x08),
+      Color.toHexInt(c) << Math.imul(places, 0x08),
       target);
   }
 
@@ -307,7 +307,7 @@ class Color extends Vec4 {
     target = new Color()) {
 
     return Color.fromHexInt(
-      Color.toHexInt(c) >> (places * 0x08),
+      Color.toHexInt(c) >> Math.imul(places, 0x08),
       target);
   }
 
@@ -327,7 +327,7 @@ class Color extends Vec4 {
     target = new Color()) {
 
     return Color.fromHexInt(
-      Color.toHexInt(c) >>> (places * 0x08),
+      Color.toHexInt(c) >>> Math.imul(places, 0x08),
       target);
   }
 

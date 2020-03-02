@@ -301,6 +301,7 @@ class Complex {
 
   static isNonZero (z = new Complex()) {
 
+    // TODO: Change to all/none/any rubric.
     return z.real !== 0.0 && z.imag !== 0.0;
   }
 
@@ -311,6 +312,7 @@ class Complex {
 
   static isZero (z = new Complex()) {
 
+    // TODO: Change to all/none/any rubric.
     return z.real === 0.0 && z.imag === 0.0;
   }
 

@@ -1007,13 +1007,13 @@ class Mat4 {
 
     const n2 = near + near;
 
-    const ex = Math.max(0.000001, right - left);
-    const ey = Math.max(0.000001, top - bottom);
-    const ez = Math.max(0.000001, far - near);
+    const ex = right - left;
+    const ey = top - bottom;
+    const ez = far - near;
 
-    const w = 1.0 / ex;
-    const h = 1.0 / ey;
-    const d = 1.0 / ez;
+    const w = ex === 0.0 ? 1.0 : 1.0 / ex;
+    const h = ey === 0.0 ? 1.0 : 1.0 / ey;
+    const d = ez === 0.0 ? 1.0 : 1.0 / ez;
 
     return target.setComponents(
       n2 * w, 0.0, (right + left) * w, 0.0,
@@ -1147,13 +1147,13 @@ class Mat4 {
     near = 0.000001, far = 2.0,
     target = new Mat4()) {
 
-    const ex = Math.max(0.000001, right - left);
-    const ey = Math.max(0.000001, top - bottom);
-    const ez = Math.max(0.000001, far - near);
+    const ex = right - left;
+    const ey = top - bottom;
+    const ez = far - near;
 
-    const w = 1.0 / ex;
-    const h = 1.0 / ey;
-    const d = 1.0 / ez;
+    const w = ex === 0.0 ? 1.0 : 1.0 / ex;
+    const h = ey === 0.0 ? 1.0 : 1.0 / ey;
+    const d = ez === 0.0 ? 1.0 : 1.0 / ez;
 
     return target.setComponents(
       w + w, 0.0, 0.0, w * (left + right),

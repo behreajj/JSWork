@@ -1007,6 +1007,44 @@ class Vec2 {
   }
 
   /**
+   * Evaluates whether the left comparisand is greater than the right
+   * comparisand.
+   * 
+   * @param {Vec2} a left comparisand
+   * @param {Vec2} b right comparisand
+   * @param {Vec2} target output vector
+   * @returns the evaluation
+   */
+  static gt (
+    a = new Vec2(),
+    b = new Vec2(),
+    target = new Vec2()) {
+
+    return target.setComponents(
+      a.x > b.x ? 1.0 : 0.0,
+      a.y > b.y ? 1.0 : 0.0);
+  }
+
+  /**
+   * Evaluates whether the left comparisand is greater than or equal to the right
+   * comparisand.
+   * 
+   * @param {Vec2} a left comparisand
+   * @param {Vec2} b right comparisand
+   * @param {Vec2} target output vector
+   * @returns the evaluation
+   */
+  static gtEq (
+    a = new Vec2(),
+    b = new Vec2(),
+    target = new Vec2()) {
+
+    return target.setComponents(
+      a.x >= b.x ? 1.0 : 0.0,
+      a.y >= b.y ? 1.0 : 0.0);
+  }
+
+  /**
    * Finds the vector's heading in the range [ -PI, PI ] .
    *
    * @param {Vec2} v the input vector
@@ -1118,6 +1156,44 @@ class Vec2 {
       return Vec2.rescale(v, limit, target);
     }
     return Vec2.fromSource(v, target);
+  }
+
+/**
+   * Evaluates whether the left comparisand is less than the right
+   * comparisand.
+   * 
+   * @param {Vec2} a left comparisand
+   * @param {Vec2} b right comparisand
+   * @param {Vec2} target output vector
+   * @returns the evaluation
+   */
+  static lt (
+    a = new Vec2(),
+    b = new Vec2(),
+    target = new Vec2()) {
+
+    return target.setComponents(
+      a.x < b.x ? 1.0 : 0.0,
+      a.y < b.y ? 1.0 : 0.0);
+  }
+
+  /**
+   * Evaluates whether the left comparisand is less than or equal to the right
+   * comparisand.
+   * 
+   * @param {Vec2} a left comparisand
+   * @param {Vec2} b right comparisand
+   * @param {Vec2} target output vector
+   * @returns the evaluation
+   */
+  static ltEq (
+    a = new Vec2(),
+    b = new Vec2(),
+    target = new Vec2()) {
+
+    return target.setComponents(
+      a.x <= b.x ? 1.0 : 0.0,
+      a.y <= b.y ? 1.0 : 0.0);
   }
 
   /**
@@ -1593,7 +1669,7 @@ class Vec2 {
       (nx * incident.x +
         ny * incident.y);
 
-    return target.set(
+    return target.setComponents(
       incident.x - scalar * nx,
       incident.y - scalar * ny);
   }

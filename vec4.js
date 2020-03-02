@@ -1071,6 +1071,48 @@ class Vec4 {
   }
 
   /**
+   * Evaluates whether the left comparisand is greater than the right
+   * comparisand.
+   * 
+   * @param {Vec4} a left comparisand
+   * @param {Vec4} b right comparisand
+   * @param {Vec4} target output vector
+   * @returns the evaluation
+   */
+  static gt (
+    a = new Vec4(),
+    b = new Vec4(),
+    target = new Vec4()) {
+
+    return target.setComponents(
+      a.x > b.x ? 1.0 : 0.0,
+      a.y > b.y ? 1.0 : 0.0,
+      a.z > b.z ? 1.0 : 0.0,
+      a.w > b.w ? 1.0 : 0.0);
+  }
+
+  /**
+   * Evaluates whether the left comparisand is greater than or equal to the right
+   * comparisand.
+   * 
+   * @param {Vec4} a left comparisand
+   * @param {Vec4} b right comparisand
+   * @param {Vec4} target output vector
+   * @returns the evaluation
+   */
+  static gtEq (
+    a = new Vec4(),
+    b = new Vec4(),
+    target = new Vec4()) {
+
+    return target.setComponents(
+      a.x >= b.x ? 1.0 : 0.0,
+      a.y >= b.y ? 1.0 : 0.0,
+      a.z >= b.z ? 1.0 : 0.0,
+      a.w >= b.w ? 1.0 : 0.0);
+  }
+
+  /**
    * Tests to see if the vector is on the unit sphere, i.e., has a magnitude of
    * approximately 1.0.
    *
@@ -1162,6 +1204,48 @@ class Vec4 {
       return Vec4.rescale(v, limit, target);
     }
     return Vec4.fromSource(v, target);
+  }
+
+  /**
+   * Evaluates whether the left comparisand is less than the right
+   * comparisand.
+   * 
+   * @param {Vec4} a left comparisand
+   * @param {Vec4} b right comparisand
+   * @param {Vec4} target output vector
+   * @returns the evaluation
+   */
+  static lt (
+    a = new Vec4(),
+    b = new Vec4(),
+    target = new Vec4()) {
+
+    return target.setComponents(
+      a.x < b.x ? 1.0 : 0.0,
+      a.y < b.y ? 1.0 : 0.0,
+      a.z < b.z ? 1.0 : 0.0,
+      a.w < b.w ? 1.0 : 0.0);
+  }
+
+  /**
+   * Evaluates whether the left comparisand is less than or equal to the right
+   * comparisand.
+   * 
+   * @param {Vec4} a left comparisand
+   * @param {Vec4} b right comparisand
+   * @param {Vec4} target output vector
+   * @returns the evaluation
+   */
+  static ltEq (
+    a = new Vec4(),
+    b = new Vec4(),
+    target = new Vec4()) {
+
+    return target.setComponents(
+      a.x <= b.x ? 1.0 : 0.0,
+      a.y <= b.y ? 1.0 : 0.0,
+      a.z <= b.z ? 1.0 : 0.0,
+      a.w <= b.w ? 1.0 : 0.0);
   }
 
   /**

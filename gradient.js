@@ -73,7 +73,7 @@ class Gradient {
    */
   appendColor (color = Color.clearBlack()) {
 
-    this.shiftKeysLeft(1);
+    this.compressKeysLeft(1);
     const key = new ColorKey(1.0, color);
     this._keys.push(key);
     return this;
@@ -89,7 +89,7 @@ class Gradient {
   appendColors (...colors) {
 
     const len = colors.length;
-    this.shiftKeysLeft(len);
+    this.compressKeysLeft(len);
     const oldLen = this._keys.length;
     const denom = 1.0 / (oldLen + len - 1.0);
     for (let i = 0; i < len; ++i) {
@@ -147,6 +147,43 @@ class Gradient {
     }
 
     return low;
+  }
+
+  /**
+   * Helper function that shifts existing keys to the left when a new color is
+   * added to the gradient without a key.
+   *
+   * @param {number} added number of new colors
+   * @returns this gradient
+   */
+  compressKeysLeft (added = 1) {
+
+    const len = this._keys.length;
+    const scalar = 1.0 / (len + added - 1.0);
+    for (let i = 0; i < len; ++i) {
+      const key = this._keys[i];
+      key.step = key.step * i * scalar;
+    }
+    return this;
+  }
+
+  /**
+   * Helper function that shifts existing keys to the right when a new color is
+   * added to the gradient without a key.
+   *
+   * @param {number} added number of new colors
+   * @returns this gradient
+   */
+  compressKeysRight (added = 1) {
+
+    const len = this._keys.length;
+    const scalar = added / (len + added - 1.0);
+    const coeff = 1.0 - scalar;
+    for (let i = 0; i < len; ++i) {
+      const key = this._keys[i];
+      key.step = scalar + coeff * key.step;
+    }
+    return this;
   }
 
   /**
@@ -373,7 +410,7 @@ class Gradient {
    */
   prependColor (color = Color.white()) {
 
-    this.shiftKeysRight(1);
+    this.compressKeysRight(1);
     const key = new ColorKey(0.0, color);
     this._keys.splice(0, 0, key);
     return this;
@@ -389,7 +426,7 @@ class Gradient {
   prependColors (...colors) {
 
     const len = colors.length;
-    this.shiftKeysRight(len);
+    this.compressKeysRight(len);
     const oldLen = this._keys.length;
     const denom = 1.0 / (oldLen + len - 1.0);
     for (let i = 0; i < len; ++i) {
@@ -464,43 +501,6 @@ class Gradient {
       key.step = 1.0 - key.step;
     }
 
-    return this;
-  }
-
-  /**
-   * Helper function that shifts existing keys to the left when a new color is
-   * added to the gradient without a key.
-   *
-   * @param {number} added number of new colors
-   * @returns this gradient
-   */
-  shiftKeysLeft (added = 1) {
-
-    const len = this._keys.length;
-    const scalar = 1.0 / (len + added - 1.0);
-    for (let i = 0; i < len; ++i) {
-      const key = this._keys[i];
-      key.step = key.step * i * scalar;
-    }
-    return this;
-  }
-
-  /**
-   * Helper function that shifts existing keys to the right when a new color is
-   * added to the gradient without a key.
-   *
-   * @param {number} added number of new colors
-   * @returns this gradient
-   */
-  shiftKeysRight (added = 1) {
-
-    const len = this._keys.length;
-    const scalar = added / (len + added - 1.0);
-    const coeff = 1.0 - scalar;
-    for (let i = 0; i < len; ++i) {
-      const key = this._keys[i];
-      key.step = scalar + coeff * key.step;
-    }
     return this;
   }
 
