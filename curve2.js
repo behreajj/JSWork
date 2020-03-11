@@ -3,6 +3,7 @@
 class Curve2 {
 
   constructor (
+    name = 'Curve2',
     closedLoop = false,
     knots = [
       new Knot2(
@@ -15,6 +16,7 @@ class Curve2 {
         new Vec2(1.0, 0.0),
         new Vec2(0.0, 0.0))]) {
 
+    this._name = name;
     this._closedLoop = closedLoop;
     this._knots = knots;
   }
@@ -34,6 +36,11 @@ class Curve2 {
     return this._knots.length;
   }
 
+  get name () {
+
+    return this._name;
+  }
+
   get [Symbol.toStringTag] () {
 
     return this.constructor.name;
@@ -42,6 +49,11 @@ class Curve2 {
   set closedLoop (v) {
 
     this._closedLoop = v;
+  }
+
+  set name (v) {
+
+    this._name = v;
   }
 
   [Symbol.iterator] () {
@@ -234,7 +246,9 @@ class Curve2 {
   toJsonString (precision = 6) {
 
     const result = [
-      '{\"closedLoop\":',
+      '{\"name\": \"',
+      this._name,
+      '\",\"closedLoop\":',
       this._closedLoop,
       ',\"knots\":['];
 
@@ -255,7 +269,9 @@ class Curve2 {
   toString (precision = 4) {
 
     const result = [
-      '{ closedLoop: ',
+      '{ name: \"',
+      this._name,
+      '\", closedLoop: ',
       this._closedLoop,
       ', knots: [ '];
 
@@ -269,7 +285,7 @@ class Curve2 {
       }
     }
 
-    result.push(' ] }')
+    result.push(' ] }');
     return result.join('');
   }
 

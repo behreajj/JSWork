@@ -3,6 +3,7 @@
 class Curve3 {
 
   constructor (
+    name = 'Curve3',
     closedLoop = false,
     knots = [
       new Knot3(
@@ -15,6 +16,7 @@ class Curve3 {
         new Vec3(1.0, 0.0, 0.0),
         new Vec3(0.0, 0.0, 0.0))]) {
 
+    this._name = name;
     this._closedLoop = closedLoop;
     this._knots = knots;
   }
@@ -34,6 +36,11 @@ class Curve3 {
     return this._knots.length;
   }
 
+  get name () {
+
+    return this._name;
+  }
+
   get [Symbol.toStringTag] () {
 
     return this.constructor.name;
@@ -42,6 +49,11 @@ class Curve3 {
   set closedLoop (v) {
 
     this._closedLoop = v;
+  }
+
+  set name (v) {
+
+    this._name = v;
   }
 
   [Symbol.iterator] () {
@@ -159,7 +171,7 @@ class Curve3 {
     return hsh;
   }
 
-  removeAt(i = 0) {
+  removeAt (i = 0) {
 
     return this._knots.splice(i, 1)[0];
   }
@@ -278,7 +290,9 @@ class Curve3 {
   toJsonString (precision = 6) {
 
     const result = [
-      '{\"closedLoop\":',
+      '{\"name\": \"',
+      this._name,
+      '\",\"closedLoop\":',
       this._closedLoop,
       ',\"knots\":['];
 
@@ -299,7 +313,9 @@ class Curve3 {
   toString (precision = 4) {
 
     const result = [
-      '{ closedLoop: ',
+      '{ name: \"',
+      this._name,
+      '\", closedLoop: ',
       this._closedLoop,
       ', knots: [ '];
 

@@ -193,6 +193,18 @@ class Complex {
       a.imag + b.imag);
   }
 
+  static all (z = new Complex()) {
+
+    return (z.imag !== 0.0) &&
+      (z.real !== 0.0);
+  }
+
+  static any (z = new Complex()) {
+
+    return (z.imag !== 0.0) ||
+      (z.real !== 0.0);
+  }
+
   static approx (
     a = new Complex(),
     b = new Complex(),
@@ -310,12 +322,6 @@ class Complex {
     return Complex.approxAbs(z, 1.0);
   }
 
-  static isZero (z = new Complex()) {
-
-    // TODO: Change to all/none/any rubric.
-    return z.real === 0.0 && z.imag === 0.0;
-  }
-
   static log (
     z = new Complex(),
     target = new Complex()) {
@@ -361,6 +367,11 @@ class Complex {
     return target.setComponents(
       a.real * b.real - a.imag * b.imag,
       a.real * b.imag + a.imag * b.real);
+  }
+
+  static none (z = new Complex()) {
+
+    return z.real === 0.0 && z.imag === 0.0;
   }
 
   static phase (z = new Complex()) {
