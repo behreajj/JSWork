@@ -212,6 +212,169 @@ class Mesh3 {
     return result.join('');
   }
 
+  static cylinder (
+    name = 'Cylinder',
+    origin = new Vec3(),
+    dest = new Vec3(),
+    sectors = 32,
+    includeCaps = true,
+    radius = 0.25,
+    target = new Mesh3(
+      'Cylinder', [], [], [], [])) {
+
+    const x0 = dest.x - origin.x;
+    const y0 = dest.y - origin.y;
+    const z0 = dest.z - origin.z;
+    const m0 = x0 * x0 + y0 * y0 + z0 * z0;
+
+    if (m0 === 0.0) { return target; }
+
+    target.name = name;
+
+    const sec = sectors < 3 ? 3 : sectors;
+    const rad = radius < Number.EPSILON ? Number.EPSILON : radius;
+
+    const mInv0 = 1.0 / Math.sqrt(m0);
+    const kx = x0 * mInv0;
+    const ky = y0 * mInv0;
+    const kz = z0 * mInv0;
+
+    let refx = 0.0;
+    let refy = 0.0;
+    let refz = 1.0;
+
+    let x1 = refy * kz - refz * ky;
+    let y1 = refz * kx - refx * kz;
+    let z1 = refx * ky - refy * kx;
+
+    if (x1 !== 0.0 && y1 !== 0.0 && z1 !== 0.0) {
+      refx = 0.0;
+      refy = 1.0;
+      refz = 0.0;
+
+      x1 = refy * kz - refz * ky;
+      y1 = refz * kx - refx * kz;
+      z1 = refx * ky - refy * kx;
+    }
+
+    const m1 = x1 * x1 + y1 * y1 + z1 * z1;
+    const mInv1 = 1.0 / Math.sqrt(m1);
+    const ix = x1 * mInv1;
+    const iy = y1 * mInv1;
+    const iz = z1 * mInv1;
+
+    const x2 = iy * kz - iz * ky;
+    const y2 = iz * kx - ix * kz;
+    const z2 = ix * ky - iy * kx;
+
+    const m2 = x2 * x2 + y2 * y2 + z2 * z2;
+    const mInv2 = 1.0 / Math.sqrt(m2);
+    const jx = x2 * mInv2;
+    const jy = y2 * mInv2;
+    const jz = z2 * mInv2;
+
+    const sec1 = sec + 1;
+    const vLen = sec + sec;
+    const vtLen = sec1 + sec1;
+
+    if (includeCaps) {
+      Mesh3.resizeVec3(target.coords, vLen + 2);
+      Mesh3.resizeVec2(target.texCoords, vtLen + sec1);
+      Mesh3.resizeVec3(target.normals, sec + 2);
+      Mesh3.resizeIndices(target.faces, vLen + vLen);
+    } else {
+      Mesh3.resizeVec3(target.coords, vLen);
+      Mesh3.resizeVec2(target.texCoords, vtLen);
+      Mesh3.resizeVec3(target.normals, sec);
+      Mesh3.resizeIndices(target.faces, vLen);
+    }
+
+    const toU = 1.0 / sec;
+    for (let i = 0, j = sec1; i < sec1; ++i, ++j) {
+      const u = 1.0 - i * toU;
+      target.texCoords[i].set(u, 1.0);
+      target.texCoords[j].set(u, 0.0);
+    }
+
+    const toTheta = 6.283185307179586 / sec;
+    for (let i = 0, j = sec; i < sec; ++i, ++j) {
+      const theta = i * toTheta;
+      const cosa = Math.cos(theta);
+      const sina = Math.sin(theta);
+
+      const vn = target.normals[i].setComponents(
+        ix * cosa + jx * sina,
+        iy * cosa + jy * sina,
+        iz * cosa + jz * sina);
+
+      const v0 = Vec3.scale(vn, rad, target.coords[i]);
+      Vec3.add(v0, origin, v0);
+
+      const v1 = Vec3.scale(vn, rad, target.coords[j]);
+      Vec3.add(v1, dest, v1);
+
+      const triangle0 = target.faces[i];
+      const vert00 = triangle0[0];
+      const vert01 = triangle0[1];
+      const vert02 = triangle0[2];
+
+      const triangle1 = target.faces[j];
+      const vert10 = triangle1[0];
+      const vert11 = triangle1[1];
+      const vert12 = triangle1[2];
+
+      const n0 = (i + 1) % sec;
+      const n1 = sec + n0;
+      const st0 = sec1 + i;
+      const st1 = st0 + 1;
+
+      vert00[0] = i;
+      vert00[1] = i;
+      vert00[2] = i;
+
+      vert01[0] = j;
+      vert01[1] = st0;
+      vert01[2] = i;
+
+      vert02[0] = n1;
+      vert02[1] = st1;
+      vert02[2] = n0;
+
+      vert10[0] = n1;
+      vert10[1] = st1;
+      vert10[2] = n0;
+
+      vert11[0] = n0;
+      vert11[1] = i + 1;
+      vert11[2] = n0;
+
+      vert12[0] = i;
+      vert12[1] = i;
+      vert12[2] = i;
+
+      if (includeCaps) {
+        target.texCoords[vtLen + i].setComponents(
+          cosa * 0.5 + 0.5,
+          sina * 0.5 + 0.5);
+      }
+    }
+
+    if (includeCaps) {
+      const len1 = vLen + 1;
+      const vtCenterIdx = target.texCoords.length - 1;
+
+      Vec3.fromSource(origin, target.coords[vLen]);
+      Vec3.fromSource(dest, target.coords[len1]);
+      
+      Vec2.uvCenter(target.texCoords[vtCenterIdx]);
+      
+      target.normals[sec].setComponents(-kx, -ky, -kz);
+      target.normals[sec1].setComponents(-kx, -ky, -kz);
+    }
+
+    return target;
+  }
+
   /**
    * Creates a plane subdivided into  quadrilaterals. Useful for meshes which
    * later will be augmented by noise or height maps to simulate terrain.

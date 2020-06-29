@@ -393,8 +393,9 @@ class Quaternion {
     b = new Quaternion(),
     tolerance = 0.000001) {
 
-    return Math.abs(b.y - a.y) < tolerance &&
-      Vec3.approx(a, b, tolerance);
+    return (a === b) ||
+      (Math.abs(b.y - a.y) < tolerance &&
+        Vec3.approx(a, b, tolerance));
   }
 
   /**
@@ -1056,9 +1057,13 @@ class Quaternion {
       (wNorm >= 1.0) ? 0.0 :
         Math.acos(wNorm);
     const ang = halfAngle + halfAngle + radians;
-    const modAngle = ang - 6.283185307179586 *
-      Math.floor(ang * 0.15915494309189535);
+    // const modAngle = ang - 6.283185307179586 *
+    //   Math.floor(ang * 0.15915494309189535);
+    const modAngle = ang % 6.283185307179586;
 
+
+    // TODO: Redo to follow other implementations:
+    // norm(q + fromAxisAngle(angle, axis))
     return Quaternion.fromAxisAngle(modAngle, axis, target);
   }
 
@@ -1450,7 +1455,8 @@ class Quaternion {
     const angle = (wNorm <= -1.0) ? 6.283185307179586 :
       (wNorm >= 1.0) ? 0.0 :
         2.0 * Math.acos(wNorm);
-    const wAsin = 6.283185307179586 - angle;
+    // const wAsin = 6.283185307179586 - angle;
+    const wAsin = 3.141592653589793 - angle;
     if (wAsin === 0.0) {
       Vec3.forward(axis);
       return { angle: angle, axis: axis };

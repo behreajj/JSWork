@@ -273,8 +273,8 @@ class Color extends Vec4 {
 
   /**
    * Converts a color to an integer, performs a bitwise left shift operation,
-   * then converts the result to a color. The number of places is multiplied by
-   * 0x08.
+   * then converts the result to a color. To shift a whole color channel, use
+   * increments of 8 (8, 16, 24).
    *
    * @param {Color} c the color
    * @param {number} places the number of places
@@ -283,18 +283,18 @@ class Color extends Vec4 {
    */
   static bitShiftLeft (
     c = new Color(),
-    places = 1,
+    places = 8,
     target = new Color()) {
 
     return Color.fromHexInt(
-      Color.toHexInt(c) << Math.imul(places, 0x08),
+      Color.toHexInt(c) << places,
       target);
   }
 
   /**
    * Converts a color to an integer, performs a bitwise right shift operation,
-   * then converts the result to a color. The number of places is multiplied by
-   * 0x08.
+   * then converts the result to a color. To shift a whole color channel, use
+   * increments of 8 (8, 16, 24).
    *
    * @param {Color} c the color
    * @param {number} places the number of places
@@ -303,18 +303,17 @@ class Color extends Vec4 {
    */
   static bitShiftRight (
     c = new Color(),
-    places = 1,
+    places = 8,
     target = new Color()) {
 
     return Color.fromHexInt(
-      Color.toHexInt(c) >> Math.imul(places, 0x08),
+      Color.toHexInt(c) >> places,
       target);
   }
 
   /**
    * Converts a color to an integer, performs an unsigned bitwise right shift
-   * operation, then converts the result to a color. The number of places is
-   * multiplied by 0x08.
+   * operation, then converts the result to a color.
    *
    * @param {Color} c the color
    * @param {number} places the number of places
@@ -323,11 +322,11 @@ class Color extends Vec4 {
    */
   static bitShiftRightUnsigned (
     c = new Color(),
-    places = 1,
+    places = 8,
     target = new Color()) {
 
     return Color.fromHexInt(
-      Color.toHexInt(c) >>> Math.imul(places, 0x08),
+      Color.toHexInt(c) >>> places,
       target);
   }
 

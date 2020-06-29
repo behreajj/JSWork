@@ -210,16 +210,9 @@ class Complex {
     b = new Complex(),
     tolerance = 0.000001) {
 
-    return Math.abs(b.imag - a.imag) < tolerance &&
-      Math.abs(b.real - a.real) < tolerance;
-  }
-
-  static approxAbs (
-    a = new Complex(),
-    b = 1.0,
-    tolerance = 0.000001) {
-
-    return Math.abs((b * b) - Complex.absSq(a)) < tolerance;
+    return (a === b) ||
+      (Math.abs(b.imag - a.imag) < tolerance &&
+        Math.abs(b.real - a.real) < tolerance);
   }
 
   static compareImagReal (
@@ -309,12 +302,6 @@ class Complex {
     return target.setComponents(
       z.real * invAbsSq,
       -z.imag * invAbsSq);
-  }
-
-  static isNonZero (z = new Complex()) {
-
-    // TODO: Change to all/none/any rubric.
-    return z.real !== 0.0 && z.imag !== 0.0;
   }
 
   static isUnit (z = new Complex()) {

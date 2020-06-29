@@ -491,10 +491,11 @@ class Vec4 {
     b = new Vec4(),
     tolerance = 0.000001) {
 
-    return Math.abs(b.w - a.w) < tolerance &&
-      Math.abs(b.z - a.z) < tolerance &&
-      Math.abs(b.y - a.y) < tolerance &&
-      Math.abs(b.x - a.x) < tolerance;
+    return (a === b) ||
+      (Math.abs(b.w - a.w) < tolerance &&
+        Math.abs(b.z - a.z) < tolerance &&
+        Math.abs(b.y - a.y) < tolerance &&
+        Math.abs(b.x - a.x) < tolerance);
   }
 
   /**

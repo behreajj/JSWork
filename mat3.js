@@ -1,7 +1,27 @@
 'use strict';
 
+/**
+ * A mutable, extensible class influenced by GLSL, OSL and Processing's
+ * PMatrix2D. Although this is a 3 x 3 matrix, it is generally assumed to
+ * be a 2D affine transform matrix, where the last row is (0.0, 0.0, 1.0) .
+ * Instance methods are limited, while most static methods require an
+ * explicit output variable to be provided.
+ */
 class Mat3 {
 
+  /**
+   * Constructs a matrix from numbers.
+   * 
+   * @param {number} m00 row 0, column 0
+   * @param {number} m01 row 0, column 1
+   * @param {number} m02 row 0, column 2
+   * @param {number} m10 row 1, column 0
+   * @param {number} m11 row 1, column 1
+   * @param {number} m12 row 1, column 2
+   * @param {number} m20 row 2, column 0
+   * @param {number} m21 row 2, column 1
+   * @param {number} m22 row 2, column 2
+   */
   constructor (
     m00 = 1.0, m01 = 0.0, m02 = 0.0,
     m10 = 0.0, m11 = 1.0, m12 = 0.0,
@@ -12,6 +32,9 @@ class Mat3 {
     this._m20 = m20; this._m21 = m21; this._m22 = m22;
   }
 
+  /**
+   * Returns the number of elements in the matrix.
+   */
   get length () {
 
     return 9;
@@ -299,6 +322,20 @@ class Mat3 {
     }
   }
 
+  /**
+   * Sets this matrix's components with real numbers.
+   *
+   * @param {number} m00 row 0, column 0
+   * @param {number} m01 row 0, column 1
+   * @param {number} m02 row 0, column 2
+   * @param {number} m10 row 1, column 0
+   * @param {number} m11 row 1, column 1
+   * @param {number} m12 row 1, column 2
+   * @param {number} m20 row 2, column 0
+   * @param {number} m21 row 2, column 1
+   * @param {number} m22 row 2, column 2
+   * @returns this matrix
+   */
   setComponents (
     m00 = 1.0, m01 = 0.0, m02 = 0.0,
     m10 = 0.0, m11 = 1.0, m12 = 0.0,
@@ -409,6 +446,14 @@ class Mat3 {
       '\n'].join('');
   }
 
+  /**
+   * Adds two matrices together.
+   * 
+   * @param {Mat3} a left operand
+   * @param {Mat3} b right operand
+   * @param {Mat3} target output matrix
+   * @returns the sum
+   */
   static add (
     a = new Mat3(),
     b = new Mat3(),
@@ -420,6 +465,16 @@ class Mat3 {
       a.m20 + b.m20, a.m21 + b.m21, a.m22 + b.m22);
   }
 
+  /**
+   * Multiplies three matrices. Useful for composing an affine transform from
+   * translation, rotation and scale matrices.
+   *
+   * @param {Mat3} a first matrix
+   * @param {Mat3} b second matrix
+   * @param {Mat3} c third matrix
+   * @param {Mat3} target output matrix
+   * @returns the product
+   */
   static compose (
     a = new Mat3(),
     b = new Mat3(),
@@ -452,6 +507,14 @@ class Mat3 {
       n20 * c.m02 + n21 * c.m12 + n22 * c.m22);
   }
 
+  /**
+   * Decomposes a matrix into its translation, rotation and scale. Returns an object containing the three.
+   * 
+   * @param {Mat3} m matrix
+   * @param {Vec3} trans output translation
+   * @param {Vec3} scale output scale
+   * @returns the object
+   */
   static decompose (
     m = new Mat3(),
     trans = Vec2.zero(),
@@ -470,6 +533,11 @@ class Mat3 {
     return { translation: trans, rotation: angle, scale: scale };
   }
 
+  /**
+   * Finds the determinant of a matrix.
+   * 
+   * @param {Mat3} m matrix
+   */
   static determinant (m = new Mat3()) {
 
     return m.m00 * (m.m22 * m.m11 - m.m12 * m.m21) +
@@ -477,6 +545,16 @@ class Mat3 {
       m.m02 * (m.m21 * m.m10 - m.m11 * m.m20);
   }
 
+  /**
+   * Divides the left matrix by the right. Equivalent to multiplying the left
+   * matrix by the inverse of the right.
+   *
+   * @param {Mat3} a numerator
+   * @param {Mat3} b denominator
+   * @param {Mat3} target output matrix
+   * @param {Mat3} inverse denonminator inverse
+   * @returns the quotient
+   */
   static div (
     a = new Mat3(),
     b = new Mat3(),
@@ -486,6 +564,13 @@ class Mat3 {
     return Mat3.mul(a, Mat3.inverse(b, inverse), target);
   }
 
+  /**
+   * Creates a matrix from a one dimensional array of numbers.
+   *
+   * @param {Array} arr a 1D array of numbers
+   * @param {Mat3} target output matrix
+   * @returns the matrix
+   */
   static fromArray (
     arr = [
       1.0, 0.0, 0.0,
@@ -499,6 +584,16 @@ class Mat3 {
       arr[6], arr[7], arr[8]);
   }
 
+  /**
+   * Creates a matrix from 2D column axes and a translation. The last row of the
+   * matrix is assumed to be (0.0, 0.0, 1.0) .
+   *
+   * @param {Vec2} right right axis
+   * @param {Vec2} forward forward axis
+   * @param {Vec2} translation translation
+   * @param {Mat3} target output matrix
+   * @returns the output matrix
+   */
   static fromAxes2 (
     right = Vec2.right(),
     forward = Vec2.forward(),
@@ -511,6 +606,15 @@ class Mat3 {
       0.0, 0.0, 1.0);
   }
 
+  /**
+   * Creates a matrix from 3D column axes and a translation.
+   *
+   * @param {Vec3} right right axis
+   * @param {Vec3} forward forward axis
+   * @param {Vec3} translation translation
+   * @param {Mat3} target output matrix
+   * @returns the output matrix
+   */
   static fromAxes3 (
     right = Vec3.right(),
     forward = Vec3.forward(),
@@ -523,6 +627,13 @@ class Mat3 {
       right.z, forward.z, translation.z);
   }
 
+  /**
+   * Creates a matrix from a rotation.
+   * 
+   * @param {number} radians angle in radians
+   * @param {Mat3} target output matrix
+   * @returns the matrix
+   */
   static fromRotZ (
     radians = 0.0,
     target = new Mat3()) {
@@ -533,6 +644,16 @@ class Mat3 {
       target);
   }
 
+  /**
+   * Creates a matrix from a rotation. Accepts pre-calculated sine and cosine of
+   * an angle, so that collections of matrices can be efficiently rotated
+   * without repeatedly calling cos and sin.
+   *
+   * @param {number} cosa cosine of the angle
+   * @param {number} sina sine of the angle
+   * @param {Mat3} target output matrix
+   * @returns the matrix
+   */
   static fromRotZInternal (
     cosa = 1.0,
     sina = 0.0,
@@ -544,6 +665,13 @@ class Mat3 {
       0.0, 0.0, 1.0);
   }
 
+  /**
+   * Creates a matrix from a uniform scalar.
+   * 
+   * @param {number} scalar uniform scalar
+   * @param {Mat3} target output matrix
+   * @returns the matrix
+   */
   static fromScale1 (
     scalar = 1.0,
     target = new Mat3()) {
@@ -554,6 +682,13 @@ class Mat3 {
       0.0, 0.0, 1.0);
   }
 
+  /**
+   * Creates a matrix from a nonuniform scalar held in a 2D vector.
+   *
+   * @param {Vec2} scalar nonuniform scalar
+   * @param {Mat3} target output matrix
+   * @returns the matrix
+   */
   static fromScale2 (
     scalar = Vec2.one(),
     target = new Mat3()) {
@@ -564,6 +699,13 @@ class Mat3 {
       0.0, 0.0, 1.0);
   }
 
+  /**
+   * Copies a source matrix to an output matrix.
+   * 
+   * @param {Mat3} source source matrix
+   * @param {Mat3} target output matrix
+   * @returns the copy
+   */
   static fromSource (
     source = new Mat3(),
     target = new Mat3()) {
@@ -574,6 +716,13 @@ class Mat3 {
       source.m20, source.m21, source.m22);
   }
 
+  /**
+   * Creates a matrix from a translation.
+   *
+   * @param {Vec2} translation translation vector
+   * @param {Mat3} target output matrix
+   * @returns the matrix
+   */
   static fromTranslation (
     translation = Vec2.zero(),
     target = new Mat3()) {
@@ -584,6 +733,12 @@ class Mat3 {
       0.0, 0.0, 1.0);
   }
 
+  /**
+   * Returns the identity matrix, [1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0]
+   * .
+   *
+   * @param {Mat3} target output matrix
+   */
   static identity (target = new Mat3()) {
 
     return target.setComponents(
@@ -592,6 +747,13 @@ class Mat3 {
       0.0, 0.0, 1.0);
   }
 
+  /**
+   * Finds the inverse of the input matrix.
+   *
+   * @param {Mat3} m matrix
+   * @param {Mat3} target output matrix
+   * @returns the inverse
+   */
   static inverse (m = new Mat3(), target = new Mat3()) {
 
     const b01 = m.m22 * m.m11 - m.m12 * m.m21;
@@ -610,12 +772,18 @@ class Mat3 {
       b11 * detInv,
       (m.m22 * m.m00 - m.m02 * m.m20) * detInv,
       (m.m02 * m.m10 - m.m12 * m.m00) * detInv,
-      
+
       b21 * detInv,
       (m.m01 * m.m20 - m.m21 * m.m00) * detInv,
       (m.m11 * m.m00 - m.m01 * m.m10) * detInv);
   }
 
+  /**
+   * Finds whether or not a matrix is the identity.
+   *
+   * @param {Mat3} m matrix
+   * @returns the evaluation
+   */
   static isIdentity (m = new Mat3()) {
 
     return m.m22 === 1.0 && m.m11 === 1.0 && m.m00 === 1.0 &&
@@ -623,6 +791,14 @@ class Mat3 {
       m.m10 === 0.0 && m.m20 === 0.0 && m.m21 === 0.0;
   }
 
+  /**
+   * Multiplies two matrices.
+   * 
+   * @param {Mat3} a left operand
+   * @param {Mat3} b right operand
+   * @param {Mat3} target output matrix
+   * @returns the product
+   */
   static mul (
     a = new Mat3(),
     b = new Mat3(),
@@ -642,6 +818,15 @@ class Mat3 {
       a.m20 * b.m02 + a.m21 * b.m12 + a.m22 * b.m22);
   }
 
+  /**
+   * Multiplies a matrix (the left operand) and a 3D vector (the right operand);
+   * returns a 3D vector.
+   *
+   * @param {Mat3} a left operand
+   * @param {Vec3} b right operand
+   * @param {Vec3} target output vector
+   * @returns the product
+   */
   static mulVec3 (
     a = new Mat3(),
     b = new Vec3(),
@@ -661,6 +846,14 @@ class Mat3 {
       a.m22 * b.z);
   }
 
+  /**
+   * Subtracts the right matrix from the left matrix.
+   *
+   * @param {Mat3} a left operand
+   * @param {Mat3} b right operand
+   * @param {Mat3} target output matrix
+   * @returns the difference
+   */
   static sub (
     a = new Mat3(),
     b = new Mat3(),
@@ -672,6 +865,12 @@ class Mat3 {
       a.m20 - b.m20, a.m21 - b.m21, a.m22 - b.m22);
   }
 
+  /**
+   * Transposes a matrix, switching its row and column elements.
+   *
+   * @param {Mat3} m input matrix
+   * @param {Mat3} target transposition
+   */
   static transpose (
     m = new Mat3(),
     target = new Mat3()) {

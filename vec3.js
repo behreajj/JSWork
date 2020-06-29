@@ -442,9 +442,10 @@ class Vec3 {
     b = new Vec3(),
     tolerance = 0.000001) {
 
-    return Math.abs(b.z - a.z) < tolerance &&
-      Math.abs(b.y - a.y) < tolerance &&
-      Math.abs(b.x - a.x) < tolerance;
+    return (a === b) ||
+      (Math.abs(b.z - a.z) < tolerance &&
+        Math.abs(b.y - a.y) < tolerance &&
+        Math.abs(b.x - a.x) < tolerance);
   }
 
   /**
@@ -472,11 +473,12 @@ class Vec3 {
    */
   static areParallel (
     a = new Vec3(),
-    b = new Vec3()) {
+    b = new Vec3(),
+    tolerance = 0.000001) {
 
-    return ((a.y * b.z - a.z * b.y) === 0.0) &&
-      ((a.z * b.x - a.x * b.z) === 0.0) &&
-      ((a.x * b.y - a.y * b.x) === 0.0);
+    return (Math.abs(a.y * b.z - a.z * b.y) < tolerance) &&
+      (Math.abs(a.z * b.x - a.x * b.z) < tolerance) &&
+      (Math.abs(a.x * b.y - a.y * b.x) < tolerance);
   }
 
   /**
@@ -1899,7 +1901,9 @@ class Vec3 {
     target = new Vec3()) {
 
     const nMSq = Vec3.magSq(normal);
-    if (nMSq === 0.0) { return target.reset(); }
+    if (nMSq === 0.0) {
+      return target.reset();
+    }
 
     const mInv = 1.0 / Math.sqrt(nMSq);
     const nx = normal.x * mInv;
@@ -1934,7 +1938,9 @@ class Vec3 {
 
     const nDotI = Vec3.dot(normal, incident);
     const k = 1.0 - eta * eta * (1.0 - nDotI * nDotI);
-    if (k < 0.0) { return target.reset(); }
+    if (k < 0.0) {
+      return target.reset();
+    }
     const scalar = eta * nDotI + Math.sqrt(k);
     return target.setComponents(
       eta * incident.x - scalar * normal.x,

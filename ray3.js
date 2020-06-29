@@ -197,8 +197,12 @@ class Ray3 {
    * @returns this ray
    */
   setComponents (
-    xOrigin = 0.0, yOrigin = 0.0, zOrigin = 0.0,
-    xDir = 0.0, yDir = 1.0, zDir = 0.0) {
+    xOrigin = 0.0,
+    yOrigin = 0.0,
+    zOrigin = 0.0,
+    xDir = 0.0,
+    yDir = 1.0,
+    zDir = 0.0) {
 
     this._origin.setComponents(xOrigin, yOrigin, zOrigin);
     this._dir.setComponents(xDir, yDir, zDir);

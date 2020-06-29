@@ -238,8 +238,10 @@ class Utils {
     ubDest = 1.0) {
 
     const denom = ubOrigin - lbOrigin;
-    if (denom === 0.0) { return lbDest; }
-    return lbDest + (ubDest - lbDest) * ((value - lbOrigin) / denom);
+    if (denom !== 0.0) {
+      return lbDest + (ubDest - lbDest) * ((value - lbOrigin) / denom);
+    }
+    return lbDest;
   }
 
   /**
@@ -329,6 +331,21 @@ class Utils {
   static or (a = 0.0, b = 0.0) {
 
     return Boolean(a) | Boolean(b);
+  }
+
+  /**
+   * Oscillates between a lower and upper bound based on an input step. Uses a
+   * different formula than the Unity math function of the same name.
+   *
+   * @param {number} a the lower bound
+   * @param {number} b the upper bound
+   * @param {number} t the step
+   * @returns the oscillation
+   */
+  static pingPong (a = 0.0, b = 1.0, t = 0.5) {
+
+    const u = 0.5 + 0.5 * Math.cos(t * 0.15915494309189535);
+    return (1.0 - u) * a + u * b;
   }
 
   /**

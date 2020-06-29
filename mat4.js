@@ -2,6 +2,26 @@
 
 class Mat4 {
 
+  /**
+   * Constructs a matrix from numbers.
+   * 
+   * @param {number} m00 row 0, column 0
+   * @param {number} m01 row 0, column 1
+   * @param {number} m02 row 0, column 2
+   * @param {number} m03 row 0, column 3
+   * @param {number} m10 row 1, column 0
+   * @param {number} m11 row 1, column 1
+   * @param {number} m12 row 1, column 2
+   * @param {number} m13 row 1, column 3
+   * @param {number} m20 row 2, column 0
+   * @param {number} m21 row 2, column 1
+   * @param {number} m22 row 2, column 2
+   * @param {number} m23 row 2, column 3
+   * @param {number} m30 row 3, column 0
+   * @param {number} m31 row 3, column 1
+   * @param {number} m32 row 3, column 2
+   * @param {number} m33 row 3, column 3
+   */
   constructor (
     m00 = 1.0, m01 = 0.0, m02 = 0.0, m03 = 0.0,
     m10 = 0.0, m11 = 1.0, m12 = 0.0, m13 = 0.0,

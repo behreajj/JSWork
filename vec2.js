@@ -396,8 +396,9 @@ class Vec2 {
     b = new Vec2(),
     tolerance = 0.000001) {
 
-    return Math.abs(b.y - a.y) < tolerance &&
-      Math.abs(b.x - a.x) < tolerance;
+    return (a === b) ||
+      (Math.abs(b.y - a.y) < tolerance &&
+        Math.abs(b.x - a.x) < tolerance);
   }
 
   /**
@@ -423,9 +424,12 @@ class Vec2 {
    * @param {Vec2} b right comparisand
    * @returns the evaluation
    */
-  static areParallel (a = new Vec2(), b = new Vec2()) {
+  static areParallel (
+    a = new Vec2(),
+    b = new Vec2(),
+    tolerance = 0.000001) {
 
-    return (a.x * b.y - a.y * b.x) === 0.0;
+    return Math.abs(a.x * b.y - a.y * b.x) < tolerance;
   }
 
   /**
@@ -648,6 +652,23 @@ class Vec2 {
     return target.setComponents(
       Math.abs(a.x) * Math.sign(b.x),
       Math.abs(a.y) * Math.sign(b.y));
+  }
+
+  /**
+   * Returns the z component of the cross product between two vectors. The x and
+   * y components of the cross between 2D vectors are always zero. For that
+   * reason, the normalized cross product is equal to the sign of the cross
+   * product.
+   * 
+   * @param {Vec2} a left operand
+   * @param {Vec2} b right operand
+   * @returns the cross product z
+   */
+  static cross (
+    a = new Vec2(),
+    b = new Vec2()) {
+
+    return a.x * b.y - a.y * b.x;
   }
 
   /**
@@ -1158,15 +1179,15 @@ class Vec2 {
     return Vec2.fromSource(v, target);
   }
 
-/**
-   * Evaluates whether the left comparisand is less than the right
-   * comparisand.
-   * 
-   * @param {Vec2} a left comparisand
-   * @param {Vec2} b right comparisand
-   * @param {Vec2} target output vector
-   * @returns the evaluation
-   */
+  /**
+     * Evaluates whether the left comparisand is less than the right
+     * comparisand.
+     * 
+     * @param {Vec2} a left comparisand
+     * @param {Vec2} b right comparisand
+     * @param {Vec2} target output vector
+     * @returns the evaluation
+     */
   static lt (
     a = new Vec2(),
     b = new Vec2(),
@@ -1659,7 +1680,9 @@ class Vec2 {
     target = new Vec2()) {
 
     const nMSq = Vec2.magSq(normal);
-    if (nMSq === 0.0) { return target.reset(); }
+    if (nMSq === 0.0) {
+      return target.reset();
+    }
 
     const mInv = 1.0 / Math.sqrt(nMSq);
     const nx = normal.x * mInv;
@@ -1691,7 +1714,9 @@ class Vec2 {
 
     const nDotI = Vec2.dot(normal, incident);
     const k = 1.0 - eta * eta * (1.0 - nDotI * nDotI);
-    if (k < 0.0) { return target.reset(); }
+    if (k < 0.0) {
+      return target.reset();
+    }
     const scalar = eta * nDotI + Math.sqrt(k);
     return target.setComponents(
       eta * incident.x - scalar * normal.x,
