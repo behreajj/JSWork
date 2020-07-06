@@ -183,9 +183,16 @@ class Transform2 {
     return this;
   }
 
-  scaleBy (scalar = new Vec2()) {
+  scaleBy1 (scalar = 1.0) {
 
-    Vec2.add(this._scale, scalar, this._scale);
+    Vec2.scale(this._scale, scalar, this._scale);
+
+    return this;
+  }
+
+  scaleBy2 (scalar = new Vec2()) {
+
+    Vec2.mul(this._scale, scalar, this._scale);
 
     return this;
   }

@@ -1,5 +1,12 @@
 'use strict';
 
+/**
+ * A mutable, extensible class influenced by GLSL, OSL and Processing's
+ * PMatrix3D. Although this is a 4 x 4 matrix, it is generally assumed to be a
+ * 3D affine transform matrix, where the last row is (0.0, 0.0, 0.0, 1.0) .
+ * Instance methods are limited, while most static methods require an explicit
+ * output variable to be provided.
+ */
 class Mat4 {
 
   /**
@@ -34,6 +41,9 @@ class Mat4 {
     this._m30 = m30; this._m31 = m31; this._m32 = m32; this._m33 = m33;
   }
 
+  /**
+   * Returns the number of elements in the matrix.
+   */
   get length () {
 
     return 16;
@@ -602,6 +612,15 @@ class Mat4 {
       '\n'].join('');
   }
 
+
+  /**
+   * Adds two matrices together.
+   * 
+   * @param {Mat4} a left operand
+   * @param {Mat4} b right operand
+   * @param {Mat4} target output matrix
+   * @returns the sum
+   */
   static add (
     a = new Mat4(),
     b = new Mat4(),
@@ -614,6 +633,51 @@ class Mat4 {
       a.m30 + b.m30, a.m31 + b.m31, a.m32 + b.m32, a.m33 + b.m33);
   }
 
+  /**
+   * Evaluates two matrices like booleans, using the AND logic gate.
+   * 
+   * @param {Mat4} a left operand
+   * @param {Mat4} b right operand
+   * @param {Mat4} target output matrix
+   * @returns the evaluation
+   */
+  static and (
+    a = new Mat4(),
+    b = new Mat4(),
+    target = new Mat4()) {
+
+    return target.setComponents(
+      Boolean(a.m00) & Boolean(b.m00),
+      Boolean(a.m01) & Boolean(b.m01),
+      Boolean(a.m02) & Boolean(b.m02),
+      Boolean(a.m03) & Boolean(b.m03),
+
+      Boolean(a.m10) & Boolean(b.m10),
+      Boolean(a.m11) & Boolean(b.m11),
+      Boolean(a.m12) & Boolean(b.m12),
+      Boolean(a.m13) & Boolean(b.m13),
+
+      Boolean(a.m20) & Boolean(b.m20),
+      Boolean(a.m21) & Boolean(b.m21),
+      Boolean(a.m22) & Boolean(b.m22),
+      Boolean(a.m23) & Boolean(b.m23),
+
+      Boolean(a.m30) & Boolean(b.m30),
+      Boolean(a.m31) & Boolean(b.m31),
+      Boolean(a.m32) & Boolean(b.m32),
+      Boolean(a.m33) & Boolean(b.m33));
+  }
+
+  /**
+   * Multiplies three matrices. Useful for composing an affine transform from
+   * translation, rotation and scale matrices.
+   *
+   * @param {Mat4} a first matrix
+   * @param {Mat4} b second matrix
+   * @param {Mat4} c third matrix
+   * @param {Mat4} target output matrix
+   * @returns the product
+   */
   static compose (
     a = new Mat4(),
     b = new Mat4(),
@@ -710,6 +774,15 @@ class Mat4 {
       n30 * c.m03 + n31 * c.m13 + n32 * c.m23 + n33 * c.m33);
   }
 
+  /**
+   * Decomposes a matrix into its translation, rotation and scale. Returns an object containing the three.
+   * 
+   * @param {Mat4} m matrix
+   * @param {Vec3} trans output translation
+   * @param {Quaternion} rot output rotation
+   * @param {Vec3} scale output scale
+   * @returns the object
+   */
   static decompose (
     m = new Mat4(),
     trans = Vec3.zero(),
@@ -750,6 +823,12 @@ class Mat4 {
     return { translation: trans, rotation: rot, scale: scale };
   }
 
+  /**
+   * Finds the determinant of a matrix.
+   * 
+   * @param {Mat4} m matrix
+   * @returns the determinant
+   */
   static determinant (m = new Mat4()) {
 
     return m.m00 * (m.m11 * m.m22 * m.m33 +
@@ -778,6 +857,16 @@ class Mat4 {
         m.m11 * m.m20 * m.m32);
   }
 
+  /**
+   * Divides the left matrix by the right. Equivalent to multiplying the left
+   * matrix by the inverse of the right.
+   *
+   * @param {Mat4} a numerator
+   * @param {Mat4} b denominator
+   * @param {Mat4} target output matrix
+   * @param {Mat4} inverse denonminator inverse
+   * @returns the quotient
+   */
   static div (
     a = new Mat4(),
     b = new Mat4(),
@@ -787,6 +876,13 @@ class Mat4 {
     return Mat4.mul(a, Mat4.inverse(b, inverse), target);
   }
 
+  /**
+   * Creates a matrix from a one dimensional array of numbers.
+   *
+   * @param {Array} arr a 1D array of numbers
+   * @param {Mat4} target output matrix
+   * @returns the matrix
+   */
   static fromArray (
     arr = [
       1.0, 0.0, 0.0, 0.0,
@@ -802,6 +898,17 @@ class Mat4 {
       arr[12], arr[13], arr[14], arr[15]);
   }
 
+  /**
+   * Creates a matrix from 2D column axes and a translation. The z column is
+   * assumed to be (0.0, 0.0, 1.0, 0.0) ; the w row is assumed to be (0.0, 0.0,
+   * 0.0, 1.0) .
+   *
+   * @param {Vec2} right right axis
+   * @param {Vec2} forward forward axis
+   * @param {Vec2} translation translation
+   * @param {Mat4} target output matrix
+   * @returns the output matrix
+   */
   static fromAxes2 (
     right = Vec2.right(),
     forward = Vec2.forward(),
@@ -815,6 +922,17 @@ class Mat4 {
       0.0, 0.0, 0.0, 1.0);
   }
 
+  /**
+   * Creates a matrix from 3D column axes and a translation. The w row is
+   * assumed to be (0.0, 0.0, 0.0, 1.0) .
+   *
+   * @param {Vec3} right right axis
+   * @param {Vec3} forward forward axis
+   * @param {Vec3} up up axis
+   * @param {Vec3} translation translation
+   * @param {Mat4} target output matrix
+   * @returns the output matrix
+   */
   static fromAxes3 (
     right = Vec3.right(),
     forward = Vec3.forward(),
@@ -829,6 +947,16 @@ class Mat4 {
       0.0, 0.0, 0.0, 1.0);
   }
 
+  /**
+   * Creates a matrix from 4D column axes and a translation. 
+   *
+   * @param {Vec4} right right axis
+   * @param {Vec4} forward forward axis
+   * @param {Vec4} up up axis
+   * @param {Vec4} translation translation
+   * @param {Mat4} target output matrix
+   * @returns the output matrix
+   */
   static fromAxes4 (
     right = Vec4.right(),
     forward = Vec4.forward(),
@@ -953,6 +1081,13 @@ class Mat4 {
       0.0, 0.0, 0.0, 1.0);
   }
 
+  /**
+   * Creates a matrix from a uniform scalar.
+   * 
+   * @param {number} scalar uniform scalar
+   * @param {Mat4} target output matrix
+   * @returns the matrix
+   */
   static fromScale1 (
     scalar = 1.0,
     target = new Mat4()) {
@@ -964,6 +1099,13 @@ class Mat4 {
       0.0, 0.0, 0.0, 1.0);
   }
 
+  /**
+   * Creates a matrix from a nonuniform scalar held in a 2D vector.
+   *
+   * @param {Vec2} scalar nonuniform scalar
+   * @param {Mat4} target output matrix
+   * @returns the matrix
+   */
   static fromScale2 (
     scalar = Vec2.one(),
     target = new Mat4()) {
@@ -975,6 +1117,13 @@ class Mat4 {
       0.0, 0.0, 0.0, 1.0);
   }
 
+  /**
+   * Creates a matrix from a nonuniform scalar held in a 3D vector.
+   *
+   * @param {Vec3} scalar nonuniform scalar
+   * @param {Mat4} target output matrix
+   * @returns the matrix
+   */
   static fromScale3 (
     scalar = Vec3.one(),
     target = new Mat4()) {
@@ -986,6 +1135,13 @@ class Mat4 {
       0.0, 0.0, 0.0, 1.0);
   }
 
+  /**
+   * Copies a source matrix to an output matrix.
+   * 
+   * @param {Mat4} source source matrix
+   * @param {Mat4} target output matrix
+   * @returns the copy
+   */
   static fromSource (
     source = new Mat4(),
     target = new Mat4()) {
@@ -997,6 +1153,13 @@ class Mat4 {
       source.m30, source.m31, source.m32, source.m33);
   }
 
+  /**
+   * Creates a matrix from a 2D translation.
+   *
+   * @param {Vec2} translation translation vector
+   * @param {Mat4} target output matrix
+   * @returns the matrix
+   */
   static fromTranslation2 (
     translation = Vec2.zero(),
     target = new Mat4()) {
@@ -1008,6 +1171,13 @@ class Mat4 {
       0.0, 0.0, 0.0, 1.0);
   }
 
+  /**
+   * Creates a matrix from a 3D translation.
+   *
+   * @param {Vec3} translation translation vector
+   * @param {Mat4} target output matrix
+   * @returns the matrix
+   */
   static fromTranslation3 (
     translation = Vec3.zero(),
     target = new Mat4()) {
@@ -1042,6 +1212,12 @@ class Mat4 {
       0.0, 0.0, -1.0, 0.0);
   }
 
+  /**
+   * Returns the identity matrix, [1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0,
+   *  0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0] .
+   *
+   * @param {Mat4} target output matrix
+   */
   static identity (target = new Mat4()) {
 
     return target.setComponents(
@@ -1051,6 +1227,13 @@ class Mat4 {
       0.0, 0.0, 0.0, 1.0);
   }
 
+  /**
+   * Finds the inverse of the input matrix.
+   *
+   * @param {Mat4} m matrix
+   * @param {Mat4} target output matrix
+   * @returns the inverse
+   */
   static inverse (
     m = new Mat4(),
     target = new Mat4()) {
@@ -1099,6 +1282,12 @@ class Mat4 {
       (m.m20 * b03 - m.m21 * b01 + m.m22 * b00) * detInv);
   }
 
+  /**
+   * Finds whether or not a matrix is the identity.
+   *
+   * @param {Mat4} m matrix
+   * @returns the evaluation
+   */
   static isIdentity (m = new Mat4()) {
 
     return m.m33 === 1.0 && m.m22 === 1.0 && m.m11 === 1.0 && m.m00 === 1.0 &&
@@ -1107,6 +1296,14 @@ class Mat4 {
       m.m23 === 0.0 && m.m30 === 0.0 && m.m31 === 0.0 && m.m32 === 0.0;
   }
 
+  /**
+   * Multiplies two matrices.
+   *
+   * @param {Mat4} a left operand
+   * @param {Mat4} b right operand
+   * @param {Mat4} target output matrix
+   * @returns the product
+   */
   static mul (
     a = new Mat4(),
     b = new Mat4(),
@@ -1161,6 +1358,42 @@ class Mat4 {
       a.m33 * b.w);
   }
 
+  /**
+   * Evaluates two matrices like booleans, using the inclusive or (OR) logic
+   * gate.
+   * 
+   * @param {Mat4} a left operand
+   * @param {Mat4} b right operand
+   * @param {Mat4} target output matrix
+   * @returns the evaluation
+   */
+  static or (
+    a = new Mat4(),
+    b = new Mat4(),
+    target = new Mat4()) {
+
+    return target.setComponents(
+      Boolean(a.m00) | Boolean(b.m00),
+      Boolean(a.m01) | Boolean(b.m01),
+      Boolean(a.m02) | Boolean(b.m02),
+      Boolean(a.m03) | Boolean(b.m03),
+
+      Boolean(a.m10) | Boolean(b.m10),
+      Boolean(a.m11) | Boolean(b.m11),
+      Boolean(a.m12) | Boolean(b.m12),
+      Boolean(a.m13) | Boolean(b.m13),
+
+      Boolean(a.m20) | Boolean(b.m20),
+      Boolean(a.m21) | Boolean(b.m21),
+      Boolean(a.m22) | Boolean(b.m22),
+      Boolean(a.m23) | Boolean(b.m23),
+
+      Boolean(a.m30) | Boolean(b.m30),
+      Boolean(a.m31) | Boolean(b.m31),
+      Boolean(a.m32) | Boolean(b.m32),
+      Boolean(a.m33) | Boolean(b.m33));
+  }
+
   static orthographic (
     left = -1.0, right = 1.0,
     bottom = -1.0, top = 1.0,
@@ -1200,6 +1433,50 @@ class Mat4 {
       0.0, 0.0, -1.0, 0.0);
   }
 
+  /**
+   * Rotates the elements of the input matrix 90 degrees counter-clockwise.
+   *
+   * @param {Mat4} m input matrix
+   * @param {Mat4} target output matrix
+   * @returns the rotated matrix
+   */
+  static rotateElmsCcw (
+    m = new Mat4(),
+    target = new Mat4()) {
+
+    return target.setComponents(
+      m.m03, m.m13, m.m23, m.m33,
+      m.m02, m.m12, m.m22, m.m32,
+      m.m01, m.m11, m.m21, m.m31,
+      m.m00, m.m10, m.m20, m.m30);
+  }
+
+  /**
+   * Rotates the elements of the input matrix 90 degrees clockwise.
+   *
+   * @param {Mat4} m input matrix
+   * @param {Mat4} target output matrix
+   * @returns the rotated matrix
+   */
+  static rotateElmsCw (
+    m = new Mat4(),
+    target = new Mat4()) {
+
+    return target.setComponents(
+      m.m30, m.m20, m.m10, m.m00,
+      m.m31, m.m21, m.m11, m.m01,
+      m.m32, m.m22, m.m12, m.m02,
+      m.m33, m.m23, m.m13, m.m03);
+  }
+
+  /**
+   * Subtracts the right matrix from the left matrix.
+   *
+   * @param {Mat4} a left operand
+   * @param {Mat4} b right operand
+   * @param {Mat4} target output matrix
+   * @returns the difference
+   */
   static sub (
     a = new Mat4(),
     b = new Mat4(),
@@ -1212,14 +1489,56 @@ class Mat4 {
       a.m30 - b.m30, a.m31 - b.m31, a.m32 - b.m32, a.m33 - b.m33);
   }
 
+  /**
+   * Transposes a matrix, switching its row and column elements.
+   *
+   * @param {Mat4} m input matrix
+   * @param {Mat4} target transposition
+   */
   static transpose (
-    m = new Mat3(),
-    target = new Mat3()) {
+    m = new Mat4(),
+    target = new Mat4()) {
 
     return target.setComponents(
       m.m00, m.m10, m.m20, m.m30,
       m.m01, m.m11, m.m21, m.m31,
       m.m02, m.m12, m.m22, m.m32,
       m.m03, m.m13, m.m23, m.m33);
+  }
+
+  /**
+   * Evaluates two matrices like booleans, using the exclusive or (XOR) logic
+   * gate.
+   * 
+   * @param {Mat4} a left operand
+   * @param {Mat4} b right operand
+   * @param {Mat4} target output matrix
+   * @returns the evaluation
+   */
+  static xor (
+    a = new Mat4(),
+    b = new Mat4(),
+    target = new Mat4()) {
+
+    return target.setComponents(
+      Boolean(a.m00) ^ Boolean(b.m00),
+      Boolean(a.m01) ^ Boolean(b.m01),
+      Boolean(a.m02) ^ Boolean(b.m02),
+      Boolean(a.m03) ^ Boolean(b.m03),
+
+      Boolean(a.m10) ^ Boolean(b.m10),
+      Boolean(a.m11) ^ Boolean(b.m11),
+      Boolean(a.m12) ^ Boolean(b.m12),
+      Boolean(a.m13) ^ Boolean(b.m13),
+
+      Boolean(a.m20) ^ Boolean(b.m20),
+      Boolean(a.m21) ^ Boolean(b.m21),
+      Boolean(a.m22) ^ Boolean(b.m22),
+      Boolean(a.m23) ^ Boolean(b.m23),
+
+      Boolean(a.m30) ^ Boolean(b.m30),
+      Boolean(a.m31) ^ Boolean(b.m31),
+      Boolean(a.m32) ^ Boolean(b.m32),
+      Boolean(a.m33) ^ Boolean(b.m33));
   }
 }

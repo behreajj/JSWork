@@ -197,9 +197,16 @@ class Transform3 {
     return this;
   }
 
-  scaleBy (scalar = new Vec3()) {
+  scaleBy1 (scalar = 1.0) {
 
-    Vec3.add(this._scale, scalar, this._scale);
+    Vec3.scale(this._scale, scalar, this._scale);
+
+    return this;
+  }
+
+  scaleBy3 (scalar = new Vec3()) {
+
+    Vec3.mul(this._scale, scalar, this._scale);
 
     return this;
   }

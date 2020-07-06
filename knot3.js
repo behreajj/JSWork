@@ -377,16 +377,31 @@ class Knot3 {
   }
 
   /**
-   * Scales this knot by a non uniform scalar.
+   * Scales this knot by a uniform scalar.
    * 
-   * @param {Vec3} v the non uniform scalar
+   * @param {number} us the uniform scalar
    * @returns this knot
    */
-  scale (v = Vec3.one()) {
+  scale1 (us = 1.0) {
 
-    Vec3.mul(this._coord, v, this._coord);
-    Vec3.mul(this._foreHandle, v, this._foreHandle);
-    Vec3.mul(this._rearHandle, v, this._rearHandle);
+    Vec3.scale(this._coord, us, this._coord);
+    Vec3.scale(this._foreHandle, us, this._foreHandle);
+    Vec3.scale(this._rearHandle, us, this._rearHandle);
+
+    return this;
+  }
+
+  /**
+   * Scales this knot by a non uniform scalar.
+   * 
+   * @param {Vec3} nus the non uniform scalar
+   * @returns this knot
+   */
+  scale3 (nus = Vec3.one()) {
+
+    Vec3.mul(this._coord, nus, this._coord);
+    Vec3.mul(this._foreHandle, nus, this._foreHandle);
+    Vec3.mul(this._rearHandle, nus, this._rearHandle);
 
     return this;
   }

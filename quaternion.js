@@ -1062,8 +1062,6 @@ class Quaternion {
     const modAngle = ang % 6.283185307179586;
 
 
-    // TODO: Redo to follow other implementations:
-    // norm(q + fromAxisAngle(angle, axis))
     return Quaternion.fromAxisAngle(modAngle, axis, target);
   }
 

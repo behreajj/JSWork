@@ -99,30 +99,87 @@ class Knot2 {
     }
   }
 
-  // alignHandles (
-  //   rearDir = new Vec2(),
-  //   foreDir = new Vec2(),
-  //   rearScaled = new Vec2()) {
+  /**
+   * Aligns this knot's handles in the same direction while preserving their
+   * magnitude.
+   *
+   * @returns this knot
+   */
+  alignHandles () {
 
-  //   return this.alignHandlesForward(
-  //     rearDir,
-  //     foreDir,
-  //     rearScaled);
-  // }
+    return this.alignHandlesForward();
+  }
 
-  // alignHandlesBackward (
-  //   foreDir = new Vec2(),
-  //   rearDir = new Vec2(),
-  //   foreScaled = new Vec2()) {
+  /**
+   * Aligns this knot's fore handle to its rear handle while preserving
+   * magnitude.
+   * 
+   * @returns this knot
+   */
+  alignHandlesBackward () {
 
-  // }
+    const cox = this._coord.x;
+    const coy = this._coord.y;
 
-  // alignHandlesForward (
-  //   rearDir = new Vec2(),
-  //   foreDir = new Vec2(),
-  //   rearScaled = new Vec2()) {
+    const rearDirx = this._rearHandle.x - cox;
+    const rearDiry = this._rearHandle.y - coy;
+    const rearMagSq = rearDirx * rearDirx + rearDiry * rearDiry;
+    if (rearMagSq <= 0.0) {
+      this._foreHandle.x = cox;
+      this._foreHandle.y = coy;
+      return this;
+    }
 
-  // }
+    const foreDirx = this._foreHandle.x - cox;
+    const foreDiry = this._foreHandle.y - coy;
+    const foreMagSq = foreDirx * foreDirx + foreDiry * foreDiry;
+    if (foreMagSq <= 0.0) {
+      this._foreHandle.x = cox;
+      this._foreHandle.y = coy;
+      return this;
+    }
+
+    const flipRescale = -Math.sqrt(foreMagSq) / Math.sqrt(rearMagSq);
+    this._foreHandle.x = rearDirx * flipRescale + cox;
+    this._foreHandle.y = rearDiry * flipRescale + coy;
+
+    return this;
+  }
+
+  /**
+   * Aligns this knot's rear handle to its fore handle while preserving
+   * magnitude.
+   *
+   * @returns this knot
+   */
+  alignHandlesForward () {
+
+    const cox = this._coord.x;
+    const coy = this._coord.y;
+
+    const foreDirx = this._foreHandle.x - cox;
+    const foreDiry = this._foreHandle.y - coy;
+    const foreMagSq = foreDirx * foreDirx + foreDiry * foreDiry;
+    if (foreMagSq <= 0.0) {
+      this._rearHandle.x = cox;
+      this._rearHandle.y = coy;
+      return this;
+    }
+
+    const rearDirx = this._rearHandle.x - cox;
+    const rearDiry = this._rearHandle.y - coy;
+    const rearMagSq = rearDirx * rearDirx + rearDiry * rearDiry;
+    if (rearMagSq <= 0.0) {
+      this._rearHandle.x = cox;
+      this._rearHandle.y = coy;
+      return this;
+    }
+
+    const flipRescale = -Math.sqrt(rearMagSq) / Math.sqrt(foreMagSq);
+    this._rearHandle.x = foreDirx * flipRescale + cox;
+    this._rearHandle.y = foreDiry * flipRescale + coy;
+    return this;
+  }
 
   /**
    * Tests equivalence between this and another object.
@@ -255,6 +312,35 @@ class Knot2 {
     return this;
   }
 
+  rotateForeHandleZ (radians = 0.0) {
+
+    return this.rotateForeHandleZInternal(
+      Math.cos(radians),
+      Math.sin(radians));
+  }
+
+  rotateForeHandleZInternal (
+    cosa = 1.0,
+    sina = 0.0) {
+
+    Vec2.sub(
+      this._coord,
+      this._foreHandle,
+      this._foreHandle);
+
+    Vec2.rotateZInternal(
+      this._foreHandle,
+      cosa, sina,
+      this._foreHandle);
+
+    Vec2.add(
+      this._coord,
+      this._foreHandle,
+      this._foreHandle);
+
+    return this;
+  }
+
   /**
    * Rotates this knot around the z axis by an angle in radians.
    *
@@ -300,16 +386,31 @@ class Knot2 {
   }
 
   /**
-   * Scales this knot by a non uniform scalar.
+   * Scales this knot by a uniform scalar.
    * 
-   * @param {Vec2} v the non uniform scalar
+   * @param {number} us the uniform scalar
    * @returns this knot
    */
-  scale (v = Vec2.one()) {
+  scale1 (us = 1.0) {
 
-    Vec2.mul(this._coord, v, this._coord);
-    Vec2.mul(this._foreHandle, v, this._foreHandle);
-    Vec2.mul(this._rearHandle, v, this._rearHandle);
+    Vec2.scale(this._coord, us, this._coord);
+    Vec2.scale(this._foreHandle, us, this._foreHandle);
+    Vec2.scale(this._rearHandle, us, this._rearHandle);
+
+    return this;
+  }
+
+  /**
+   * Scales this knot by a non uniform scalar.
+   * 
+   * @param {Vec2} nus the non uniform scalar
+   * @returns this knot
+   */
+  scale2 (nus = Vec2.one()) {
+
+    Vec2.mul(this._coord, nus, this._coord);
+    Vec2.mul(this._foreHandle, nus, this._foreHandle);
+    Vec2.mul(this._rearHandle, nus, this._rearHandle);
 
     return this;
   }

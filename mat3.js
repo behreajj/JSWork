@@ -2,10 +2,10 @@
 
 /**
  * A mutable, extensible class influenced by GLSL, OSL and Processing's
- * PMatrix2D. Although this is a 3 x 3 matrix, it is generally assumed to
- * be a 2D affine transform matrix, where the last row is (0.0, 0.0, 1.0) .
- * Instance methods are limited, while most static methods require an
- * explicit output variable to be provided.
+ * PMatrix2D. Although this is a 3 x 3 matrix, it is generally assumed to be a
+ * 2D affine transform matrix, where the last row is (0.0, 0.0, 1.0) . Instance
+ * methods are limited, while most static methods require an explicit output
+ * variable to be provided.
  */
 class Mat3 {
 
@@ -466,6 +466,33 @@ class Mat3 {
   }
 
   /**
+   * Evaluates two matrices like booleans, using the AND logic gate.
+   * 
+   * @param {Mat3} a left operand
+   * @param {Mat3} b right operand
+   * @param {Mat3} target output matrix
+   * @returns the evaluation
+   */
+  static and (
+    a = new Mat3(),
+    b = new Mat3(),
+    target = new Mat3()) {
+
+    return target.setComponents(
+      Boolean(a.m00) & Boolean(b.m00),
+      Boolean(a.m01) & Boolean(b.m01),
+      Boolean(a.m02) & Boolean(b.m02),
+
+      Boolean(a.m10) & Boolean(b.m10),
+      Boolean(a.m11) & Boolean(b.m11),
+      Boolean(a.m12) & Boolean(b.m12),
+
+      Boolean(a.m20) & Boolean(b.m20),
+      Boolean(a.m21) & Boolean(b.m21),
+      Boolean(a.m22) & Boolean(b.m22));
+  }
+
+  /**
    * Multiplies three matrices. Useful for composing an affine transform from
    * translation, rotation and scale matrices.
    *
@@ -537,6 +564,7 @@ class Mat3 {
    * Finds the determinant of a matrix.
    * 
    * @param {Mat3} m matrix
+   * @returns the determinant
    */
   static determinant (m = new Mat3()) {
 
@@ -754,7 +782,9 @@ class Mat3 {
    * @param {Mat3} target output matrix
    * @returns the inverse
    */
-  static inverse (m = new Mat3(), target = new Mat3()) {
+  static inverse (
+    m = new Mat3(), 
+    target = new Mat3()) {
 
     const b01 = m.m22 * m.m11 - m.m12 * m.m21;
     const b11 = m.m12 * m.m20 - m.m22 * m.m10;
@@ -847,6 +877,68 @@ class Mat3 {
   }
 
   /**
+   * Evaluates two matrices like booleans, using the inclusive or (OR) logic
+   * gate.
+   *
+   * @param {Mat3} a left operand
+   * @param {Mat3} b right operand
+   * @param {Mat3} target output matrix
+   * @returns the evaluation
+   */
+  static or (
+    a = new Mat3(),
+    b = new Mat3(),
+    target = new Mat3()) {
+
+    return target.setComponents(
+      Boolean(a.m00) | Boolean(b.m00),
+      Boolean(a.m01) | Boolean(b.m01),
+      Boolean(a.m02) | Boolean(b.m02),
+
+      Boolean(a.m10) | Boolean(b.m10),
+      Boolean(a.m11) | Boolean(b.m11),
+      Boolean(a.m12) | Boolean(b.m12),
+
+      Boolean(a.m20) | Boolean(b.m20),
+      Boolean(a.m21) | Boolean(b.m21),
+      Boolean(a.m22) | Boolean(b.m22));
+  }
+
+  /**
+   * Rotates the elements of the input matrix 90 degrees counter-clockwise.
+   *
+   * @param {Mat3} m input matrix
+   * @param {Mat3} target output matrix
+   * @returns the rotated matrix
+   */
+  static rotateElmsCcw (
+    m = new Mat3(),
+    target = new Mat3()) {
+
+    return target.setComponents(
+      m.m02, m.m12, m.m22,
+      m.m01, m.m11, m.m21,
+      m.m00, m.m10, m.m20);
+  }
+
+  /**
+   * Rotates the elements of the input matrix 90 degrees clockwise.
+   *
+   * @param {Mat3} m input matrix
+   * @param {Mat3} target output matrix
+   * @returns the rotated matrix
+   */
+  static rotateElmsCw (
+    m = new Mat3(),
+    target = new Mat3()) {
+
+    return target.setComponents(
+      m.m20, m.m10, m.m00,
+      m.m21, m.m11, m.m01,
+      m.m22, m.m12, m.m02);
+  }
+
+  /**
    * Subtracts the right matrix from the left matrix.
    *
    * @param {Mat3} a left operand
@@ -879,5 +971,33 @@ class Mat3 {
       m.m00, m.m10, m.m20,
       m.m01, m.m11, m.m21,
       m.m02, m.m12, m.m22);
+  }
+
+  /**
+   * Evaluates two matrices like booleans, using the exclusive or (XOR) logic
+   * gate.
+   * 
+   * @param {Mat3} a left operand
+   * @param {Mat3} b right operand
+   * @param {Mat3} target output matrix
+   * @returns the evaluation
+   */
+  static xor (
+    a = new Mat3(),
+    b = new Mat3(),
+    target = new Mat3()) {
+
+    return target.setComponents(
+      Boolean(a.m00) ^ Boolean(b.m00),
+      Boolean(a.m01) ^ Boolean(b.m01),
+      Boolean(a.m02) ^ Boolean(b.m02),
+
+      Boolean(a.m10) ^ Boolean(b.m10),
+      Boolean(a.m11) ^ Boolean(b.m11),
+      Boolean(a.m12) ^ Boolean(b.m12),
+
+      Boolean(a.m20) ^ Boolean(b.m20),
+      Boolean(a.m21) ^ Boolean(b.m21),
+      Boolean(a.m22) ^ Boolean(b.m22));
   }
 }

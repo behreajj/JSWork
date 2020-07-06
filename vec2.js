@@ -311,7 +311,7 @@ class Vec2 {
     const dy = a.y + b.y;
 
     const mSq = dx * dx + dy * dy;
-    if (mSq === 0.0) {
+    if (mSq <= 0.0) {
       return target.reset();
     }
 
@@ -1441,7 +1441,7 @@ class Vec2 {
     target = new Vec2()) {
 
     const mSq = Vec2.magSq(v);
-    if (mSq === 0.0) {
+    if (mSq <= 0.0) {
       return target.reset();
     }
 
@@ -1554,7 +1554,7 @@ class Vec2 {
    */
   static pow (
     a = new Vec2(),
-    b = new Vec2(),
+    b = new Vec2(1.0, 1.0),
     target = new Vec2()) {
 
     return target.setComponents(
@@ -1680,7 +1680,7 @@ class Vec2 {
     target = new Vec2()) {
 
     const nMSq = Vec2.magSq(normal);
-    if (nMSq === 0.0) {
+    if (nMSq <= 0.0) {
       return target.reset();
     }
 
@@ -1737,7 +1737,7 @@ class Vec2 {
     target = new Vec2()) {
 
     const mSq = Vec2.magSq(v);
-    if (mSq === 0.0) {
+    if (mSq <= 0.0) {
       return target.reset();
     }
 
@@ -1916,7 +1916,7 @@ class Vec2 {
     const dy = a.y - b.y;
 
     const mSq = dx * dx + dy * dy;
-    if (mSq === 0.0) {
+    if (mSq <= 0.0) {
       return target.reset();
     }
 

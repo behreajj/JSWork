@@ -354,7 +354,7 @@ class Vec3 {
     const dz = a.z + b.z;
 
     const mSq = dx * dx + dy * dy + dz * dz;
-    if (mSq === 0.0) {
+    if (mSq <= 0.0) {
       return target.reset();
     }
 
@@ -800,12 +800,14 @@ class Vec3 {
     const cz = a.x * b.y - a.y * b.x;
 
     const mSq = cx * cx + cy * cy + cz * cz;
-    if (mSq === 0.0) { return target.reset(); }
-    const mInv = 1.0 / Math.sqrt(mSq);
-    return target.setComponents(
-      cx * mInv,
-      cy * mInv,
-      cz * mInv);
+    if (mSq > 0.0) {
+      const mInv = 1.0 / Math.sqrt(mSq);
+      return target.setComponents(
+        cx * mInv,
+        cy * mInv,
+        cz * mInv);
+    }
+    return target.reset();
   }
 
   /**
@@ -1288,11 +1290,13 @@ class Vec3 {
   static inclinationSigned (v = new Vec3(1.0, 0.0, 0.0)) {
 
     const mSq = Vec3.magSq(v);
-    if (mSq === 0.0) { return 0.0; }
-    const radians = v.z / Math.sqrt(mSq);
-    return (radians <= -1.0) ? -1.5707963267948966 :
-      (radians >= 1.0) ? 1.5707963267948966 :
-        Math.asin(radians);
+    if (mSq > 0.0) {
+      const zNorm = v.z / Math.sqrt(mSq);
+      return (zNorm <= -1.0) ? -1.5707963267948966 :
+        (zNorm >= 1.0) ? 1.5707963267948966 :
+          Math.asin(zNorm);
+    }
+    return 0.0;
   }
 
   /**
@@ -1675,7 +1679,7 @@ class Vec3 {
     target = new Vec3()) {
 
     const mSq = Vec3.magSq(v);
-    if (mSq === 0.0) {
+    if (mSq <= 0.0) {
       return target.reset();
     }
 
@@ -1741,7 +1745,7 @@ class Vec3 {
    */
   static pow (
     a = new Vec3(),
-    b = new Vec3(),
+    b = new Vec3(1.0, 1.0, 1.0),
     target = new Vec3()) {
 
     return target.setComponents(
@@ -1901,7 +1905,7 @@ class Vec3 {
     target = new Vec3()) {
 
     const nMSq = Vec3.magSq(normal);
-    if (nMSq === 0.0) {
+    if (nMSq <= 0.0) {
       return target.reset();
     }
 
@@ -1962,7 +1966,7 @@ class Vec3 {
     target = new Vec3()) {
 
     const mSq = Vec3.magSq(v);
-    if (mSq === 0.0) {
+    if (mSq <= 0.0) {
       return target.reset();
     }
 
@@ -2305,7 +2309,7 @@ class Vec3 {
     const dz = a.z - b.z;
 
     const mSq = dx * dx + dy * dy + dz * dz;
-    if (mSq === 0.0) {
+    if (mSq <= 0.0) {
       return target.reset();
     }
 
@@ -2325,7 +2329,7 @@ class Vec3 {
    */
   static toSpherical (v = new Vec3(1.0, 0.0, 0.0)) {
     const mSq = Vec3.magSq(v);
-    if (mSq === 0.0) {
+    if (mSq <= 0.0) {
       return { phi: 0.0, rho: 0.0, theta: 0.0 };
     }
 

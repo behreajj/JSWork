@@ -416,7 +416,7 @@ class Vec4 {
     const dw = a.w + b.w;
 
     const mSq = dx * dx + dy * dy + dz * dz + dw * dw;
-    if (mSq === 0.0) {
+    if (mSq <= 0.0) {
       return target.reset();
     }
 
@@ -1497,7 +1497,7 @@ class Vec4 {
     target = new Vec4()) {
 
     const mSq = Vec4.magSq(v);
-    if (mSq === 0.0) {
+    if (mSq <= 0.0) {
       return target.reset();
     }
 
@@ -1568,7 +1568,7 @@ class Vec4 {
    */
   static pow (
     a = new Vec4(),
-    b = new Vec4(),
+    b = new Vec4(1.0, 1.0, 1.0, 1.0),
     target = new Vec4()) {
 
     return target.setComponents(
@@ -1585,7 +1585,9 @@ class Vec4 {
    * @param {Vec4} target the output vector
    * @returns the promoted vector
    */
-  static promote2 (v = new Vec2(), target = new Vec4()) {
+  static promote2 (
+    v = new Vec2(),
+    target = new Vec4()) {
 
     return target.setComponents(v.x, v.y, 0.0, 0.0);
   }
@@ -1597,7 +1599,9 @@ class Vec4 {
    * @param {Vec4} target the output vector
    * @returns the promoted vector
    */
-  static promote3 (v = new Vec3(), target = new Vec4()) {
+  static promote3 (
+    v = new Vec3(),
+    target = new Vec4()) {
 
     return target.setComponents(v.x, v.y, v.z, 0.0);
   }
@@ -1698,7 +1702,7 @@ class Vec4 {
     target = new Vec4()) {
 
     const mSq = Vec4.magSq(v);
-    if (mSq === 0.0) {
+    if (mSq <= 0.0) {
       return target.reset();
     }
 
@@ -1851,7 +1855,7 @@ class Vec4 {
       dy * dy +
       dz * dz +
       dw * dw;
-    if (mSq === 0.0) {
+    if (mSq <= 0.0) {
       return target.reset();
     }
 
