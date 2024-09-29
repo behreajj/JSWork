@@ -646,6 +646,21 @@ class Knot2 {
   }
 
   /**
+   * Multiplies this knot by a transform.
+   * 
+   * @param {Transform2} tr the transform
+   * @returns this knot
+   */
+  transform (tr = new Transform2()) {
+
+    Transform2.mulPoint(tr, this._coord, this._coord);
+    Transform2.mulPoint(tr, this._foreHandle, this._foreHandle);
+    Transform2.mulPoint(tr, this._rearHandle, this._rearHandle);
+
+    return this;
+  }
+
+  /**
    * Translates this knot by a vector.
    * 
    * @param {Vec2} v the vector

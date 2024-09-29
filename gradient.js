@@ -102,7 +102,7 @@ class Gradient {
   }
 
   /**
-   * Locate the insertion point for a step in the gradient that will maintain
+   * Locates the insertion point for a step in the gradient that will maintain
    * sorted order.
    *
    * @param {number} step the step
@@ -126,7 +126,7 @@ class Gradient {
   }
 
   /**
-   * Locate the insertion point for a step in the gradient that will maintain
+   * Locates the insertion point for a step in the gradient that will maintain
    * sorted order.
    *
    * @param {number} step the step
@@ -597,6 +597,8 @@ class Gradient {
    */
   static paletteMagma (target = new Gradient()) {
 
+    // TODO: Update to reverse order.
+
     target._keys = [
       new ColorKey(0.000000, new Color(0.988235, 1.000000, 0.698039)),
       new ColorKey(0.066667, new Color(0.987190, 0.843137, 0.562092)),
@@ -649,6 +651,8 @@ class Gradient {
    * @returns the gradient
    */
   static paletteRyb (target = new Gradient()) {
+
+    // TODO: Update.
 
     target._keys = [
       new ColorKey(0.000000, Color.red()),

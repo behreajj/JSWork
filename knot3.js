@@ -653,6 +653,21 @@ class Knot3 {
   }
 
   /**
+   * Multiplies this knot by a transform.
+   * 
+   * @param {Transform3} tr the transform
+   * @returns this knot
+   */
+  transform (tr = new Transform3()) {
+    
+    Transform3.mulPoint(tr, this._coord, this._coord);
+    Transform3.mulPoint(tr, this._foreHandle, this._foreHandle);
+    Transform3.mulPoint(tr, this._rearHandle, this._rearHandle);
+
+    return this;
+  }
+
+  /**
    * Translates this knot by a vector.
    * 
    * @param {Vec3} v the vector

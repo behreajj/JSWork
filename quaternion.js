@@ -705,7 +705,8 @@ class Quaternion {
       nz *= amInv;
     }
 
-    const halfAngle = 0.5 * radians;
+    const modRad = radians % 6.283185307179586;
+    const halfAngle = 0.5 * modRad;
     const sinHalf = Math.sin(halfAngle);
     return target.setComponents(
       Math.cos(halfAngle),
@@ -1059,10 +1060,9 @@ class Quaternion {
     const ang = halfAngle + halfAngle + radians;
     // const modAngle = ang - 6.283185307179586 *
     //   Math.floor(ang * 0.15915494309189535);
-    const modAngle = ang % 6.283185307179586;
+    // const modAngle = ang % 6.283185307179586;
 
-
-    return Quaternion.fromAxisAngle(modAngle, axis, target);
+    return Quaternion.fromAxisAngle(ang, axis, target);
   }
 
   /**
@@ -1426,7 +1426,7 @@ class Quaternion {
 
     const mSq = Quaternion.magSq(q);
 
-    if (mSq === 0.0) {
+    if (mSq <= 0.0) {
       Vec3.forward(axis);
       return { angle: 0.0, axis: axis };
     }
@@ -1453,8 +1453,9 @@ class Quaternion {
     const angle = (wNorm <= -1.0) ? 6.283185307179586 :
       (wNorm >= 1.0) ? 0.0 :
         2.0 * Math.acos(wNorm);
-    // const wAsin = 6.283185307179586 - angle;
-    const wAsin = 3.141592653589793 - angle;
+    const wAsin = 6.283185307179586 - angle;
+    // const wAsin = 3.141592653589793 - angle;
+    // const wAsin = Math.asin(wNorm);
     if (wAsin === 0.0) {
       Vec3.forward(axis);
       return { angle: angle, axis: axis };

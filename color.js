@@ -12,6 +12,7 @@ class Color extends Vec4 {
    * @param {number} a the alpha channel (transparency)
    */
   constructor (r = 1.0, g = 1.0, b = 1.0, a = 1.0) {
+    // TODO: Redo this to not extend Vec4.
 
     super(r, g, b, a);
   }
@@ -1319,11 +1320,11 @@ class Color extends Vec4 {
   static toHexWeb (c = new Color()) {
 
     let r = Math.trunc(c.r * 0xff + 0.5).toString(16);
-    if (r.length < 2) { r = '0' + r; };
+    if (r.length < 2) { r = '0' + r; }
     let g = Math.trunc(c.g * 0xff + 0.5).toString(16);
-    if (g.length < 2) { g = '0' + g; };
+    if (g.length < 2) { g = '0' + g; }
     let b = Math.trunc(c.b * 0xff + 0.5).toString(16);
-    if (b.length < 2) { b = '0' + b; };
+    if (b.length < 2) { b = '0' + b; }
 
     return ['#', r, g, b].join('').toUpperCase();
   }

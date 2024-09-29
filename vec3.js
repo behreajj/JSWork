@@ -519,7 +519,7 @@ class Vec3 {
    * Returns a point on a Bezier curve described by two anchor points and two
    * control points according to a step in [0.0, 1.0].
    *
-   * When the step is less than one, returns the first anchor point. When the
+   * When the step is less than zero, returns the first anchor point. When the
    * step is greater than one, returns the second anchor point.
    *
    * @param {Vec3} ap0 the first anchor point
@@ -575,7 +575,7 @@ class Vec3 {
    * Returns a tangent on a Bezier curve described by two anchor points and two
    * control points according to a step in [0.0, 1.0].
    *
-   * When the step is less than one, returns the first anchor point subtracted
+   * When the step is less than zero, returns the first anchor point subtracted
    * from the first control point. When the step is greater than one, returns
    * the second anchor point subtracted from the second control point.
    *
@@ -711,12 +711,12 @@ class Vec3 {
     a = new Vec3(),
     b = new Vec3()) {
 
-    if (a.z > b.z) { return 1; }
     if (a.z < b.z) { return -1; }
-    if (a.y > b.y) { return 1; }
+    if (a.z > b.z) { return 1; }
     if (a.y < b.y) { return -1; }
-    if (a.x > b.x) { return 1; }
+    if (a.y > b.y) { return 1; }
     if (a.x < b.x) { return -1; }
+    if (a.x > b.x) { return 1; }
 
     return 0;
   }
@@ -1170,11 +1170,14 @@ class Vec3 {
     radius = 1.0,
     target = new Vec3()) {
 
-    const rhoCosPhi = radius * Math.cos(inclination);
+    const cosIncl = Math.cos(inclination);
+    const sinIncl = Math.sin(inclination);
+    const rhoSinIncl = radius * sinIncl;
+    const rhoCosIncl = radius * cosIncl;
     return target.setComponents(
-      rhoCosPhi * Math.cos(azimuth),
-      rhoCosPhi * Math.sin(azimuth),
-      radius * -Math.sin(inclination));
+      rhoSinIncl * Math.cos(azimuth),
+      rhoSinIncl * Math.sin(azimuth),
+      rhoCosIncl);
   }
 
   /**
@@ -1289,12 +1292,13 @@ class Vec3 {
    */
   static inclinationSigned (v = new Vec3(1.0, 0.0, 0.0)) {
 
+    // TODO: Refactor.
     const mSq = Vec3.magSq(v);
     if (mSq > 0.0) {
       const zNorm = v.z / Math.sqrt(mSq);
       return (zNorm <= -1.0) ? -1.5707963267948966 :
         (zNorm >= 1.0) ? 1.5707963267948966 :
-          Math.asin(zNorm);
+          Math.acos(zNorm);
     }
     return 0.0;
   }
@@ -1307,6 +1311,7 @@ class Vec3 {
    */
   static inclinationUnsigned (v = new Vec3(1.0, 0.0, 0.0)) {
 
+    // TODO: Refactor.
     const angle = Vec3.inclinationSigned(v);
     return angle - 6.283185307179586 * Math.floor(angle * 0.15915494309189535);
   }
@@ -2328,6 +2333,8 @@ class Vec3 {
    * @returns the spherical coordinates 
    */
   static toSpherical (v = new Vec3(1.0, 0.0, 0.0)) {
+
+    // TODO: Refactor.
     const mSq = Vec3.magSq(v);
     if (mSq <= 0.0) {
       return { phi: 0.0, rho: 0.0, theta: 0.0 };
@@ -2337,7 +2344,7 @@ class Vec3 {
     const zNorm = v.z / rho;
     const phi = (zNorm <= -1.0) ? -1.5707963267948966 :
       (zNorm >= 1.0) ? 1.5707963267948966 :
-        Math.asin(zNorm);
+        Math.acos(zNorm);
 
     return {
       phi: phi,

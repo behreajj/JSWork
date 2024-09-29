@@ -617,14 +617,14 @@ class Vec4 {
     a = new Vec4(),
     b = new Vec4()) {
 
-    if (a.w > b.w) { return 1; }
     if (a.w < b.w) { return -1; }
-    if (a.z > b.z) { return 1; }
+    if (a.w > b.w) { return 1; }
     if (a.z < b.z) { return -1; }
-    if (a.y > b.y) { return 1; }
+    if (a.z > b.z) { return 1; }
     if (a.y < b.y) { return -1; }
-    if (a.x > b.x) { return 1; }
+    if (a.y > b.y) { return 1; }
     if (a.x < b.x) { return -1; }
+    if (a.x > b.x) { return 1; }
 
     return 0;
   }

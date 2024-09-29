@@ -447,7 +447,7 @@ class Vec2 {
    * Returns a point on a Bezier curve described by two anchor points and two
    * control points according to a step in [0.0, 1.0].
    *
-   * When the step is less than one, returns the first anchor point. When the
+   * When the step is less than zero, returns the first anchor point. When the
    * step is greater than one, returns the second anchor point.
    *
    * @param {Vec2} ap0 the first anchor point
@@ -498,7 +498,7 @@ class Vec2 {
    * Returns a tangent on a Bezier curve described by two anchor points and two
    * control points according to a step in [0.0, 1.0].
    *
-   * When the step is less than one, returns the first anchor point subtracted
+   * When the step is less than zero, returns the first anchor point subtracted
    * from the first control point. When the step is greater than one, returns
    * the second anchor point subtracted from the second control point.
    *
@@ -609,8 +609,8 @@ class Vec2 {
     const aMag = Vec2.magSq(a);
     const bMag = Vec2.magSq(b);
 
-    if (aMag > bMag) { return 1; }
     if (aMag < bMag) { return -1; }
+    if (aMag > bMag) { return 1; }
 
     return 0;
   }
@@ -627,11 +627,10 @@ class Vec2 {
     a = new Vec2(),
     b = new Vec2()) {
 
-    if (a.y > b.y) { return 1; }
     if (a.y < b.y) { return -1; }
-    if (a.x > b.x) { return 1; }
+    if (a.y > b.y) { return 1; }
     if (a.x < b.x) { return -1; }
-
+    if (a.x > b.x) { return 1; }
     return 0;
   }
 
