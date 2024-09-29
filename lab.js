@@ -16,25 +16,10 @@ class Lab {
      * @param {number} [alpha=1.0] alpha, opacity
      */
     constructor (l = 0.0, a = 0.0, b = 0.0, alpha = 1.0) {
-        /** The green magenta component.
-         * 
-         * Positive values proceed toward magenta.
-         * Negative values proceed toward green. */
-        this._a = a;
-
-        /** The alpha, or opacity, component, in the range [0.0, 1.0]. */
-        this._alpha = alpha;
-
-        /**
-         * The blue yellow component.
-         * 
-         * Positive values proceed toward yellow.
-         * Negative values proceed toward blue.
-         */
-        this._b = b;
-
-        /** The light component, in the range [0.0, 100.0]. */
         this._l = l;
+        this._a = a;
+        this._b = b;
+        this._alpha = alpha;
 
         Object.freeze(this);
     }
@@ -59,6 +44,10 @@ class Lab {
             default:
                 return Lab.toTLAB64(this);
         }
+    }
+
+    hashCode() {
+        return Lab.toTLAB32(this);
     }
 
     equals (obj) {
@@ -148,7 +137,7 @@ class Lab {
         return Lab.toTLAB64(o) === Lab.toTLAB64(d);
     }
 
-    static fromBytes (l = 0, a = 128, b = 128, alpha = 255) {
+    static from8s (l = 0, a = 128, b = 128, alpha = 255) {
         return new Lab(
             l / 2.55,
             a - 128.0,
@@ -156,7 +145,7 @@ class Lab {
             alpha / 255.0);
     }
 
-    static fromShorts (l = 0, a = 32768, b = 32768, alpha = 65535) {
+    static from16s (l = 0, a = 32768, b = 32768, alpha = 65535) {
         return new Lab(
             l / 655.35,
             (a - 32768) / 257.0,
@@ -165,7 +154,7 @@ class Lab {
     }
 
     static fromTLAB32 (i) {
-        return Lab.fromBytes(
+        return Lab.from8s(
             (i >> 0x10) & 0xff,
             (i >> 0x08) & 0xff,
             i & 0xff,
@@ -173,49 +162,49 @@ class Lab {
     }
 
     static fromTLAB64 (i) {
-        return Lab.fromShorts(
+        return Lab.from16s(
             (i >> 0x20) & 0xffff,
             (i >> 0x10) & 0xffff,
             i & 0xffff,
             (i >> 0x30) & 0xffff);
     }
 
-    static getByteL (c) {
+    static getL8 (c) {
         return Math.trunc(Math.min(Math.max(
             c.l, 0.0), 100.0) * 2.55 + 0.5);
     }
 
-    static getByteA (c) {
+    static getA8 (c) {
         return 128 + Math.floor(Math.min(Math.max(
             c.a, -127.5), 127.5));
     }
 
-    static getByteB (c) {
+    static getB8 (c) {
         return 128 + Math.floor(Math.min(Math.max(
             c.b, -127.5), 127.5));
     }
 
-    static getByteAlpha (c) {
+    static getAlpha8 (c) {
         return Math.trunc(Math.min(Math.max(
             c.alpha, 0.0), 1.0) * 255 + 0.5);
     }
 
-    static getShortL (c) {
+    static getL16 (c) {
         return Math.trunc(Math.min(Math.max(
             c.l, 0.0), 100.0) * 655.35 + 0.5);
     }
 
-    static getShortA (c) {
+    static getA16 (c) {
         return 32768 + Math.floor(Math.min(Math.max(
             c.a, -127.5), 127.5) * 257);
     }
 
-    static getShortB (c) {
+    static getB16 (c) {
         return 32768 + Math.floor(Math.min(Math.max(
             c.b, -127.5), 127.5) * 257);
     }
 
-    static getShortAlpha (c) {
+    static getAlpha16 (c) {
         return Math.trunc(Math.min(Math.max(
             c.alpha, 0.0), 1.0) * 65535 + 0.5);
     }
@@ -404,17 +393,17 @@ class Lab {
     }
 
     static toTLAB32 (c) {
-        return Lab.getByteAlpha(c) << 0x18
-            | Lab.getByteL(c) << 0x10
-            | Lab.getByteA(c) << 0x08
-            | Lab.getByteB(c);
+        return Lab.getAlpha8(c) << 0x18
+            | Lab.getL8(c) << 0x10
+            | Lab.getA8(c) << 0x08
+            | Lab.getB8(c);
     }
 
     static toTLAB64 (c) {
-        return Lab.getShortAlpha(c) << 0x30
-            | Lab.getShortL(c) << 0x20
-            | Lab.getShortA(c) << 0x10
-            | Lab.getShortB(c);
+        return Lab.getAlpha16(c) << 0x30
+            | Lab.getL16(c) << 0x20
+            | Lab.getA16(c) << 0x10
+            | Lab.getB16(c);
     }
 
     static white () {
