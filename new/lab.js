@@ -13,7 +13,7 @@ class Lab {
      * @param {number} [l=0.0] lightness
      * @param {number} [a=0.0] green to magenta
      * @param {number} [b=0.0] blue to yellow
-     * @param {number} [alpha=1.0] alpha, opacity
+     * @param {number} [alpha=1.0] opacity
      */
     constructor (l = 0.0, a = 0.0, b = 0.0, alpha = 1.0) {
         this._l = l;
@@ -36,20 +36,6 @@ class Lab {
         return this.constructor.name;
     }
 
-    [Symbol.toPrimitive] (hint) {
-        switch (hint) {
-            case 'string':
-                return this.toString();
-            case 'number':
-            default:
-                return Lab.toTLAB64(this);
-        }
-    }
-
-    hashCode() {
-        return Lab.toTLAB32(this);
-    }
-
     equals (obj) {
         if (!obj) { return false; }
         if (this === obj) { return true; }
@@ -59,22 +45,36 @@ class Lab {
         return Lab.eq(this, obj);
     }
 
+    /**
+     * @param {number} [precision=4] the precision
+     * @returns the string
+     */
     toString (precision = 4) {
+        if (precision >= 0 && precision < 21) {
+            return [
+                "{\"l\":", this._l.toFixed(precision),
+                ",\"a\":", this._a.toFixed(precision),
+                ",\"b\":", this._b.toFixed(precision),
+                ",\"alpha\":", this._alpha.toFixed(precision),
+                '}'
+            ].join('');
+        }
+
         return [
-            "{\"l\":",
-            this._l.toFixed(precision),
-            ",\"a\":",
-            this._a.toFixed(precision),
-            ",\"b\":",
-            this._b.toFixed(precision),
-            ",\"alpha\":",
-            this._alpha.toFixed(precision),
+            "{\"l\":", Lab.getL16(this),
+            ",\"a\":", Lab.getA16(this),
+            ",\"b\":", Lab.getB16(this),
+            ",\"alpha\":", Lab.getAlpha16(this),
             '}'
         ].join('');
     }
 
     static add (o, d) {
-        return new Lab(o.l + d.l, o.a + d.a, o.b + d.b, o.alpha + d.alpha);
+        return new Lab(
+            o.l + d.l,
+            o.a + d.a,
+            o.b + d.b,
+            o.alpha + d.alpha);
     }
 
     static chroma (c) {
@@ -113,7 +113,7 @@ class Lab {
         return new Lab(o.l, d.a, d.b, o.alpha);
     }
 
-    static copyL (o, d) {
+    static copyLight (o, d) {
         return new Lab(d.l, o.a, o.b, o.alpha);
     }
 
@@ -126,7 +126,22 @@ class Lab {
     }
 
     static eq (o, d) {
-        return Lab.toTLAB64(o) === Lab.toTLAB64(d);
+        return Lab.eqAlpha(o, d)
+            && Lab.eqLight(o, d)
+            && Lab.eqHueChroma(o, d);
+    }
+
+    static eqAlpha (o, d) {
+        return Lab.getAlpha16(o) === Lab.getAlpha16(d);
+    }
+
+    static eqHueChroma (o, d) {
+        return Lab.getA16(o) === Lab.getA16(d)
+            && Lab.getB16(o) === Lab.getB16(d);
+    }
+
+    static eqLight (o, d) {
+        return Lab.getL16(o) === Lab.getL16(d);
     }
 
     static from8s (l = 0, a = 128, b = 128, alpha = 255) {
@@ -145,6 +160,10 @@ class Lab {
             alpha / 65535.0);
     }
 
+    /**
+     * @param {number} i 32 bit integer
+     * @returns the conversion
+     */
     static fromTLAB32 (i) {
         return Lab.from8s(
             (i >> 0x10) & 0xff,
@@ -153,64 +172,106 @@ class Lab {
             (i >> 0x18) & 0xff);
     }
 
+    /**
+     * @param {BigInt} i 64 bit integer
+     * @returns the conversion
+     */
     static fromTLAB64 (i) {
         return Lab.from16s(
-            (i >> 0x20) & 0xffff,
-            (i >> 0x10) & 0xffff,
-            i & 0xffff,
-            (i >> 0x30) & 0xffff);
+            Number((i >> 0x20n) & 0xffffn),
+            Number((i >> 0x10n) & 0xffffn),
+            Number(i & 0xffffn),
+            Number((i >> 0x30n) & 0xffffn));
     }
 
+    /**
+     * @param {Lab} c color
+     * @retuns the lightness as an unsigned 8 bit integer
+     */
     static getL8 (c) {
         return Math.trunc(Math.min(Math.max(
             c.l, 0.0), 100.0) * 2.55 + 0.5);
     }
 
+    /**
+     * @param {Lab} c color
+     * @retuns a as an unsigned 8 bit integer
+     */
     static getA8 (c) {
         return 128 + Math.floor(Math.min(Math.max(
             c.a, -127.5), 127.5));
     }
 
+    /**
+     * @param {Lab} c color
+     * @retuns b as an unsigned 16 bit integer
+     */
     static getB8 (c) {
         return 128 + Math.floor(Math.min(Math.max(
             c.b, -127.5), 127.5));
     }
 
+    /**
+     * @param {Lab} c color
+     * @retuns the alpha as an unsigned 8 bit integer
+     */
     static getAlpha8 (c) {
         return Math.trunc(Math.min(Math.max(
             c.alpha, 0.0), 1.0) * 255 + 0.5);
     }
 
+    /**
+     * @param {Lab} c color
+     * @retuns the lightness as an unsigned 16 bit integer
+     */
     static getL16 (c) {
         return Math.trunc(Math.min(Math.max(
             c.l, 0.0), 100.0) * 655.35 + 0.5);
     }
 
+    /**
+     * @param {Lab} c color
+     * @retuns a as an unsigned 16 bit integer
+     */
     static getA16 (c) {
         return 32768 + Math.floor(Math.min(Math.max(
             c.a, -127.5), 127.5) * 257);
     }
 
+    /**
+     * @param {Lab} c color
+     * @retuns b as an unsigned 16 bit integer
+     */
     static getB16 (c) {
         return 32768 + Math.floor(Math.min(Math.max(
             c.b, -127.5), 127.5) * 257);
     }
 
+    /**
+     * @param {Lab} c color
+     * @retuns the alpha as an unsigned 16 bit integer
+     */
     static getAlpha16 (c) {
         return Math.trunc(Math.min(Math.max(
             c.alpha, 0.0), 1.0) * 65535 + 0.5);
     }
 
-    static gray (c) {
-        return Lab.new(c.l, 0.0, 0.0, c.alpha);
-    }
-
     static gt (o, d) {
-        return Lab.toTLAB64(o) > Lab.toTLAB64(d);
+        return Lab.getAlpha16(o) > Lab.getAlpha16(d)
+            && Lab.getL16(o) > Lab.getL16(d)
+            && Lab.getA16(o) > Lab.getA16(d)
+            && Lab.getB16(o) > Lab.getB16(d);
     }
 
     static gtEq (o, d) {
-        return Lab.toTLAB64(o) >= Lab.toTLAB64(d);
+        return Lab.getAlpha16(o) >= Lab.getAlpha16(d)
+            && Lab.getL16(o) >= Lab.getL16(d)
+            && Lab.getA16(o) >= Lab.getA16(d)
+            && Lab.getB16(o) >= Lab.getB16(d);
+    }
+
+    static gray (c) {
+        return new Lab(c.l, 0.0, 0.0, c.alpha);
     }
 
     static harmonyAnalogous (c) {
@@ -303,11 +364,17 @@ class Lab {
     }
 
     static lt (o, d) {
-        return Lab.toTLAB64(o) < Lab.toTLAB64(d);
+        return Lab.getAlpha16(o) < Lab.getAlpha16(d)
+            && Lab.getL16(o) < Lab.getL16(d)
+            && Lab.getA16(o) < Lab.getA16(d)
+            && Lab.getB16(o) < Lab.getB16(d);
     }
 
     static ltEq (o, d) {
-        return Lab.toTLAB64(o) <= Lab.toTLAB64(d);
+        return Lab.getAlpha16(o) <= Lab.getAlpha16(d)
+            && Lab.getL16(o) <= Lab.getL16(d)
+            && Lab.getA16(o) <= Lab.getA16(d)
+            && Lab.getB16(o) <= Lab.getB16(d);
     }
 
     static mix (o, d, t = 0.5) {
@@ -329,15 +396,15 @@ class Lab {
         const cChroma = u * Math.sqrt(oChromaSq)
             + t * Math.sqrt(dChromaSq);
 
-        const cHue = easing(
+        const cRadians = easing(
             Math.atan2(o.b, o.a),
             Math.atan2(d.b, d.a),
             t, Math.PI + Math.PI);
 
         return new Lab(
             u * o.l + t * d.l,
-            cChroma * Math.cos(cHue),
-            cChroma * Math.sin(cHue),
+            cChroma * Math.cos(cRadians),
+            cChroma * Math.sin(cRadians),
             u * o.alpha + t * d.alpha);
     }
 
@@ -376,7 +443,7 @@ class Lab {
         return new Lab(c.l, c.a * scalar, c.b * scalar, c.alpha);
     }
 
-    static scaleL (c, scalar = 1.0) {
+    static scaleLight (c, scalar = 1.0) {
         return new Lab(c.l * scalar, c.a, c.b, c.alpha);
     }
 
@@ -391,11 +458,15 @@ class Lab {
             | Lab.getB8(c);
     }
 
+    /**
+     * @param {Lab} c lab
+     * @returns the 64 bit integer
+     */
     static toTLAB64 (c) {
-        return Lab.getAlpha16(c) << 0x30
-            | Lab.getL16(c) << 0x20
-            | Lab.getA16(c) << 0x10
-            | Lab.getB16(c);
+        return BigInt(Lab.getAlpha16(c)) << 0x30n
+            | BigInt(Lab.getL16(c)) << 0x20n
+            | BigInt(Lab.getA16(c)) << 0x10n
+            | BigInt(Lab.getB16(c));
     }
 
     static black () {

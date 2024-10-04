@@ -38,15 +38,21 @@ class Rgb {
     }
 
     toString (precision = 4) {
+        if (precision >= 0 && precision < 21) {
+            return [
+                "{\"r\":", this._r.toFixed(precision),
+                ",\"g\":", this._g.toFixed(precision),
+                ",\"b\":", this._b.toFixed(precision),
+                ",\"alpha\":", this._alpha.toFixed(precision),
+                '}'
+            ].join('');
+        }
+
         return [
-            "{\"r\":",
-            this._r.toFixed(precision),
-            ",\"g\":",
-            this._g.toFixed(precision),
-            ",\"b\":",
-            this._b.toFixed(precision),
-            ",\"alpha\":",
-            this._alpha.toFixed(precision),
+            "{\"r\":", Rgb.getR8(this),
+            ",\"g\":", Rgb.getG8(this),
+            ",\"b\":", Rgb.getB8(this),
+            ",\"alpha\":", Rgb.getAlpha8(this),
             '}'
         ].join('');
     }
@@ -177,14 +183,6 @@ class Rgb {
             (i >> 0x10) & 0xff,
             (i >> 0x08) & 0xff,
             i & 0xff);
-    }
-
-    static fromRGBA64 (i) {
-        return Rgb.from16s(
-            (i >> 0x30) & 0xffff,
-            (i >> 0x20) & 0xffff,
-            (i >> 0x10) & 0xffff,
-            i & 0xffff);
     }
 
     static getR3 (c) {
@@ -399,13 +397,6 @@ class Rgb {
             | Rgb.getG8(c) << 0x10
             | Rgb.getB8(c) << 0x08
             | Rgb.getAlpha8(c);
-    }
-
-    static toRGBA64 (c) {
-        return Rgb.getR16(c) << 0x30
-            | Rgb.getG16(c) << 0x20
-            | Rgb.getB16(c) << 0x10
-            | Rgb.getAlpha16(c);
     }
 
     static unpremul (c) {
