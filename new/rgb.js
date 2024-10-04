@@ -38,7 +38,7 @@ class Rgb {
         if (obj.constructor.name !== this.constructor.name) {
             return false;
         }
-        return Rgb.eq(this, obj);
+        return Rgb.eq(this, obj, 8);
     }
 
     /**
@@ -57,10 +57,10 @@ class Rgb {
         }
 
         return [
-            "{\"r\":", Rgb.getR8(this),
-            ",\"g\":", Rgb.getG8(this),
-            ",\"b\":", Rgb.getB8(this),
-            ",\"alpha\":", Rgb.getAlpha8(this),
+            "{\"r\":", Rgb.getRInt(this),
+            ",\"g\":", Rgb.getGInt(this),
+            ",\"b\":", Rgb.getBInt(this),
+            ",\"alpha\":", Rgb.getAlphaInt(this),
             '}'
         ].join('');
     }
@@ -141,31 +141,34 @@ class Rgb {
     /**
      * @param {Rgb} o left comparisand
      * @param {Rgb} d right comparisand
+     * @param {number} [bitDepth=8] bit depth
      * @returns the evaluation
      */
-    static eq (o, d) {
-        return Rgb.eqAlpha(o, d)
-            && Rgb.eqRGB(o, d);
+    static eq (o, d, bitDepth) {
+        return Rgb.eqAlpha(o, d, bitDepth)
+            && Rgb.eqRGB(o, d, bitDepth);
     }
 
     /**
      * @param {Rgb} o left comparisand
      * @param {Rgb} d right comparisand
+     * @param {number} [bitDepth=8] bit depth
      * @returns the evaluation
      */
-    static eqAlpha (o, d) {
-        return Rgb.getAlpha8(o) === Rgb.getAlpha8(d);
+    static eqAlpha (o, d, bitDepth) {
+        return Rgb.getAlphaInt(o, bitDepth) === Rgb.getAlphaInt(d, bitDepth);
     }
 
     /**
      * @param {Rgb} o left comparisand
      * @param {Rgb} d right comparisand
+     * @param {number} [bitDepth=8] bit depth
      * @returns the evaluation
      */
-    static eqRGB (o, d) {
-        return Rgb.getR8(o) === Rgb.getR8(d)
-            && Rgb.getG8(o) === Rgb.getG8(d)
-            && Rgb.getB8(o) === Rgb.getB8(d);
+    static eqRGB (o, d, bitDepth) {
+        return Rgb.getRInt(o, bitDepth) === Rgb.getRInt(d, bitDepth)
+            && Rgb.getGInt(o, bitDepth) === Rgb.getGInt(d, bitDepth)
+            && Rgb.getBInt(o, bitDepth) === Rgb.getBInt(d, bitDepth);
     }
 
     /**
@@ -317,209 +320,47 @@ class Rgb {
     }
 
     /**
-     * @param {Rgb} o color
-     * @retuns the red channel as an unsigned 3 bit integer
+     * @param {Rgb} o
+     * @param {number} [bitDepth=8] 
+     * @return red as an unsigned integer
      */
-    static getR3 (o) {
+    static getRInt (o, bitDepth = 8) {
+        const mx = (1 << bitDepth) - 1;
         return Math.trunc(Math.min(Math.max(
-            o.r, 0.0), 1.0) * 7 + 0.5);
+            o.r, 0.0), 1.0) * mx + 0.5);
     }
 
     /**
-     * @param {Rgb} o color
-     * @retuns the red channel as an unsigned 4 bit integer
+     * @param {Rgb} o
+     * @param {number} [bitDepth=8] 
+     * @return green as an unsigned integer
      */
-    static getR4 (o) {
+    static getGInt (o, bitDepth = 8) {
+        const mx = (1 << bitDepth) - 1;
         return Math.trunc(Math.min(Math.max(
-            o.r, 0.0), 1.0) * 15 + 0.5);
+            o.g, 0.0), 1.0) * mx + 0.5);
     }
 
     /**
-     * @param {Rgb} o color
-     * @retuns the red channel as an unsigned 5 bit integer
+     * @param {Rgb} o
+     * @param {number} [bitDepth=8] 
+     * @return blue as an unsigned integer
      */
-    static getR5 (o) {
+    static getBInt (o, bitDepth = 8) {
+        const mx = (1 << bitDepth) - 1;
         return Math.trunc(Math.min(Math.max(
-            o.r, 0.0), 1.0) * 31 + 0.5);
+            o.b, 0.0), 1.0) * mx + 0.5);
     }
 
     /**
-     * @param {Rgb} o color
-     * @retuns the red channel as an unsigned 6 bit integer
+     * @param {Rgb} o
+     * @param {number} [bitDepth=8] 
+     * @return alpha as an unsigned integer
      */
-    static getR6 (o) {
+    static getAlphaInt (o, bitDepth = 8) {
+        const mx = (1 << bitDepth) - 1;
         return Math.trunc(Math.min(Math.max(
-            o.r, 0.0), 1.0) * 63 + 0.5);
-    }
-
-    /**
-     * @param {Rgb} o color
-     * @retuns the red channel as an unsigned 8 bit integer
-     */
-    static getR8 (o) {
-        return Math.trunc(Math.min(Math.max(
-            o.r, 0.0), 1.0) * 255 + 0.5);
-    }
-
-    /**
-     * @param {Rgb} o color
-     * @retuns the red channel as an unsigned 16 bit integer
-     */
-    static getR16 (o) {
-        return Math.trunc(Math.min(Math.max(
-            o.r, 0.0), 1.0) * 65535 + 0.5);
-    }
-
-    /**
-     * @param {Rgb} o color
-     * @retuns the green channel as an unsigned 3 bit integer
-     */
-    static getG3 (o) {
-        return Math.trunc(Math.min(Math.max(
-            o.g, 0.0), 1.0) * 7 + 0.5);
-    }
-
-    /**
-     * @param {Rgb} o color
-     * @retuns the green channel as an unsigned 4 bit integer
-     */
-    static getG4 (o) {
-        return Math.trunc(Math.min(Math.max(
-            o.g, 0.0), 1.0) * 15 + 0.5);
-    }
-
-    /**
-     * @param {Rgb} o color
-     * @retuns the green channel as an unsigned 5 bit integer
-     */
-    static getG5 (o) {
-        return Math.trunc(Math.min(Math.max(
-            o.g, 0.0), 1.0) * 31 + 0.5);
-    }
-
-    /**
-     * @param {Rgb} o color
-     * @retuns the green channel as an unsigned 6 bit integer
-     */
-    static getG6 (o) {
-        return Math.trunc(Math.min(Math.max(
-            o.g, 0.0), 1.0) * 63 + 0.5);
-    }
-
-    /**
-     * @param {Rgb} o color
-     * @retuns the green channel as an unsigned 8 bit integer
-     */
-    static getG8 (o) {
-        return Math.trunc(Math.min(Math.max(
-            o.g, 0.0), 1.0) * 255 + 0.5);
-    }
-
-    /**
-     * @param {Rgb} o color
-     * @retuns the green channel as an unsigned 16 bit integer
-     */
-    static getG16 (o) {
-        return Math.trunc(Math.min(Math.max(
-            o.g, 0.0), 1.0) * 65535 + 0.5);
-    }
-
-    /**
-     * @param {Rgb} o color
-     * @retuns the blue channel as an unsigned 3 bit integer
-     */
-    static getB3 (o) {
-        return Math.trunc(Math.min(Math.max(
-            o.b, 0.0), 1.0) * 7 + 0.5);
-    }
-
-    /**
-     * @param {Rgb} o color
-     * @retuns the blue channel as an unsigned 4 bit integer
-     */
-    static getB4 (o) {
-        return Math.trunc(Math.min(Math.max(
-            o.b, 0.0), 1.0) * 15 + 0.5);
-    }
-
-    /**
-     * @param {Rgb} o color
-     * @retuns the blue channel as an unsigned 5 bit integer
-     */
-    static getB5 (o) {
-        return Math.trunc(Math.min(Math.max(
-            o.b, 0.0), 1.0) * 31 + 0.5);
-    }
-
-    /**
-     * @param {Rgb} o color
-     * @retuns the blue channel as an unsigned 6 bit integer
-     */
-    static getB6 (o) {
-        return Math.trunc(Math.min(Math.max(
-            o.b, 0.0), 1.0) * 63 + 0.5);
-    }
-
-    /**
-     * @param {Rgb} o color
-     * @retuns the blue channel as an unsigned 8 bit integer
-     */
-    static getB8 (o) {
-        return Math.trunc(Math.min(Math.max(
-            o.b, 0.0), 1.0) * 255 + 0.5);
-    }
-
-    /**
-     * @param {Rgb} o color
-     * @retuns the blue channel as an unsigned 16 bit integer
-     */
-    static getB16 (o) {
-        return Math.trunc(Math.min(Math.max(
-            o.b, 0.0), 1.0) * 65535 + 0.5);
-    }
-
-    /**
-     * @param {Rgb} o color
-     * @retuns the alpha as an unsigned 1 bit integer
-     */
-    static getAlpha1 (o) {
-        return o.alpha >= 0.5 ? 1 : 0;
-    }
-
-    /**
-     * @param {Rgb} o color
-     * @retuns the alpha as an unsigned 3 bit integer
-     */
-    static getAlpha3 (o) {
-        return Math.trunc(Math.min(Math.max(
-            o.alpha, 0.0), 1.0) * 7 + 0.5);
-    }
-
-    /**
-     * @param {Rgb} o color
-     * @retuns the alpha as an unsigned 4 bit integer
-     */
-    static getAlpha4 (o) {
-        return Math.trunc(Math.min(Math.max(
-            o.alpha, 0.0), 1.0) * 15 + 0.5);
-    }
-
-    /**
-     * @param {Rgb} o color
-     * @retuns the alpha as an unsigned 8 bit integer
-     */
-    static getAlpha8 (o) {
-        return Math.trunc(Math.min(Math.max(
-            o.alpha, 0.0), 1.0) * 255 + 0.5);
-    }
-
-    /**
-     * @param {Rgb} o color
-     * @retuns the alpha as an unsigned 16 bit integer
-     */
-    static getAlpha16 (o) {
-        return Math.trunc(Math.min(Math.max(
-            o.alpha, 0.0), 1.0) * 65535 + 0.5);
+            o.alpha, 0.0), 1.0) * mx + 0.5);
     }
 
     /**
@@ -534,25 +375,27 @@ class Rgb {
     /**
      * @param {Rgb} o left comparisand
      * @param {Rgb} d right comparisand
+     * @param {number} [bitDepth=8] bit depth
      * @returns the evaluation
      */
-    static gt (o, d) {
-        return Rgb.getAlpha8(o) > Rgb.getAlpha8(d)
-            && Rgb.getR8(o) > Rgb.getR8(d)
-            && Rgb.getG8(o) > Rgb.getG8(d)
-            && Rgb.getB8(o) > Rgb.getB8(d);
+    static gt (o, d, bitDepth = 8) {
+        return Rgb.getAlphaInt(o, bitDepth) > Rgb.getAlphaInt(d, bitDepth)
+            && Rgb.getRInt(o, bitDepth) > Rgb.getRInt(d, bitDepth)
+            && Rgb.getGInt(o, bitDepth) > Rgb.getGInt(d, bitDepth)
+            && Rgb.getBInt(o, bitDepth) > Rgb.getBInt(d, bitDepth);
     }
 
     /**
      * @param {Rgb} o left comparisand
      * @param {Rgb} d right comparisand
+     * @param {number} [bitDepth=8] bit depth
      * @returns the evaluation
      */
-    static gtEq (o, d) {
-        return Rgb.getAlpha8(o) >= Rgb.getAlpha8(d)
-            && Rgb.getR8(o) >= Rgb.getR8(d)
-            && Rgb.getG8(o) >= Rgb.getG8(d)
-            && Rgb.getB8(o) >= Rgb.getB8(d);
+    static gtEq (o, d, bitDepth = 8) {
+        return Rgb.getAlphaInt(o, bitDepth) >= Rgb.getAlphaInt(d, bitDepth)
+            && Rgb.getRInt(o, bitDepth) >= Rgb.getRInt(d, bitDepth)
+            && Rgb.getGInt(o, bitDepth) >= Rgb.getGInt(d, bitDepth)
+            && Rgb.getBInt(o, bitDepth) >= Rgb.getBInt(d, bitDepth);
     }
 
     /**
@@ -568,35 +411,38 @@ class Rgb {
 
     /**
      * @param {Rgb} o rgb
+     * @param {number} [bitDepth=8] bit depth
      * @returns the evaluation
      */
-    static isGray (o) {
-        return Rgb.getR8(o) === Rgb.getG8(o)
-            && Rgb.getG8(o) === Rgb.getB8(o);
+    static isGray (o, bitDepth = 8) {
+        return Rgb.getRInt(o, bitDepth) === Rgb.getGInt(o, bitDepth)
+            && Rgb.getGInt(o, bitDepth) === Rgb.getBInt(o, bitDepth);
     }
 
     /**
      * @param {Rgb} o left comparisand
      * @param {Rgb} d right comparisand
+     * @param {number} [bitDepth=8] bit depth
      * @returns the evaluation
      */
-    static lt (o, d) {
-        return Rgb.getAlpha8(o) < Rgb.getAlpha8(d)
-            && Rgb.getR8(o) < Rgb.getR8(d)
-            && Rgb.getG8(o) < Rgb.getG8(d)
-            && Rgb.getB8(o) < Rgb.getB8(d);
+    static lt (o, d, bitDepth = 8) {
+        return Rgb.getAlphaInt(o, bitDepth) < Rgb.getAlphaInt(d, bitDepth)
+            && Rgb.getRInt(o, bitDepth) < Rgb.getRInt(d, bitDepth)
+            && Rgb.getGInt(o, bitDepth) < Rgb.getGInt(d, bitDepth)
+            && Rgb.getBInt(o, bitDepth) < Rgb.getBInt(d, bitDepth);
     }
 
     /**
      * @param {Rgb} o left comparisand
      * @param {Rgb} d right comparisand
+     * @param {number} [bitDepth=8] bit depth
      * @returns the evaluation
      */
-    static ltEq (o, d) {
-        return Rgb.getAlpha8(o) <= Rgb.getAlpha8(d)
-            && Rgb.getR8(o) <= Rgb.getR8(d)
-            && Rgb.getG8(o) <= Rgb.getG8(d)
-            && Rgb.getB8(o) <= Rgb.getB8(d);
+    static ltEq (o, d, bitDepth = 8) {
+        return Rgb.getAlphaInt(o, bitDepth) <= Rgb.getAlphaInt(d, bitDepth)
+            && Rgb.getRInt(o, bitDepth) <= Rgb.getRInt(d, bitDepth)
+            && Rgb.getGInt(o, bitDepth) <= Rgb.getGInt(d, bitDepth)
+            && Rgb.getBInt(o, bitDepth) <= Rgb.getBInt(d, bitDepth);
     }
 
     /**
@@ -646,6 +492,18 @@ class Rgb {
     }
 
     /**
+     * @param {Rgb} o color
+     * @returns the separated channels
+     */
+    static sepRgb (o) {
+        return [
+            new Rgb(o.r, 0.0, 0.0, o.alpha),
+            new Rgb(0.0, o.g, 0.0, o.alpha),
+            new Rgb(0.0, 0.0, o.b, o.alpha)
+        ];
+    }
+
+    /**
      * @param {Rgb} o gamma rgb
      * @returns linear rgb
      */
@@ -691,10 +549,10 @@ class Rgb {
      * @returns the 16 bit integer
      */
     static toARGB1555 (o) {
-        return Rgb.getAlpha1(o) << 0xf
-            | Rgb.getR5(o) << 0xa
-            | Rgb.getG5(o) << 0x5
-            | Rgb.getB5(o);
+        return Rgb.getAlphaInt(o, 1) << 0xf
+            | Rgb.getRInt(o, 5) << 0xa
+            | Rgb.getGInt(o, 5) << 0x5
+            | Rgb.getBInt(o, 5);
     }
 
     /**
@@ -702,9 +560,9 @@ class Rgb {
      * @returns the 15 bit integer
      */
     static toRGB555 (o) {
-        return Rgb.getR5(o) << 0xa
-            | Rgb.getG5(o) << 0x5
-            | Rgb.getB5(o);
+        return Rgb.getRInt(o, 5) << 0xa
+            | Rgb.getGInt(o, 5) << 0x5
+            | Rgb.getBInt(o, 5);
     }
 
     /**
@@ -712,9 +570,9 @@ class Rgb {
      * @returns the 16 bit integer
      */
     static toRGB565 (o) {
-        return Rgb.getR5(o) << 0xb
-            | Rgb.getG6(o) << 0x5
-            | Rgb.getB5(o);
+        return Rgb.getRInt(o, 5) << 0xb
+            | Rgb.getGInt(o, 6) << 0x5
+            | Rgb.getBInt(o, 5);
     }
 
     /**
@@ -722,10 +580,10 @@ class Rgb {
      * @returns the 32 bit integer
      */
     static toRGBA32 (o) {
-        return Rgb.getR8(o) << 0x18
-            | Rgb.getG8(o) << 0x10
-            | Rgb.getB8(o) << 0x08
-            | Rgb.getAlpha8(o);
+        return Rgb.getRInt(o, 8) << 0x18
+            | Rgb.getGInt(o, 8) << 0x10
+            | Rgb.getBInt(o, 8) << 0x08
+            | Rgb.getAlphaInt(o, 8);
     }
 
     /**
@@ -743,38 +601,65 @@ class Rgb {
         return Rgb.clear();
     }
 
+    /**
+     * @returns the color red
+     */
     static red () {
         return new Rgb(1.0, 0.0, 0.0, 1.0);
     }
 
+    /**
+     * @returns the color yellow
+     */
     static yellow () {
         return new Rgb(1.0, 1.0, 0.0, 1.0);
     }
 
+    /**
+     * @returns the color lime green
+     */
     static green () {
         return new Rgb(0.0, 1.0, 0.0, 1.0);
     }
 
+    /**
+     * @returns the color cyan
+     */
     static cyan () {
         return new Rgb(0.0, 1.0, 1.0, 1.0);
     }
 
+    /**
+     * @returns the color blue
+     */
     static blue () {
         return new Rgb(0.0, 0.0, 1.0, 1.0);
     }
 
+    /**
+     * @returns the color magenta
+     */
     static magenta () {
         return new Rgb(1.0, 0.0, 1.0, 1.0);
     }
 
+    /**
+     * @returns the color black
+     */
     static black () {
         return new Rgb(0.0, 0.0, 0.0, 1.0);
     }
 
+    /**
+     * @returns clear black
+     */
     static clear () {
         return new Rgb(0.0, 0.0, 0.0, 0.0);
     }
 
+    /**
+     * @returns the color white
+     */
     static white () {
         return new Rgb(1.0, 1.0, 1.0, 1.0);
     }
