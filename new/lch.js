@@ -189,6 +189,16 @@ class Lch {
      * @param {Lch} d right comparisand
      * @returns the evaluation
      */
+    static eqHueChroma (o, d) {
+        return Lch.eqChroma(o, d)
+            && Lch.eqHue(o, d);
+    }
+
+    /**
+     * @param {Lch} o left comparisand
+     * @param {Lch} d right comparisand
+     * @returns the evaluation
+     */
     static eqLight (o, d) {
         return Lch.getL16(o) === Lch.getL16(d);
     }

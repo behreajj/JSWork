@@ -523,6 +523,15 @@ class Rgb {
     }
 
     /**
+     * @param {Rgb} o color
+     * @returns the gray color
+     */
+    static gray (o) {
+        const lum = 0.3 * o.r + 0.59 * o.g + 0.11 * o.b;
+        return new Rgb(lum, lum, lum, o.alpha);
+    }
+
+    /**
      * @param {Rgb} o left comparisand
      * @param {Rgb} d right comparisand
      * @returns the evaluation
