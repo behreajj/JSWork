@@ -50,7 +50,7 @@ class Lab {
     }
 
     /**
-     * @param {number} [precision=4] the precision
+     * @param {number} [precision=4] decimal display
      * @returns the string
      */
     toString (precision = 4) {

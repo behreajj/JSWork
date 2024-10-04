@@ -42,7 +42,7 @@ class Lch {
     }
 
     /**
-     * @param {number} [precision=4] the precision
+     * @param {number} [precision=4] decimal display
      * @returns the string
      */
     toString (precision = 4) {
@@ -396,9 +396,9 @@ class Lch {
         const h270 = o.h - 0.25;
 
         return [
-            new Lab(50.0, o.c, h90 - Math.floor(h90), o.alpha),
-            new Lab(100.0 - o.l, o.c, h180 - Math.floor(h180), o.alpha),
-            new Lab(50.0, o.c, h270 - Math.floor(h270), o.alpha)
+            new Lch(50.0, o.c, h90 - Math.floor(h90), o.alpha),
+            new Lch(100.0 - o.l, o.c, h180 - Math.floor(h180), o.alpha),
+            new Lch(50.0, o.c, h270 - Math.floor(h270), o.alpha)
         ];
     }
 
@@ -416,9 +416,9 @@ class Lch {
         const h300 = o.h - 0.16666667;
 
         return [
-            new Lab(lTri, o.c, h120 - Math.floor(h120), o.alpha),
-            new Lab(lCmp, o.c, h180 - Math.floor(h180), o.alpha),
-            new Lab(lTet, o.c, h300 - Math.floor(h300), o.alpha)
+            new Lch(lTri, o.c, h120 - Math.floor(h120), o.alpha),
+            new Lch(lCmp, o.c, h180 - Math.floor(h180), o.alpha),
+            new Lch(lTet, o.c, h300 - Math.floor(h300), o.alpha)
         ];
     }
 
@@ -433,8 +433,8 @@ class Lch {
         const h240 = o.h - 0.3333333333333333;
 
         return [
-            new Lab(lTri, o.c, h120 - Math.floor(h120), o.alpha),
-            new Lab(lTri, o.c, h240 - Math.floor(h240), o.alpha)
+            new Lch(lTri, o.c, h120 - Math.floor(h120), o.alpha),
+            new Lch(lTri, o.c, h240 - Math.floor(h240), o.alpha)
         ];
     }
 
@@ -526,25 +526,6 @@ class Lch {
      */
     static opaque (o) {
         return new Lch(o.l, o.c, o.h, 1.0);
-    }
-
-    /**
-     * @param {Lch} o color
-     * @param {number} [trgChroma=0.0] target chroma
-     * @returns the color
-     */
-    static rescaleChroma (o, trgChroma = 0.0) {
-        return new Lch(o.l, trgChroma, o.h, o.alpha);
-    }
-
-    /**
-     * @param {Lch} o color
-     * @param {number} [hueShift=0.0] hue shift
-     * @returns the hue rotated color
-     */
-    static rotateHue (o, hueShift = 0.0) {
-        const rotated = o.h + hueShift;
-        return new Lch(o.l, o.c, rotated - Math.floor(rotated), o.alpha);
     }
 
     /**
