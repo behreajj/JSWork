@@ -61,13 +61,13 @@ class Lab {
 
     toString (precision = 4) {
         return [
-            '{\"l\":',
+            "{\"l\":",
             this._l.toFixed(precision),
-            ',\"a\":',
+            ",\"a\":",
             this._a.toFixed(precision),
-            ',\"b\":',
+            ",\"b\":",
             this._b.toFixed(precision),
-            ',\"alpha\":',
+            ",\"alpha\":",
             this._alpha.toFixed(precision),
             '}'
         ].join('');
@@ -75,14 +75,6 @@ class Lab {
 
     static add (o, d) {
         return new Lab(o.l + d.l, o.a + d.a, o.b + d.b, o.alpha + d.alpha);
-    }
-
-    static black () {
-        return new Lab(0.0, 0.0, 0.0, 1.0);
-    }
-
-    static clear () {
-        return new Lab(0.0, 0.0, 0.0, 0.0);
     }
 
     static chroma (c) {
@@ -125,12 +117,12 @@ class Lab {
         return new Lab(d.l, o.a, o.b, o.alpha);
     }
 
-    static dist (o, d) {
-        const da = d.a - o.a;
-        const db = d.b - o.b;
-        return Math.abs(100.0 * (d.alpha - o.alpha))
+    static dist (o, d, alphaScale = 100.0) {
+        const ca = d.a - o.a;
+        const cb = d.b - o.b;
+        return Math.abs(alphaScale * (d.alpha - o.alpha))
             + Math.abs(d.l - o.l)
-            + Math.sqrt(da * da + db * db);
+            + Math.sqrt(ca * ca + cb * cb);
     }
 
     static eq (o, d) {
@@ -239,7 +231,7 @@ class Lab {
 
     static harmonyComplement (c) {
         return [
-            new Lab(100.0 - c.l, -c.a, -c.b, c.alpha),
+            new Lab(100.0 - c.l, -c.a, -c.b, c.alpha)
         ];
     }
 
@@ -287,7 +279,7 @@ class Lab {
     }
 
     static harmonyTriadic (c) {
-        const lTri = lTri = (200.0 - c.l) / 3.0;
+        const lTri = (200.0 - c.l) / 3.0;
 
         // 120, 240 degrees
         const sqrt3_2 = 0.8660254037844386;
@@ -404,6 +396,14 @@ class Lab {
             | Lab.getL16(c) << 0x20
             | Lab.getA16(c) << 0x10
             | Lab.getB16(c);
+    }
+
+    static black () {
+        return new Lab(0.0, 0.0, 0.0, 1.0);
+    }
+
+    static clear () {
+        return new Lab(0.0, 0.0, 0.0, 0.0);
     }
 
     static white () {
