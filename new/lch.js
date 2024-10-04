@@ -124,6 +124,28 @@ class Lch {
     }
 
     /**
+     * @param {Lch} o left operand
+     * @param {Lch} d right operand
+     * @param {number} [alphaScale=100.0] alpha scale
+     * @returns the distance
+     */
+    static dist (o, d, alphaScale = 100.0) {
+        const tau = Math.PI + Math.PI;
+
+        const oa = o.c * Math.cos(o.h * tau);
+        const ob = o.c * Math.sin(o.h * tau);
+
+        const da = d.c * Math.cos(d.h * tau);
+        const db = d.c * Math.sin(d.h * tau);
+
+        const ca = da - oa;
+        const cb = db - ob;
+        return Math.abs(alphaScale * (d.alpha - o.alpha))
+            + Math.abs(d.l - o.l)
+            + Math.sqrt(ca * ca + cb * cb);
+    }
+
+    /**
      * @param {Lch} o left comparisand
      * @param {Lch} d right comparisand
      * @returns the evaluation
