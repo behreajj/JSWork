@@ -95,6 +95,7 @@ class Rgb {
     }
 
     static eq (o, d) {
+        // TODO: Refactor to match Lab and Lch.
         return Rgb.toRGBA32(o) === Rgb.toRGBA32(d);
     }
 
@@ -290,10 +291,12 @@ class Rgb {
     }
 
     static gt (o, d) {
+        // TODO: Refactor to match Lab and Lch.
         return Rgb.toRGBA32(o) > Rgb.toRGBA32(d);
     }
 
     static gtEq (o, d) {
+        // TODO: Refactor to match Lab and Lch.
         return Rgb.toRGBA32(o) >= Rgb.toRGBA32(d);
     }
 
@@ -305,10 +308,12 @@ class Rgb {
     }
 
     static lt (o, d) {
+        // TODO: Refactor to match Lab and Lch.
         return Rgb.toRGBA32(o) < Rgb.toRGBA32(d);
     }
 
     static ltEq (o, d) {
+        // TODO: Refactor to match Lab and Lch.
         return Rgb.toRGBA32(o) <= Rgb.toRGBA32(d);
     }
 

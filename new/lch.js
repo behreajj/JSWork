@@ -29,6 +29,19 @@ class Lch {
     }
 
     /**
+     * @param {*} obj 
+     * @returns the evaluation
+     */
+    equals (obj) {
+        if (!obj) { return false; }
+        if (this === obj) { return true; }
+        if (obj.constructor.name !== this.constructor.name) {
+            return false;
+        }
+        return Lch.eq(this, obj);
+    }
+
+    /**
      * @param {number} [precision=4] the precision
      * @returns the string
      */
@@ -229,81 +242,336 @@ class Lch {
     }
 
     /**
-     * @param {Lch} c color
+     * @param {Lch} o color
      * @retuns the lightness as an unsigned 8 bit integer
      */
-    static getL8 (c) {
+    static getL8 (o) {
         return Math.trunc(Math.min(Math.max(
-            c.l, 0.0), 100.0) * 2.55 + 0.5);
+            o.l, 0.0), 100.0) * 2.55 + 0.5);
     }
 
     /**
-     * @param {Lch} c color
-     * @retuns the chroma as an unsigned 8 bit integer
-     */
-    static getC8 (c) {
-        return Math.trunc(Math.min(Math.max(
-            c.c, 0.0), 255.0) + 0.5);
-    }
-
-    /**
-     * @param {Lch} c color
-     * @retuns the hue as an unsigned 8 bit integer
-     */
-    static getH8 (c) {
-        return Math.trunc((c.h - Math.floor(c.h)) * 255 + 0.5);
-    }
-
-    /**
-     * @param {Lch} c color
-     * @retuns the alpha as an unsigned 8 bit integer
-     */
-    static getAlpha8 (c) {
-        return Math.trunc(Math.min(Math.max(
-            c.alpha, 0.0), 1.0) * 255 + 0.5);
-    }
-
-    /**
-     * @param {Lch} c color
+     * @param {Lch} o color
      * @retuns the lightness as an unsigned 16 bit integer
      */
-    static getL16 (c) {
+    static getL16 (o) {
         return Math.trunc(Math.min(Math.max(
-            c.l, 0.0), 100.0) * 655.35 + 0.5);
+            o.l, 0.0), 100.0) * 655.35 + 0.5);
     }
 
     /**
-     * @param {Lch} c color
+     * @param {Lch} o color
+     * @retuns the chroma as an unsigned 8 bit integer
+     */
+    static getC8 (o) {
+        return Math.trunc(Math.min(Math.max(
+            o.c, 0.0), 255.0) + 0.5);
+    }
+
+    /**
+     * @param {Lch} o color
      * @retuns the chroma as an unsigned 16 bit integer
      */
-    static getC16 (c) {
+    static getC16 (o) {
         return Math.trunc(Math.min(Math.max(
-            c.c, 0.0), 255.0) * 257 + 0.5);
+            o.c, 0.0), 255.0) * 257 + 0.5);
     }
 
     /**
-     * @param {Lch} c color
+     * @param {Lch} o color
+     * @retuns the hue as an unsigned 8 bit integer
+     */
+    static getH8 (o) {
+        return Math.trunc((o.h - Math.floor(o.h)) * 255 + 0.5);
+    }
+
+    /**
+     * @param {Lch} o color
      * @retuns the hue as an unsigned 16 bit integer
      */
-    static getH16 (c) {
-        return Math.trunc((c.h - Math.floor(c.h)) * 65535 + 0.5);
+    static getH16 (o) {
+        return Math.trunc((o.h - Math.floor(o.h)) * 65535 + 0.5);
     }
 
     /**
-     * @param {Lch} c color
+     * @param {Lch} o color
+     * @retuns the alpha as an unsigned 8 bit integer
+     */
+    static getAlpha8 (o) {
+        return Math.trunc(Math.min(Math.max(
+            o.alpha, 0.0), 1.0) * 255 + 0.5);
+    }
+
+    /**
+     * @param {Lch} o color
      * @retuns the alpha as an unsigned 16 bit integer
      */
-    static getAlpha16 (c) {
+    static getAlpha16 (o) {
         return Math.trunc(Math.min(Math.max(
-            c.alpha, 0.0), 1.0) * 65535 + 0.5);
+            o.alpha, 0.0), 1.0) * 65535 + 0.5);
     }
 
     /**
-     * @param {Lch} c color
+     * @param {Lch} o color
      * @returns the gray color
      */
-    static gray (c) {
-        return new Lch(c.l, 0.0, c.h, c.alpha);
+    static gray (o) {
+        return new Lch(o.l, 0.0, o.h, o.alpha);
+    }
+
+    /**
+     * @param {Lch} o left comparisand
+     * @param {Lch} d right comparisand
+     * @returns the evaluation
+     */
+    static gt (o, d) {
+        return Lch.getAlpha16(o) > Lch.getAlpha16(d)
+            && Lch.getL16(o) > Lch.getL16(d)
+            && Lch.getC16(o) > Lch.getC16(d)
+            && Lch.getH16(o) > Lch.getH16(d);
+    }
+
+    /**
+     * @param {Lch} o left comparisand
+     * @param {Lch} d right comparisand
+     * @returns the evaluation
+     */
+    static gtEq (o, d) {
+        return Lch.getAlpha16(o) >= Lch.getAlpha16(d)
+            && Lch.getL16(o) >= Lch.getL16(d)
+            && Lch.getC16(o) >= Lch.getC16(d)
+            && Lch.getH16(o) >= Lch.getH16(d);
+    }
+
+    /**
+     * @param {Lch} o 
+     * @returns the array of harmonies
+     */
+    static harmonyAnalogous (o) {
+        const lAna = (o.l * 2.0 + 50.0) / 3.0;
+
+        const h30 = o.h + 0.08333333333333333;
+        const h330 = o.h - 0.08333333333333333;
+
+        return [
+            new Lch(lAna, o.c, h30 - Math.floor(h30), o.alpha),
+            new Lch(lAna, o.c, h330 - Math.floor(h330), o.alpha)
+        ];
+    }
+
+    /**
+     * @param {Lch} o 
+     * @returns the array of harmonies
+     */
+    static harmonyComplement (o) {
+        const h180 = c.h + 0.5;
+        return [
+            new Lch(100.0 - o.l, o.c, h180 - Math.floor(h180), o.alpha)
+        ];
+    }
+
+    /**
+     * @param {Lch} o 
+     * @returns the array of harmonies
+     */
+    static harmonySplit (o) {
+        const lSpl = (250.0 - o.l * 2.0) / 3.0;
+
+        const h150 = o.h + 0.4166666666666667;
+        const h210 = o.h - 0.4166666666666667;
+
+        return [
+            new Lch(lSpl, o.c, h150 - Math.floor(h150), o.alpha),
+            new Lch(lSpl, o.c, h210 - Math.floor(h210), o.alpha)
+        ];
+    }
+
+    /**
+     * @param {Lch} o 
+     * @returns the array of harmonies
+     */
+    static harmonySquare (o) {
+        const h90 = o.h + 0.25;
+        const h180 = o.h + 0.5;
+        const h270 = o.h - 0.25;
+
+        return [
+            new Lab(50.0, o.c, h90 - Math.floor(h90), o.alpha),
+            new Lab(100.0 - o.l, o.c, h180 - Math.floor(h180), o.alpha),
+            new Lab(50.0, o.c, h270 - Math.floor(h270), o.alpha)
+        ];
+    }
+
+    /**
+     * @param {Lch} o 
+     * @returns the array of harmonies
+     */
+    static harmonyTetradic (o) {
+        const lTri = (200.0 - o.l) / 3.0;
+        const lCmp = 100.0 - o.l;
+        const lTet = (100.0 + o.l) / 3.0;
+
+        const h120 = o.h + 0.3333333333333333;
+        const h180 = o.h + 0.5;
+        const h300 = o.h - 0.16666667;
+
+        return [
+            new Lab(lTri, o.c, h120 - Math.floor(h120), o.alpha),
+            new Lab(lCmp, o.c, h180 - Math.floor(h180), o.alpha),
+            new Lab(lTet, o.c, h300 - Math.floor(h300), o.alpha)
+        ];
+    }
+
+    /**
+     * @param {Lch} o 
+     * @returns the array of harmonies
+     */
+    static harmonyTriadic (o) {
+        const lTri = (200.0 - o.l) / 3.0;
+
+        const h120 = o.h + 0.3333333333333333;
+        const h240 = o.h - 0.3333333333333333;
+
+        return [
+            new Lab(lTri, o.c, h120 - Math.floor(h120), o.alpha),
+            new Lab(lTri, o.c, h240 - Math.floor(h240), o.alpha)
+        ];
+    }
+
+    /**
+     * @param {Lch} o left comparisand
+     * @param {Lch} d right comparisand
+     * @returns the evaluation
+     */
+    static lt (o, d) {
+        return Lch.getAlpha16(o) < Lch.getAlpha16(d)
+            && Lch.getL16(o) < Lch.getL16(d)
+            && Lch.getC16(o) < Lch.getC16(d)
+            && Lch.getH16(o) < Lch.getH16(d);
+    }
+
+    /**
+     * @param {Lch} o left comparisand
+     * @param {Lch} d right comparisand
+     * @returns the evaluation
+     */
+    static ltEq (o, d) {
+        return Lch.getAlpha16(o) <= Lch.getAlpha16(d)
+            && Lch.getL16(o) <= Lch.getL16(d)
+            && Lch.getC16(o) <= Lch.getC16(d)
+            && Lch.getH16(o) <= Lch.getH16(d);
+    }
+
+    /**
+     * @param {Lch} o origin
+     * @param {Lch} d destination
+     * @param {number} t factor
+     * @param {function} easing hue easing function
+     * @returns the mixed color
+     */
+    static mix (o, d, t, easing) {
+        const u = 1.0 - t;
+        const cl = u * o.l + t * d.l;
+        const calpha = u * o.alpha + t * d.alpha;
+
+        const oIsGray = o.c < 0.000001;
+        const dIsGray = d.c < 0.000001;
+        if (oIsGray && dIsGray) {
+            return new Lch(cl, 0.0, 0.0, calpha);
+        }
+
+        if (oIsGray || dIsGray) {
+            let oa = 0.0;
+            let ob = 0.0;
+            if (!oIsGray) {
+                const ohRadians = o.h * (Math.PI + Math.PI);
+                oa = o.c * Math.cos(ohRadians);
+                ob = o.c * Math.sin(ohRadians);
+            }
+
+            let da = 0.0;
+            let db = 0.0;
+            if (!dIsGray) {
+                const dhRadians = d.h * (Math.PI + Math.PI);
+                da = d.c * Math.cos(dhRadians);
+                db = d.c * Math.sin(dhRadians);
+            }
+
+            const ca = u * oa + t * da;
+            const cb = u * ob + t * db;
+
+            // Zero chroma should already be taken care of by the early
+            // return for o and d gray above.
+            const cc = Math.sqrt(ca * ca + cb * cb);
+
+            let cRadiansSigned = Math.atan2(cb, ca);
+            const cRadians = cRadiansSigned < 0.0 ?
+                cRadiansSigned + (Math.PI + Math.PI) :
+                cRadiansSigned;
+            const ch = cRadians / (Math.PI + Math.PI);
+
+            return new Lch(cl, cc, ch, calpha);
+        }
+
+        return new Lch(
+            cl,
+            u * o.c + t * d.c,
+            easing(o.h, d.h, t, 1.0),
+            calpha);
+    }
+
+    /**
+     * @param {Lch} o color
+     * @returns the opaque color
+     */
+    static opaque (o) {
+        return new Lch(o.l, o.c, o.h, 1.0);
+    }
+
+    /**
+     * @param {Lch} o color
+     * @param {number} [trgChroma=0.0] target chroma
+     * @returns the color
+     */
+    static rescaleChroma (o, trgChroma = 0.0) {
+        return new Lch(o.l, trgChroma, o.h, o.alpha);
+    }
+
+    /**
+     * @param {Lch} o color
+     * @param {number} [hueShift=0.0] hue shift
+     * @returns the hue rotated color
+     */
+    static rotateHue (o, hueShift = 0.0) {
+        const rotated = o.h + hueShift;
+        return new Lch(o.l, o.c, rotated - Math.floor(rotated), o.alpha);
+    }
+
+    /**
+     * @param {Lch} o color
+     * @param {number} [scalar=1.0] scalar
+     * @returns the color 
+     */
+    static scaleAlpha (o, scalar = 1.0) {
+        return new Lch(o.l, o.c, o.h, o.alpha * scalar);
+    }
+
+    /**
+     * @param {Lch} o color
+     * @param {number} [scalar=1.0] scalar
+     * @returns the color 
+     */
+    static scaleChroma (o, scalar = 1.0) {
+        return new Lch(o.l, o.c * scalar, o.h, o.alpha);
+    }
+
+    /**
+     * @param {Lch} o color
+     * @param {number} [scalar=1.0] scalar
+     * @returns the color 
+     */
+    static scaleLight (o, scalar = 1.0) {
+        return new Lch(o.l * scalar, o.c, o.h, o.alpha);
     }
 
     /**
@@ -320,35 +588,44 @@ class Lch {
     }
 
     /**
-     * @param {Lch} c lch
+     * @param {Lch} o lch
      * @returns the 32 bit integer
      */
-    static toTLCH32 (c) {
-        return Lch.getAlpha8(c) << 0x18
-            | Lch.getL8(c) << 0x10
-            | Lch.getC8(c) << 0x08
-            | Lch.getH8(c);
+    static toTLCH32 (o) {
+        return Lch.getAlpha8(o) << 0x18
+            | Lch.getL8(o) << 0x10
+            | Lch.getC8(o) << 0x08
+            | Lch.getH8(o);
     }
 
     /**
-     * @param {Lch} c lch
+     * @param {Lch} o lch
      * @returns the 64 bit integer
      */
-    static toTLCH64 (c) {
-        return BigInt(Lch.getAlpha16(c)) << 0x30n
-            | BigInt(Lch.getL16(c)) << 0x20n
-            | BigInt(Lch.getC16(c)) << 0x10n
-            | BigInt(Lch.getH16(c));
+    static toTLCH64 (o) {
+        return BigInt(Lch.getAlpha16(o)) << 0x30n
+            | BigInt(Lch.getL16(o)) << 0x20n
+            | BigInt(Lch.getC16(o)) << 0x10n
+            | BigInt(Lch.getH16(o));
     }
 
+    /**
+     * @returns the color black
+     */
     static black () {
         return new Lch(0.0, 0.0, 0.0, 1.0);
     }
 
+    /**
+     * @returns clear black
+     */
     static clear () {
         return new Lch(0.0, 0.0, 0.0, 0.0);
     }
 
+    /**
+     * @returns the color white
+     */
     static white () {
         return new Lch(100.0, 0.0, 0.0, 1.0);
     }
