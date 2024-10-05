@@ -46,7 +46,7 @@ class Rgb {
      * @returns the string
      */
     toString (precision = 4) {
-        if (precision >= 0 && precision < 21) {
+        if (precision >= 1 && precision < 21) {
             return [
                 "{\"r\":", this._r.toFixed(precision),
                 ",\"g\":", this._g.toFixed(precision),
@@ -56,11 +56,12 @@ class Rgb {
             ].join('');
         }
 
+        const bd = precision >= -7 ? 8 + precision : 8;
         return [
-            "{\"r\":", Rgb.getRInt(this),
-            ",\"g\":", Rgb.getGInt(this),
-            ",\"b\":", Rgb.getBInt(this),
-            ",\"alpha\":", Rgb.getAlphaInt(this),
+            "{\"r\":", Rgb.getRInt(this, bd),
+            ",\"g\":", Rgb.getGInt(this, bd),
+            ",\"b\":", Rgb.getBInt(this, bd),
+            ",\"alpha\":", Rgb.getAlphaInt(this, bd),
             '}'
         ].join('');
     }
@@ -175,65 +176,6 @@ class Rgb {
      * @param {number} [r=0] red
      * @param {number} [g=0] green
      * @param {number} [b=0] blue
-     * @param {number} [alpha=7] opacity
-     * @returns the conversion
-     */
-    static from3s (r = 0, g = 0, b = 0, alpha = 7) {
-        return new Rgb(
-            r / 7.0,
-            g / 7.0,
-            b / 7.0,
-            alpha / 7.0);
-    }
-
-    /**
-     * @param {number} [r=0] red
-     * @param {number} [g=0] green
-     * @param {number} [b=0] blue
-     * @param {number} [alpha=15] opacity
-     * @returns the conversion
-     */
-    static from4s (r = 0, g = 0, b = 0, alpha = 15) {
-        return new Rgb(
-            r / 15.0,
-            g / 15.0,
-            b / 15.0,
-            alpha / 15.0);
-    }
-
-    /**
-     * @param {number} [r=0] red
-     * @param {number} [g=0] green
-     * @param {number} [b=0] blue
-     * @param {number} [alpha=1] opacity
-     * @returns the conversion
-     */
-    static from5551 (r = 0, g = 0, b = 0, alpha = 1) {
-        return new Rgb(
-            r / 31.0,
-            g / 31.0,
-            b / 31.0,
-            alpha);
-    }
-
-    /**
-     * @param {number} [r=0] red
-     * @param {number} [g=0] green
-     * @param {number} [b=0] blue
-     * @returns the conversion
-     */
-    static from565 (r = 0, g = 0, b = 0) {
-        return new Rgb(
-            r / 31.0,
-            g / 63.0,
-            b / 31.0,
-            1.0);
-    }
-
-    /**
-     * @param {number} [r=0] red
-     * @param {number} [g=0] green
-     * @param {number} [b=0] blue
      * @param {number} [alpha=255] opacity
      * @returns the conversion
      */
@@ -249,62 +191,29 @@ class Rgb {
      * @param {number} [r=0] red
      * @param {number} [g=0] green
      * @param {number} [b=0] blue
-     * @param {number} [alpha=65535] opacity
+     * @param {number} [alpha=255] opacity
+     * @param {number} [rBitDepth=8] red bit depth
+     * @param {number} [gBitDepth=8] green bit depth
+     * @param {number} [bBitDepth=8] blue bit depth
+     * @param {number} [alphaBitDepth=8] alpha bit depth
      * @returns the conversion
      */
-    static from16s (r = 0, g = 0, b = 0, alpha = 65535) {
+    static fromInts (
+        r = 0, g = 0, b = 0, alpha = 255,
+        rBitDepth = 8,
+        gBitDepth = 8,
+        bBitDepth = 8,
+        alphaBitDepth = 8) {
+
+        const rMx = (1 << rBitDepth) - 1;
+        const gMx = (1 << gBitDepth) - 1;
+        const bMx = (1 << bBitDepth) - 1;
+        const tMx = (1 << alphaBitDepth) - 1;
         return new Rgb(
-            r / 65535.0,
-            g / 65535.0,
-            b / 65535.0,
-            alpha / 65535.0);
-    }
-
-    /**
-     * @param {number} i 12 bit integer
-     * @returns the conversion
-     */
-    static fromRGBA12 (i) {
-        return Rgb.from3s(
-            (i >> 0x9) & 0x7,
-            (i >> 0x6) & 0x7,
-            (i >> 0x3) & 0x7,
-            i & 0x7);
-    }
-
-    /**
-     * @param {number} i 16 bit integer
-     * @returns the conversion
-     */
-    static fromRGBA16 (i) {
-        return Rgb.from4s(
-            (i >> 0x10) & 0xf,
-            (i >> 0x08) & 0xf,
-            (i >> 0x04) & 0xf,
-            i & 0xf);
-    }
-
-    /**
-     * @param {number} i 15 bit integer
-     * @returns the conversion
-     */
-    static fromRGB555 (i) {
-        return Rgb.from5551(
-            (i >> 0xa) & 0x1f,
-            (i >> 0x5) & 0x1f,
-            i & 0x1f,
-            1);
-    }
-
-    /**
-     * @param {number} i 16 bit integer
-     * @returns the conversion
-     */
-    static fromRGB565 (i) {
-        return Rgb.from565(
-            (i >> 0xb) & 0x1f,
-            (i >> 0x5) & 0x3f,
-            i & 0x1f);
+            rMx !== 0.0 ? r / rMx : 0.0,
+            gMx !== 0.0 ? g / gMx : 0.0,
+            bMx !== 0.0 ? b / bMx : 0.0,
+            tMx !== 0.0 ? alpha / tMx : 1.0);
     }
 
     /**
@@ -317,6 +226,42 @@ class Rgb {
             (i >> 0x10) & 0xff,
             (i >> 0x08) & 0xff,
             i & 0xff);
+    }
+
+    /**
+     * @param {number} i integer
+     * @param {number} [rBitDepth=8] red bit depth
+     * @param {number} [gBitDepth=8] green bit depth
+     * @param {number} [bBitDepth=8] blue bit depth
+     * @param {number} [alphaBitDepth=8] alpha bit depth
+     * @returns the conversion
+     */
+    static fromRGBAInt (i,
+        rBitDepth = 8,
+        gBitDepth = 8,
+        bBitDepth = 8,
+        alphaBitDepth = 8) {
+        // TODO: Support big ints with bit depth 16 channels?
+
+        const bShift = alphaBitDepth;
+        const gShift = alphaBitDepth + bBitDepth;
+        const rShift = alphaBitDepth + bBitDepth + gBitDepth;
+
+        const rMx = (1 << rBitDepth) - 1;
+        const gMx = (1 << gBitDepth) - 1;
+        const bMx = (1 << bBitDepth) - 1;
+        const tMx = (1 << alphaBitDepth) - 1;
+
+        const r = (i >> rShift) & rMx;
+        const g = (i >> gShift) & gMx;
+        const b = (i >> bShift) & bMx;
+        const alpha = i & tMx;
+
+        return new Rgb(
+            rMx !== 0.0 ? r / rMx : 0.0,
+            gMx !== 0.0 ? g / gMx : 0.0,
+            bMx !== 0.0 ? b / bMx : 0.0,
+            tMx !== 0.0 ? alpha / tMx : 1.0);
     }
 
     /**
@@ -546,37 +491,6 @@ class Rgb {
 
     /**
      * @param {Rgb} o rgb
-     * @returns the 16 bit integer
-     */
-    static toARGB1555 (o) {
-        return Rgb.getAlphaInt(o, 1) << 0xf
-            | Rgb.getRInt(o, 5) << 0xa
-            | Rgb.getGInt(o, 5) << 0x5
-            | Rgb.getBInt(o, 5);
-    }
-
-    /**
-     * @param {Rgb} o rgb
-     * @returns the 15 bit integer
-     */
-    static toRGB555 (o) {
-        return Rgb.getRInt(o, 5) << 0xa
-            | Rgb.getGInt(o, 5) << 0x5
-            | Rgb.getBInt(o, 5);
-    }
-
-    /**
-     * @param {Rgb} o rgb
-     * @returns the 16 bit integer
-     */
-    static toRGB565 (o) {
-        return Rgb.getRInt(o, 5) << 0xb
-            | Rgb.getGInt(o, 6) << 0x5
-            | Rgb.getBInt(o, 5);
-    }
-
-    /**
-     * @param {Rgb} o rgb
      * @returns the 32 bit integer
      */
     static toRGBA32 (o) {
@@ -584,6 +498,29 @@ class Rgb {
             | Rgb.getGInt(o, 8) << 0x10
             | Rgb.getBInt(o, 8) << 0x08
             | Rgb.getAlphaInt(o, 8);
+    }
+
+    /**
+     * @param {Rgb} o rgb
+     * @param {number} [rBitDepth=8] red bit depth
+     * @param {number} [gBitDepth=8] green bit depth
+     * @param {number} [bBitDepth=8] blue bit depth
+     * @param {number} [alphaBitDepth=8] alpha bit depth
+     * @returns the integer
+     */
+    static toRGBAInt (o,
+        rBitDepth = 8,
+        gBitDepth = 8,
+        bBitDepth = 8,
+        alphaBitDepth = 8) {
+        // TODO: Support big ints with bit depth 16 channels?
+        const bShift = alphaBitDepth;
+        const gShift = alphaBitDepth + bBitDepth;
+        const rShift = alphaBitDepth + bBitDepth + gBitDepth;
+        return Rgb.getRInt(o, rBitDepth) << rShift
+            | Rgb.getGInt(o, gBitDepth) << gShift
+            | Rgb.getBInt(o, bBitDepth) << bShift
+            | Rgb.getAlphaInt(o, alphaBitDepth);
     }
 
     /**
