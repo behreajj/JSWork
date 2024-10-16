@@ -127,7 +127,7 @@ class Rgb {
     /**
      * @param {Rgb} o left operand
      * @param {Rgb} d right operand
-     * @param {number} [alphaScale=100.0] alpha scale
+     * @param {number} [alphaScale=1.0] alpha scale
      * @returns the distance
      */
     static dist (o, d, alphaScale = 1.0) {
@@ -145,7 +145,7 @@ class Rgb {
      * @param {number} [bitDepth=8] bit depth
      * @returns the evaluation
      */
-    static eq (o, d, bitDepth) {
+    static eq (o, d, bitDepth = 8) {
         return Rgb.eqAlpha(o, d, bitDepth)
             && Rgb.eqRGB(o, d, bitDepth);
     }
@@ -156,7 +156,7 @@ class Rgb {
      * @param {number} [bitDepth=8] bit depth
      * @returns the evaluation
      */
-    static eqAlpha (o, d, bitDepth) {
+    static eqAlpha (o, d, bitDepth = 8) {
         return Rgb.getAlphaInt(o, bitDepth) === Rgb.getAlphaInt(d, bitDepth);
     }
 
@@ -166,7 +166,7 @@ class Rgb {
      * @param {number} [bitDepth=8] bit depth
      * @returns the evaluation
      */
-    static eqRGB (o, d, bitDepth) {
+    static eqRGB (o, d, bitDepth = 8) {
         return Rgb.getRInt(o, bitDepth) === Rgb.getRInt(d, bitDepth)
             && Rgb.getGInt(o, bitDepth) === Rgb.getGInt(d, bitDepth)
             && Rgb.getBInt(o, bitDepth) === Rgb.getBInt(d, bitDepth);
