@@ -210,10 +210,10 @@ class Rgb {
         const bMx = (1 << bBitDepth) - 1;
         const tMx = (1 << alphaBitDepth) - 1;
         return new Rgb(
-            rMx !== 0.0 ? r / rMx : 0.0,
-            gMx !== 0.0 ? g / gMx : 0.0,
-            bMx !== 0.0 ? b / bMx : 0.0,
-            tMx !== 0.0 ? alpha / tMx : 1.0);
+            rMx > 0.0 ? r / rMx : 0.0,
+            gMx > 0.0 ? g / gMx : 0.0,
+            bMx > 0.0 ? b / bMx : 0.0,
+            tMx > 0.0 ? alpha / tMx : 1.0);
     }
 
     /**
@@ -258,10 +258,10 @@ class Rgb {
         const alpha = i & tMx;
 
         return new Rgb(
-            rMx !== 0.0 ? r / rMx : 0.0,
-            gMx !== 0.0 ? g / gMx : 0.0,
-            bMx !== 0.0 ? b / bMx : 0.0,
-            tMx !== 0.0 ? alpha / tMx : 1.0);
+            rMx > 0.0 ? r / rMx : 0.0,
+            gMx > 0.0 ? g / gMx : 0.0,
+            bMx > 0.0 ? b / bMx : 0.0,
+            tMx > 0.0 ? alpha / tMx : 1.0);
     }
 
     /**
@@ -417,7 +417,10 @@ class Rgb {
      * @returns the premultiplied color
      */
     static premul (o) {
-        if (o.alpha !== 0.0) {
+        if (o.alpha >= 1.0) {
+            return Rgb.opaque(o);
+        }
+        if (o.alpha > 0.0) {
             return new Rgb(
                 o.r / o.alpha,
                 o.g / o.alpha,
@@ -528,7 +531,10 @@ class Rgb {
      * @returns the unpremultiplied color
      */
     static unpremul (o) {
-        if (o.alpha !== 0.0) {
+        if (o.alpha >= 1.0) {
+            return Rgb.opaque(o);
+        }
+        if (o.alpha > 0.0) {
             return new Rgb(
                 o.r * o.alpha,
                 o.g * o.alpha,
@@ -536,6 +542,34 @@ class Rgb {
                 o.alpha);
         }
         return Rgb.clear();
+    }
+
+    /**
+     * @returns the color blue
+     */
+    static blue () {
+        return new Rgb(0.0, 0.0, 1.0, 1.0);
+    }
+
+    /**
+     * @returns the color cyan
+     */
+    static cyan () {
+        return new Rgb(0.0, 1.0, 1.0, 1.0);
+    }
+
+    /**
+     * @returns the color lime green
+     */
+    static green () {
+        return new Rgb(0.0, 1.0, 0.0, 1.0);
+    }
+
+    /**
+     * @returns the color magenta
+     */
+    static magenta () {
+        return new Rgb(1.0, 0.0, 1.0, 1.0);
     }
 
     /**
@@ -550,34 +584,6 @@ class Rgb {
      */
     static yellow () {
         return new Rgb(1.0, 1.0, 0.0, 1.0);
-    }
-
-    /**
-     * @returns the color lime green
-     */
-    static green () {
-        return new Rgb(0.0, 1.0, 0.0, 1.0);
-    }
-
-    /**
-     * @returns the color cyan
-     */
-    static cyan () {
-        return new Rgb(0.0, 1.0, 1.0, 1.0);
-    }
-
-    /**
-     * @returns the color blue
-     */
-    static blue () {
-        return new Rgb(0.0, 0.0, 1.0, 1.0);
-    }
-
-    /**
-     * @returns the color magenta
-     */
-    static magenta () {
-        return new Rgb(1.0, 0.0, 1.0, 1.0);
     }
 
     /**

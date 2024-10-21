@@ -58,6 +58,30 @@ class Vec2 {
   }
 
   /**
+   * @param {Vec2} o left operand 
+   * @param {Vec2} d right operand
+   * @returns the angle
+   */
+  static angleBetween (o, d) {
+    if ((o.x !== 0.0 || o.y !== 0.0)
+      && (d.x !== 0.0 || d.y !== 0.0)) {
+      return Math.acos(Vec2.dot(o, d)
+        / (Vec2.mag(o) * Vec2.mag(d)));
+    }
+    return 0.0;
+  }
+
+  /**
+   * @param {Vec2} o left operand 
+   * @param {Vec2} d right operand
+   * @returns the evaluation
+   */
+  static approx (o, d, tol = 0.000001) {
+    return Math.abs(d.y - o.y) < tol
+      && Math.abs(d.x - o.x) < tol;
+  }
+
+  /**
    * @param {Vec2} o vector
    * @returns the floor
    */
@@ -94,8 +118,8 @@ class Vec2 {
   }
 
   /**
-   * @param {Vec2} o left comparisand
-   * @param {Vec2} d right comparisand
+   * @param {Vec2} o left operand
+   * @param {Vec2} d right operand
    * @returns the signed magnitude
    */
   static copySign (o, d) {
@@ -183,6 +207,22 @@ class Vec2 {
 
   /**
    * @param {Vec2} o vector
+   * @returns the flipped vector
+   */
+  static flipX (o) {
+    return new Vec2(-o.x, o.y);
+  }
+
+  /**
+   * @param {Vec2} o vector
+   * @returns the flipped vector
+   */
+  static flipY (o) {
+    return new Vec2(o.x, -o.y);
+  }
+
+  /**
+   * @param {Vec2} o vector
    * @returns the floor
    */
   static floor (o) {
@@ -225,18 +265,40 @@ class Vec2 {
 
   /**
    * @param {Vec2} o vector
-   * @returns the magnitude
+   * @returns the angle in radians
    */
-  static mag (o) {
-    return Math.sqrt(Vec2.magSq(o));
+  static headingSigned (o) {
+    return Math.atan2(o.y, o.z);
   }
 
   /**
    * @param {Vec2} o vector
    * @returns the angle in radians
    */
-  static headingSigned (o) {
-    return Math.atan2(o.y, o.z);
+  static headingUnsigned (o) {
+    const hs = Vec2.headingSigned(o);
+    return hs < 0.0 ?
+      hs + (Math.PI + Math.PI) :
+      hs;
+  }
+
+  /**
+   * @param {Vec2} o vector
+   * @param {number} limit 
+   */
+  static limit (o, limit) {
+    if (Vec2.magSq(o) > limit * limit) {
+      return Vec2.rescale(o, limit);
+    }
+    return new Vec2(o.x, o.y);
+  }
+
+  /**
+   * @param {Vec2} o vector
+   * @returns the magnitude
+   */
+  static mag (o) {
+    return Math.hypot(o.x, o.y);
   }
 
   /**
@@ -270,6 +332,86 @@ class Vec2 {
   }
 
   /**
+   * @param {Vec2} o origin
+   * @param {Vec2} d destination
+   * @param {number} [t=0.5] factor
+   */
+  static mix (o, d, t = 0.5) {
+    const u = 1.0 - t;
+    return new Vec2(
+      u * o.x + t * d.x,
+      u * o.y + t * d.y);
+  }
+
+  /**
+   * @param {Vec2} o left operand 
+   * @returns the negation
+   */
+  static negate (o) {
+    return new Vec2(-o.x, -o.y);
+  }
+
+  /**
+   * @param {Vec2} o left operand 
+   * @returns the normalized vector
+   */
+  static normalize (o) {
+    const mSq = Vec2.magSq(o);
+    if (mSq > 0.0) {
+      const mInv = 1.0 / Math.sqrt(mSq);
+      return new Vec2(o.x * mInv, o.y * mInv);
+    }
+    return new Vec2(0.0, 0.0);
+  }
+
+  /**
+   * @param {Vec2} o left operand 
+   * @returns the perpendicular
+   */
+  static perpendicularCCW (o) {
+    return new Vec2(-o.y, o.x);
+  }
+
+  /**
+   * @param {Vec2} o left operand 
+   * @returns the perpendicular
+   */
+  static perpendicularCW (o) {
+    return new Vec2(o.y, -o.x);
+  }
+
+  /**
+   * @param {Vec2} o left operand 
+   * @param {Vec2} d right operand
+   * @returns the projection
+   */
+  static projectScalar (o, d) {
+    const bSq = Vec2.magSq(d);
+    if (bSq > 0.0) { return Vec2.dot(o, d) / bSq; }
+    return 0.0;
+  }
+
+  /**
+   * @param {Vec2} o left operand 
+   * @param {Vec2} d right operand
+   * @returns the projection
+   */
+  static projectVector (o, d) {
+    return Vec2.scale(d, Vec2.projectScalar(o, d));
+  }
+
+  /**
+   * @param {Vec2} o left operand 
+   * @param {Vec2} d right operand
+   * @returns the remainder
+   */
+  static remFloor (o, d) {
+    return new Vec2(
+      b.x !== 0.0 ? o.x - d.x * Math.floor(o.x / d.x) : o.x,
+      b.y !== 0.0 ? o.y - d.y * Math.floor(o.y / d.y) : o.y);
+  }
+
+  /**
    * @param {Vec2} o left operand 
    * @param {Vec2} d right operand
    * @returns the remainder
@@ -278,6 +420,20 @@ class Vec2 {
     return new Vec2(
       d.x !== 0.0 ? o.x % d.x : o.x,
       d.y !== 0.0 ? o.y % d.y : o.y);
+  }
+
+  /**
+   * @param {Vec2} o vector
+   * @param {number} d scalar
+   * @returns the rescaled vector
+   */
+  static rescale (o, d) {
+    const mSq = Vec2.magSq(o);
+    if (mSq > 0.0) {
+      const mInv = d / Math.sqrt(mSq);
+      return new Vec2(o.x * mInv, o.y * mInv);
+    }
+    return new Vec2(0.0, 0.0);
   }
 
   /**
@@ -308,6 +464,15 @@ class Vec2 {
     return new Vec2(
       Math.round(o.x),
       Math.round(o.y));
+  }
+
+  /**
+   * @param {Vec2} o vector
+   * @param {number} d scalar
+   * @returns the scaled vector
+   */
+  static scale (o, d) {
+    return new Vec2(o.x * d, o.y * d);
   }
 
   /**
