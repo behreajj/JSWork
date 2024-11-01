@@ -509,15 +509,15 @@ class Vec2 {
   /**
    * @returns the vector
    */
-  static left () {
-    return new Vec2(-1.0, 0.0);
+  static down () {
+    return new Vec2(0.0, -1.0);
   }
 
   /**
    * @returns the vector
    */
-  static down () {
-    return new Vec2(0.0, -1.0);
+  static left () {
+    return new Vec2(-1.0, 0.0);
   }
 
   /**
